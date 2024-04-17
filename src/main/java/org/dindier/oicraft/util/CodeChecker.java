@@ -11,8 +11,8 @@ public class CodeChecker {
         if (url != null) {
             System.load(url.getPath());
         }
-
     }
+
     // This is just for testing
     public static void run(String program) throws  IOException, InterruptedException {
         ProcessBuilder pb = new ProcessBuilder(program);
