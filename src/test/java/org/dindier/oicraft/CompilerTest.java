@@ -14,7 +14,7 @@ public class CompilerTest {
     @Test
     @SuppressWarnings("ResultOfMethodCallIgnored")
     void testCodeCompilerCompileError() {
-        CodeCompiler compiler = new CodeCompiler("cl", cppCompileOption, "./temp");
+        CodeCompiler compiler = CodeCompiler.CPP;
         URL cppFile = CompilerTest.class.getClassLoader().getResource("test_codes/compile_error.cpp");
         if (cppFile == null) {
             throw new RuntimeException("Cannot find the test code file");
@@ -32,7 +32,7 @@ public class CompilerTest {
     @Test
     @SuppressWarnings("ResultOfMethodCallIgnored")
     void testCodeCompilerCompileSuccess() {
-        CodeCompiler compiler = new CodeCompiler("g++", cppCompileOption, "./temp");
+        CodeCompiler compiler = CodeCompiler.CPP;
         URL cppFile = CompilerTest.class.getClassLoader().getResource("test_codes/helloworld.cpp");
         if (cppFile == null) {
             throw new RuntimeException("Cannot find the test code file");

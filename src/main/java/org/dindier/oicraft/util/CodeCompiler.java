@@ -6,25 +6,24 @@ import java.io.File;
  * Code compiler for compiled language such as C/C++, Java, Rust, etc.
  * This class is used to compile source code file.
  */
-public class CodeCompiler {
+public enum CodeCompiler {
+    JAVA("javac"),
+    CPP("g++", "-o", "main"),
+    C("gcc", "-o", "main");
+
     private final String compiler;
     private final String[] compileOption;
-    private final File workingDirectory;
+    private static final File workingDirectory = new File(CodeChecker.FOLDER);
 
     /**
      * Constructor for CodeCompiler
      *
      * @param compiler         The compiler to use (e.g. "g++", "cl", etc.)
      * @param compileOption    The compile options for the compiler. For example, for g++, it can be {"-o", "main"}; for javac, it can be {"-d", "temp"}.
-     * @param workingDirectory The working directory to store the compiled file
      */
-    public CodeCompiler(String compiler, String[] compileOption, String workingDirectory) {
+    CodeCompiler(String compiler, String... compileOption) {
         this.compiler = compiler;
         this.compileOption = compileOption;
-        this.workingDirectory = new File(workingDirectory);
-        if (!this.workingDirectory.exists() && !this.workingDirectory.mkdirs()) {
-            throw new RuntimeException("Cannot create working directory");
-        }
     }
 
     /**
@@ -35,6 +34,9 @@ public class CodeCompiler {
      */
     public String compile(String sourceFile) {
         try {
+            if (!workingDirectory.exists()) {
+                throw new RuntimeException("No working directory");
+            }
             String[] args = new String[compileOption.length + 2];
             args[0] = compiler;
             args[1] = sourceFile;
