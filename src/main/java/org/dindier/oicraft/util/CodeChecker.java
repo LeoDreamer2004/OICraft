@@ -4,10 +4,7 @@ package org.dindier.oicraft.util;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import oshi.util.FileUtil;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.Map;
 import java.util.Timer;
@@ -93,7 +90,7 @@ public class CodeChecker {
     /**
      * Set the time and memory limit for the code to be checked
      * @param timeLimit The time limit in milliseconds
-     * @param memoryLimit The memory limit in KB
+     * @param memoryLimit The memory limit in MB
      * @return The CodeChecker itself
      */
     public CodeChecker setLimit(int timeLimit, int memoryLimit) {
@@ -167,7 +164,10 @@ public class CodeChecker {
         if (pb == null) return;
         startTime = System.currentTimeMillis();
         process = pb.start();
+
+        // OutputStream outputStream = process.getOutputStream();
         process.waitFor();
+
         timer.cancel();
 
         checkAnswer();
@@ -220,7 +220,7 @@ public class CodeChecker {
 
         long temp;
         try {
-            temp = (int) getProcessMemoryUsage(process.pid());
+            temp = (int) (getProcessMemoryUsage(process.pid()) / 1024);
         } catch (Exception e) {
             return; // the process may have been terminated
         }
