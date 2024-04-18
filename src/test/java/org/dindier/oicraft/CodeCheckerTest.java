@@ -31,7 +31,7 @@ public class CodeCheckerTest {
         CodeChecker codeChecker = new CodeChecker();
         codeChecker.setIO("while True: pass", "Python", "1 2", "3", 1)
                 .setLimit(1000, 128 * 1024).test();
-        System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedMemory() + "ms/" + codeChecker.getUsedMemory() + "KB");
+        System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedTime() + "ms/" + codeChecker.getUsedMemory() + "KB");
         assert codeChecker.getStatus().equals("TLE");
     }
 
@@ -42,7 +42,7 @@ public class CodeCheckerTest {
         codeChecker.setIO(code, "C++", "1 2", "3", 2)
                 .setLimit(1000, 128 * 1024)
                 .test();
-        System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedMemory() + "ms/" + codeChecker.getUsedMemory() + "KB");
+        System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedTime() + "ms/" + codeChecker.getUsedMemory() + "KB");
         assert codeChecker.getStatus().equals("AC");
     }
 
@@ -53,7 +53,7 @@ public class CodeCheckerTest {
         codeChecker.setIO(code, "C++", "1 2", "3", 3)
                 .setLimit(1000, 128 * 1024)
                 .test();
-        System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedMemory() + "ms/" + codeChecker.getUsedMemory() + "KB");
+        System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedTime() + "ms/" + codeChecker.getUsedMemory() + "KB");
         assert codeChecker.getStatus().equals("WA");
     }
 
@@ -64,7 +64,7 @@ public class CodeCheckerTest {
         codeChecker.setIO(code, "C++", "1 2", "3", 4)
                 .setLimit(5000, 128 * 1024)
                 .test();
-        System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedMemory() + "ms/" + codeChecker.getUsedMemory() + "KB");
+        System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedTime() + "ms/" + codeChecker.getUsedMemory() + "KB");
         assert codeChecker.getStatus().equals("RE");
     }
 
@@ -75,7 +75,7 @@ public class CodeCheckerTest {
         codeChecker.setIO(code, "C++", "1 2", "3", 5)
                 .setLimit(1000, 128 * 1024)
                 .test();
-        System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedMemory() + "ms/" + codeChecker.getUsedMemory() + "KB");
+        System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedTime() + "ms/" + codeChecker.getUsedMemory() + "KB");
         assert codeChecker.getStatus().equals("CE");
     }
 
@@ -86,7 +86,7 @@ public class CodeCheckerTest {
         codeChecker.setIO(code, "Java", "1 2", "3", 6)
                 .setLimit(1000, 128 * 1024)
                 .test();
-        System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedMemory() + "ms/" + codeChecker.getUsedMemory() + "KB");
+        System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedTime() + "ms/" + codeChecker.getUsedMemory() + "KB");
         assert codeChecker.getStatus().equals("AC");
     }
 }
