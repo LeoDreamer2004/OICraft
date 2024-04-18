@@ -1,4 +1,6 @@
+#include <cstdio>
+
 int main() {
-    int *p = nullptr;
-    *p     = 42;
+    int a[10];
+    printf("%d", a[10004232]);
 }

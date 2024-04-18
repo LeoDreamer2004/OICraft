@@ -25,3 +25,8 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+
+### Temp Code ###
+/.temp_codes/
+/_temp_codes/
