@@ -1,3 +1,14 @@
+.header {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 180px;
+    margin-bottom: 40px;
+    background-color: #333333;
+    color: white;
+    padding: 20px 150px 20px 150px;
+}
+
 .problem-container {
     display: flex;
     justify-content: space-between;
@@ -6,8 +17,28 @@
     padding: 0;
 }
 
+.problem-card {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border: 2px solid #eee;
+    border-radius: 8px;
+}
+
 .problem-main {
     width: calc(66.66% - .5em);
+}
+
+.problem-brief {
+    width: calc(33.33% - .5em);
+    float: right;
+    height: 300px;
+    padding-top: 30px;
+}
+
+.problem-brief .info-line {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px 0 20px;
+    font-size: 18px;
 }
 
 .problem-part {
@@ -28,11 +59,6 @@
 .problem-part p {
     margin-bottom: 1em;
     font-size: 20px;
-}
-
-.problem-brief {
-    width: calc(33.33% - .5em);
-    float: right;
 }
 
 .io-container {
