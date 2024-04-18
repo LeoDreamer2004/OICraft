@@ -1,27 +1,23 @@
 package org.dindier.oicraft.util;
 
 
-import org.apache.tomcat.util.http.fileupload.FileUtils;
-import oshi.util.FileUtil;
-
 import java.io.*;
 import java.net.URL;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CodeChecker {
 
     public static final String FOLDER = "_temp_codes/";
     private String codePath;
     private String language;
-    private String inputPath;
-    private String outputPath;
-    private String errorPath;
+    private String inputData;
     private String expectedOutput;
     private int timeLimit = 0;
     private int memoryLimit = 0;
+    // The working directory for the submission
+    private File workingDirectory;
 
     private static final Map<String, String> extensionsMap = Map.of(
             "Java", "java",
@@ -54,43 +50,50 @@ public class CodeChecker {
 
     /**
      * Set the IO files for the code to be checked
-     * @param code The code to be checked
-     * @param language The language of the code
-     * @param input The input string
-     * @param output The expected output
+     *
+     * @param code         The code to be checked
+     * @param language     The language of the code
+     * @param input        The input string
+     * @param output       The expected output
      * @param submissionId The id of the submission
      * @return The CodeChecker itself
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public CodeChecker setIO(String code, String language, String input, String output, int submissionId) throws IOException {
+        // working directory
+        this.workingDirectory = new File(FOLDER + submissionId + "/");
+        if (!workingDirectory.exists() && !workingDirectory.mkdirs()) {
+            throw new IOException("Fail to create working dictionary");
+        }
+
         // code
         String extension = extensionsMap.get(language);
         if (extension == null)
             throw new IllegalArgumentException("Unsupported language: " + language);
-        this.codePath = FOLDER + submissionId + "." + extension;
-        createFile(this.codePath, code);
+        this.codePath = workingDirectory.getPath() + "/Main." + extension;
+        File codeFile = new File(codePath);
+        codeFile.createNewFile();
+        try (FileWriter fileWriter = new FileWriter(codeFile)) {
+            fileWriter.write(code);
+        }
 
         // language
         this.language = language;
 
         // input
-        this.inputPath = FOLDER + submissionId + ".in";
-        createFile(this.inputPath, input + "\n"); // avoid EOF
+        this.inputData = input + "\n"; // avoid EOF
 
         // output
-        this.outputPath = FOLDER + submissionId + ".out";
-        createFile(this.outputPath);
-        expectedOutput = output.trim();  // omit the '\n'
+        this.expectedOutput = output.stripTrailing();
 
-        // error
-        this.errorPath = FOLDER + submissionId + ".err";
-        createFile(this.errorPath);
         return this;
     }
 
     /**
      * Set the time and memory limit for the code to be checked
-     * @param timeLimit The time limit in milliseconds
-     * @param memoryLimit The memory limit in MB
+     *
+     * @param timeLimit   The time limit in milliseconds
+     * @param memoryLimit The memory limit in KB
      * @return The CodeChecker itself
      */
     public CodeChecker setLimit(int timeLimit, int memoryLimit) {
@@ -115,37 +118,6 @@ public class CodeChecker {
         return info;
     }
 
-    private File createFile(String path) throws IOException {
-        File file = new File(path);
-        boolean b = file.createNewFile();
-        if (!file.exists())
-            throw new RuntimeException("Failed to create file: " + path);
-        return file;
-    }
-
-    private File createFile(String path, String content) throws IOException {
-        File file = createFile(path);
-        try (FileWriter writer = new FileWriter(file)) {
-            writer.write(content);
-        }
-        return file;
-    }
-
-    private String readFile(String path) throws IOException {
-        File file = new File(path);
-        if (!file.exists())
-            throw new RuntimeException("File not found: " + path);
-        try (FileReader reader = new FileReader(file)) {
-            StringBuilder sb = new StringBuilder();
-            char[] buffer = new char[1024];
-            int len;
-            while ((len = reader.read(buffer)) != -1) {
-                sb.append(buffer, 0, len);
-            }
-            return sb.toString();
-        }
-    }
-
     /**
      * Run the code and check the result
      * Use getter to get the status, info etc
@@ -159,54 +131,72 @@ public class CodeChecker {
             }
         };
         Timer timer = new Timer();
-        timer.schedule(timerTask, 0, 100);
+        timer.schedule(timerTask, 0, 50);
 
-        if (pb == null) return;
+        if (pb == null) {
+            clearFiles();
+            return;
+        }
         startTime = System.currentTimeMillis();
         process = pb.start();
 
-        // OutputStream outputStream = process.getOutputStream();
-        process.waitFor();
 
+        OutputStream outputStream = process.getOutputStream();
+        BufferedWriter outputStreamWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+        outputStreamWriter.write(inputData);
+        outputStreamWriter.flush();
+        outputStreamWriter.close();
+
+
+        process.waitFor();
         timer.cancel();
 
         checkAnswer();
-        // TODO: clear the files
+        clearFiles();
     }
 
     /* Get the ProcessBuilder for the code to be checked */
     private ProcessBuilder getProcessBuilder() {
-        final String redirection = " <" + inputPath + " >" + outputPath + " 2>" + errorPath;
         CodeCompiler compiler = null;
-        String runCmd;
+        String[] runCmd;
 
         switch (language) {
-            case "Python" -> runCmd = "python " + codePath + redirection;
+            case "Python" -> {
+                runCmd = new String[2];
+                runCmd[0] = "python";
+                runCmd[1] = codePath;
+            }
             case "Java" -> {
                 compiler = CodeCompiler.JAVA;
-                runCmd = "java -cp " + FOLDER + " " + codePath.substring(0, codePath.length() - 5) + redirection;
+                runCmd = new String[4];
+                runCmd[0] = "java";
+                runCmd[1] = "-cp";
+                runCmd[2] = workingDirectory.getPath();
+                runCmd[3] = codePath.substring(codePath.lastIndexOf("/") + 1, codePath.length() - 5);
             }
             case "C++" -> {
                 compiler = CodeCompiler.CPP;
-                runCmd = FOLDER + "main.exe" + redirection;
+                runCmd = new String[1];
+                runCmd[0] = workingDirectory.getPath() + "/main.exe";
             }
             case "C" -> {
                 compiler = CodeCompiler.C;
-                runCmd = FOLDER + "main.exe" + redirection;
+                runCmd = new String[1];
+                runCmd[0] = workingDirectory.getPath() + "/main.exe";
             }
             default -> throw new IllegalArgumentException("Unsupported language: " + language);
         }
 
         // if the compiler is not null, compile the code
         if (compiler != null) {
-            String compileError = compiler.compile(codePath);
+            String compileError = compiler.compile(new File(codePath), workingDirectory);
             if (compileError != null) {
                 status = "CE";
                 info = compileError;
                 return null;
             }
         }
-        return new ProcessBuilder("cmd", "/c", runCmd);
+        return new ProcessBuilder(runCmd);
     }
 
     /* A timer task, which will terminate the testing process when the program exceeded the limit */
@@ -245,7 +235,8 @@ public class CodeChecker {
 
     /* Check the answer */
     private void checkAnswer() throws IOException {
-        String output = readFile(outputPath).trim();
+        InputStream inputStream = process.getInputStream();
+        String output = new String(inputStream.readAllBytes()).stripTrailing();
 
         if (output.equals(expectedOutput)) {
             status = "AC";
@@ -272,13 +263,13 @@ public class CodeChecker {
             int minLen = Math.min(expectedLines[i].length(), actualLines[i].length());
             for (int j = 0; j < minLen; j++) {
                 if (expectedLines[i].charAt(j) != actualLines[i].charAt(j)) {
-                    return "Line " + (i + 1) + "Column " + (j + 1) + ": expected '" + expectedLines[i].charAt(j) + "', but got '" + actualLines[i].charAt(j) + "'";
+                    return "Line " + (i + 1) + ", Column " + (j + 1) + ": expected '" + expectedLines[i].charAt(j) + "', but got '" + actualLines[i].charAt(j) + "'";
                 }
             }
             if (expectedLines[i].length() < actualLines[i].length()) {
-                return "Line " + (i + 1) + "Column " + (minLen + 1) + ": expected nothing, but got '" + actualLines[i].charAt(minLen) + "'";
+                return "Line " + (i + 1) + ", Column " + (minLen + 1) + ": expected nothing, but got '" + actualLines[i].charAt(minLen) + "'";
             } else {
-                return "Line " + (i + 1) + "Column " + (minLen + 1) + ": expected '" + expectedLines[i].charAt(minLen) + "', but got nothing";
+                return "Line " + (i + 1) + ", Column " + (minLen + 1) + ": expected '" + expectedLines[i].charAt(minLen) + "', but got nothing";
             }
         }
         if (expectedLines.length < actualLines.length) {
@@ -287,5 +278,25 @@ public class CodeChecker {
             return "Line " + (minLines + 1) + ": expected a new line, but got EOF";
         }
         return "Unknown Error";
+    }
+
+    private void clearFiles() throws IOException {
+        if (workingDirectory.exists()) {
+            deleteFolder(workingDirectory);
+        }
+    }
+
+    private static void deleteFolder(File folder) throws IOException {
+        if (folder.isDirectory()) {
+            File[] files = folder.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    deleteFolder(file);
+                }
+            }
+        }
+        if (!folder.delete()) {
+            throw new IOException("Failed to clear files");
+        }
     }
 }

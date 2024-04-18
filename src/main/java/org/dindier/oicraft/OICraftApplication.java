@@ -4,10 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class OICraftApplication {
-
+public class OiCraftApplication {
     public static void main(String[] args) {
-        SpringApplication.run(OICraftApplication.class, args);
+        SpringApplication.run(OiCraftApplication.class, args);
     }
-
 }

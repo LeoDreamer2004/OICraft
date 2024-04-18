@@ -8,18 +8,17 @@ import java.io.File;
  */
 public enum CodeCompiler {
     JAVA("javac"),
-    CPP("g++", "-o", "main"),
-    C("gcc", "-o", "main");
+    CPP("g++", "-o", "main", "-O2"),
+    C("gcc", "-o", "main", "-O2");
 
     private final String compiler;
     private final String[] compileOption;
-    private static final File workingDirectory = new File(CodeChecker.FOLDER);
 
     /**
      * Constructor for CodeCompiler
      *
-     * @param compiler         The compiler to use (e.g. "g++", "cl", etc.)
-     * @param compileOption    The compile options for the compiler. For example, for g++, it can be {"-o", "main"}; for javac, it can be {"-d", "temp"}.
+     * @param compiler      The compiler to use (e.g. "g++", "cl", etc.)
+     * @param compileOption The compile options for the compiler. For example, for g++, it can be {"-o", "main"}; for javac, it can be {"-d", "temp"}.
      */
     CodeCompiler(String compiler, String... compileOption) {
         this.compiler = compiler;
@@ -32,14 +31,15 @@ public enum CodeCompiler {
      * @param sourceFile The source file to compile
      * @return The error message if the compilation failed, otherwise null
      */
-    public String compile(String sourceFile) {
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public String compile(File sourceFile, File workingDirectory) {
         try {
             if (!workingDirectory.exists()) {
-                throw new RuntimeException("No working directory");
+                workingDirectory.mkdir();
             }
             String[] args = new String[compileOption.length + 2];
             args[0] = compiler;
-            args[1] = sourceFile;
+            args[1] = sourceFile.getAbsolutePath();
             System.arraycopy(compileOption, 0, args, 2, compileOption.length);
             ProcessBuilder pb = new ProcessBuilder(args);
             pb.directory(workingDirectory);
