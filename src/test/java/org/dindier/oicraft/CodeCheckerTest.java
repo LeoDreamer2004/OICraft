@@ -11,11 +11,11 @@ import java.io.IOException;
 public class CodeCheckerTest {
 
     @Test
-    void testRunning() {
-        try {
-            // CodeChecker.run("E:\\Scripts\\Java\\CollegeCourse\\Exercise\\OICraft\\src\\test\\java\\org\\dindier\\oicraft\\demo.exe");
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+    void testRunning() throws IOException, InterruptedException {
+        CodeChecker codeChecker = new CodeChecker();
+        codeChecker.setIO("while True: pass","Python", "1 2", "3", 1)
+                .setLimit(1000, 128).test();
+        assert codeChecker.getStatus().equals("TLE");
+        // System.out.println(codeChecker.getStatus());
     }
 }
