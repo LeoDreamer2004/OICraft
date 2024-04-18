@@ -1,12 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>HomePage</title>
+    <title>OICraft</title>
+    <link th:replace="~{base :: bootstrap}"/>
+    <script th:replace="~{base :: mathJaxScript}"></script>
+    <script th:replace="~{base :: mathJaxConfig}"></script>
+
+    <style>
+        .welcome {
+            animation: flowUp 0.5s ease-in-out 1;
+        }
+
+        @keyframes flowUp {
+            0% {
+                transform: translateY(10px);
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            color: #aaa;
+            padding: 10px 0;
+            text-align: center;
+        }
+    </style>
+
 </head>
 <body>
-Test
-<h1>HomePage</h1>
-<p>Click <a href="/login">here</a> to login</p>
+
+<div th:insert="~{base :: nav}"></div>
+
+<main role="main" class="container">
+
+    <div class="jumbotron welcome">
+        <h1 class="display-4">OICraft</h1>
+        <p class="lead">
+            一个更简单的代码评测网站。 <br />
+            欢迎使用，以提升您的编程能力。
+        </p>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2024 OICraft. All rights reserved.</p>
+    </footer>
+</main>
 </body>
 </html>

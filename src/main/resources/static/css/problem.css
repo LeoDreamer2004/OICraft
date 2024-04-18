@@ -1,0 +1,57 @@
+.problem-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+}
+
+.problem-main {
+    width: calc(66.66% - .5em);
+}
+
+.problem-part {
+    margin-bottom: 1em;
+    border-bottom: 1px dashed #ddd;
+}
+
+.problem-part:last-child {
+    border-bottom: none;
+}
+
+.problem-part h3 {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    font-weight: bold;
+}
+
+.problem-part p {
+    margin-bottom: 1em;
+    font-size: 20px;
+}
+
+.problem-brief {
+    width: calc(33.33% - .5em);
+    float: right;
+}
+
+.io-container {
+    display: flex;
+}
+
+.io-item {
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: 50%;
+    padding: 10px;
+}
+
+.code {
+    width: 100%;
+    background-color: #eeeeee;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 1em;
+    font-size: 15px;
+    font-family: Consolas, monospace;
+}

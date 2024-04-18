@@ -140,13 +140,11 @@ public class CodeChecker {
         startTime = System.currentTimeMillis();
         process = pb.start();
 
-
         OutputStream outputStream = process.getOutputStream();
         BufferedWriter outputStreamWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
         outputStreamWriter.write(inputData);
         outputStreamWriter.flush();
         outputStreamWriter.close();
-
 
         process.waitFor();
         timer.cancel();
