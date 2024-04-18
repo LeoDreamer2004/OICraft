@@ -9,13 +9,25 @@
     <link th:replace="~{base::mathJaxConfig}"/>
 </head>
 <body>
-<div th:replace="~{base :: nav}"></div>
+<div class="header">
+    <p style="font-size: 15px; color: lightgray">
+        <a th:href="@{/}" style="color: lightgray">首页</a>
+        <span>></span>
+        <a href="#" style="color: lightgray">题目清单</a>
+        <span>></span>
+        <a href="#" th:text="${problem.title}" style="color: lightgray"></a>
+    </p>
+    <h2 th:text="${problem.title}"
+        style="padding-bottom: 10px;font-weight: bolder"></h2>
+    <a class="btn btn-primary mb-3">提交代码</a>
+    <a class="btn btn-secondary mb-3">提交记录</a>
+</div>
+
 
 <main role="main" class="container">
     <div class="problem-container">
-        <div class="card mb-3 problem-main">
+        <div class="card problem-card problem-main">
             <div class="card-body">
-                <h1 th:text="${problem.title}" style="padding-bottom: 30px; border-bottom: #eeeeee solid 2px"></h1>
 
                 <div class="problem-part">
                     <h3>题目描述</h3>
@@ -46,7 +58,31 @@
         </div>
 
 
-        <div class="card problem-brief">Nothing</div>
+        <div class="card problem-card problem-brief">
+            <div class="info-line">
+                <p>时间限制</p>
+                <p>1.00s</p>
+            </div>
+            <div class="info-line">
+                <p>内存限制</p>
+                <p>512.0MB</p>
+            </div>
+            <div class="info-line">
+                <p>出题人</p>
+                <p>Leo</p>
+            </div>
+            <div class="info-line">
+                <p>题目难度</p>
+                <p th:if="${problem.difficulty} eq 'easy'">简单</p>
+                <p th:if="${problem.difficulty} eq 'medium'">中等</p>
+                <p th:if="${problem.difficulty} eq 'hard'">困难</p>
+            </div>
+            <div class="info-line">
+                <p>历史分数</p>
+                <p>0</p>
+            </div>
+            <a href="#" style="padding-left: 20px;">提交记录</a>
+        </div>
     </div>
 </main>
 

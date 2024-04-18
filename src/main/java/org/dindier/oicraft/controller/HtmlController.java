@@ -54,7 +54,7 @@ public class HtmlController {
         samples.add(new Sample("3 4", "7"));
 
         Problem problem = new Problem(1, "a+b 问题", "把两个数相加",
-                "两个整数 $a$, $b$，以空格隔开", "一个整数 $n = a + b$" , "简单", samples);
+                "两个整数 $a$, $b$，以空格隔开", "一个整数 $n = a + b$" , "easy", samples);
         model.addAttribute("problem", problem);
 
         return "problem";
