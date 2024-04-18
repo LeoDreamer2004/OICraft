@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>OICraft</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/plugins/bootstrap-4.6.2-dist/css/bootstrap.min.css" th:fragment="bootstrap">
+
+    <!-- MathJax -->
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" th:fragment="mathJaxScript"></script>
+    <script type="text/x-mathjax-config" th:fragment="mathJaxConfig">
+        MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [
+              ['$', '$'],
+              ['\\(', '\\)']
+            ],
+            displayMath: [
+              ['$$', '$$'],
+              ['\\[', '\\]']
+            ],
+            processEscapes: true
+          },
+          TeX: {
+            extensions: ['AMSmath.js', 'AMSsymbols.js'],
+            equationNumbers: {
+              autoNumber: ['AMS'],
+              useLabelIds: true
+            },
+            Macros: {
+              hfill: '{}'
+            }
+          },
+          'HTML-CSS': {
+            linebreaks: {
+              automatic: true
+            },
+            availableFonts: ['TeX'],
+            scale: 110
+          },
+          SVG: {
+            linebreaks: {
+              automatic: true
+            }
+          }
+        })
+    </script>
+</head>
+<body>
+
+<!-- header -->
+<div th:fragment="nav">
+    <nav class="navbar navbar-expand-md navbar-dark mb-4 border bg-primary">
+        <a class="navbar-brand" href="#">OICraft</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link">OI测试</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link">注册</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" >登录</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+</body>
+</html>

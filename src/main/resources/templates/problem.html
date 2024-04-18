@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${problem.title}"></title>
+    <link th:replace="~{base :: bootstrap}"/>
+    <link rel="stylesheet" href="/css/problem.css">
+    <link th:replace="~{base::mathJaxScript}"/>
+    <link th:replace="~{base::mathJaxConfig}"/>
+</head>
+<body>
+<div th:replace="~{base :: nav}"></div>
+
+<main role="main" class="container">
+    <div class="problem-container">
+        <div class="card mb-3 problem-main">
+            <div class="card-body">
+                <h1 th:text="${problem.title}" style="padding-bottom: 30px; border-bottom: #eeeeee solid 2px"></h1>
+
+                <div class="problem-part">
+                    <h3>题目描述</h3>
+                    <p th:text="${problem.description}"></p>
+                </div>
+                <div class="problem-part">
+                    <h3>输入格式</h3>
+                    <p th:text="${problem.inputFormat}"></p>
+                </div>
+                <div class="problem-part">
+                    <h3>输出格式</h3>
+                    <p th:text="${problem.outputFormat}"></p>
+                </div>
+                <div class="problem-part">
+                    <h3>输入输出样例</h3>
+                    <div class="io-container" th:each="sample : ${problem.samples}">
+                        <div class="io-item">
+                            <h5 class="card-subtitle mb-2 text-muted ">输入</h5>
+                            <pre class="code" th:text="${sample.input}"></pre>
+                        </div>
+                        <div class="io-item">
+                            <h5 class="card-subtitle mb-2 text-muted">输出</h5>
+                            <pre class="code" th:text="${sample.output}"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="card problem-brief">Nothing</div>
+    </div>
+</main>
+
+</body>
+</html>
