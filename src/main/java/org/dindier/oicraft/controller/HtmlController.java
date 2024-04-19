@@ -1,68 +1,88 @@
 package org.dindier.oicraft.controller;
 
+import org.dindier.oicraft.dao.ProblemDao;
+import org.dindier.oicraft.dao.SubmissionDao;
+import org.dindier.oicraft.model.Submission;
+import org.dindier.oicraft.service.ProblemService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.view.RedirectView;
 
-import java.util.*;
 
 @Controller
 public class HtmlController {
+
+    private ProblemDao problemDao;
+    private ProblemService problemService;
+    private SubmissionDao submissionDao;
+
+    @Autowired
+    public void setProblemDao(ProblemDao problemDao) {
+        this.problemDao = problemDao;
+    }
+
+    @Autowired
+    public void setProblemService(ProblemService problemService) {
+        this.problemService = problemService;
+    }
+
+    @Autowired
+    public void setSubmissionDao(SubmissionDao submissionDao) {
+        this.submissionDao = submissionDao;
+    }
+
     @GetMapping("/")
     public String index(Model model) {
         model.addAttribute("user", "Dindier");
         return "index";
     }
 
+    @GetMapping("/problems")
+    public String problems(Model model) {
+        model.addAttribute("problems", problemDao.getProblems());
+        return "problems";
+    }
+
     @GetMapping("/problem/{id}")
     public String problem(@PathVariable int id, Model model) {
-        // Just a temp test page
-
-        class Sample {
-            public final String input;
-            public final String output;
-
-            public Sample(String input, String output) {
-                this.input = input;
-                this.output = output;
-            }
-        }
-
-        class Problem {
-            public final int id;
-            public final String title;
-            public final String description;
-            public final String inputFormat;
-            public final String outputFormat;
-            public final String difficulty;
-            public final List<Sample> samples;
-
-            public Problem(int id, String title, String description, String inputFormat, String outputFormat, String difficulty, List<Sample> samples) {
-                this.id = id;
-                this.title = title;
-                this.inputFormat = inputFormat;
-                this.outputFormat = outputFormat;
-                this.description = description;
-                this.difficulty = difficulty;
-                this.samples = samples;
-            }
-        }
-
-        List<Sample> samples = new ArrayList<>();
-        samples.add(new Sample("1 2", "3"));
-        samples.add(new Sample("3 4", "7"));
-
-        Problem problem = new Problem(1, "a+b 问题", "把两个数相加",
-                "两个整数 $a$, $b$，以空格隔开", "一个整数 $n = a + b$", "easy", samples);
-        model.addAttribute("problem", problem);
-
+        model.addAttribute("problem", problemDao.getProblemById(id));
+        model.addAttribute("samples", problemDao.getSamplesById(1));
         return "problem";
     }
 
+    @GetMapping("/problem/{id}/submit")
+    public String submit(@PathVariable int id, Model model) {
+        model.addAttribute("problem", problemDao.getProblemById(id));
+        return "submit";
+    }
 
-    @GetMapping("/problems")
-    public String problems(Model model) {
-        return "problems";
+    @PostMapping("/problem/{id}/result")
+    public RedirectView handIn(@PathVariable int id,
+                               @RequestParam("code") String code,
+                               @RequestParam("language") String language,
+                               Model model) {
+
+        System.out.println("Language: " + language + "\nGet the code: " + code);
+        model.addAttribute("problem", problemDao.getProblemById(id));
+
+        int submissionId = problemService.testCode(id, code, language);
+        RedirectView redirectView = new RedirectView();
+        redirectView.setUrl("/submission/" + submissionId);
+        return redirectView;
+    }
+
+    @GetMapping("/submission/{id}")
+    public String submission(@PathVariable int id, Model model) {
+        Submission submission = submissionDao.getSubmissionById(id);
+
+        model.addAttribute("submission", submission);
+        model.addAttribute("problem", problemDao.getProblemById(submission.getProblemId()));
+        return "submission";
     }
 }
+

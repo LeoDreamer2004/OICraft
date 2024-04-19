@@ -1,5 +1,9 @@
 package org.dindier.oicraft.model;
 
+
+/*
+* FIXME: May use springSecurity for user authentication later
+*/
 public class User {
     private int id;
     private String name;

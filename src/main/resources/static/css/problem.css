@@ -1,10 +1,3 @@
-.lr-container {
-    display: flex;
-    justify-content: space-between;
-    margin: 0;
-    padding: 0;
-}
-
 .problem-main {
     width: calc(66.66% - .5em);
 }

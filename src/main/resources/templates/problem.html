@@ -21,7 +21,7 @@
     </p>
     <h2 th:text="${problem.title}"
         style="padding-bottom: 10px;font-weight: bolder"></h2>
-    <a class="btn btn-primary mb-3">提交代码</a>
+    <a class="btn btn-primary mb-3" th:href="@{/problem/{id}/submit(id=${problem.id})}">提交代码</a>
     <a class="btn btn-secondary mb-3" th:href="@{/problems}">返回题单</a>
 
     <div class="problem-status-box">
@@ -63,7 +63,7 @@
                 </div>
                 <div class="problem-part">
                     <h3>输入输出样例</h3>
-                    <div class="lr-container" th:each="sample : ${problem.samples}">
+                    <div class="lr-container" th:each="sample : ${samples}">
                         <div class="io-item">
                             <h5 class="card-subtitle mb-2 text-muted ">输入</h5>
                             <pre class="code" th:text="${sample.input}"></pre>
