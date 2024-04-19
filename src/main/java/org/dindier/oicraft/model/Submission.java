@@ -5,7 +5,7 @@ public class Submission {
     private int problemId;
     private String code;
     private String language;
-    private String status;
+    private String status; // pending, passed, failed
     private int score;
 
     public Submission(int problemId, String code, String language) {
