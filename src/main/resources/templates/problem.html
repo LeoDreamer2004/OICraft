@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <title th:text="${problem.title}"></title>
     <link th:replace="~{base :: bootstrap}"/>
+    <link th:replace="~{base :: baseStyle}"/>
     <link rel="stylesheet" href="/css/problem.css">
-    <link th:replace="~{base::mathJaxScript}"/>
-    <link th:replace="~{base::mathJaxConfig}"/>
+    <link th:replace="~{base :: mathJaxScript}"/>
+    <link th:replace="~{base :: mathJaxConfig}"/>
     <link rel="stylesheet" href="//at.alicdn.com/t/c/font_4514574_ewqhg9dgp2o.css">
 </head>
 <body>
@@ -14,14 +15,14 @@
     <p style="font-size: 15px; color: lightgray">
         <a th:href="@{/}" style="color: lightgray">首页</a>
         <span>></span>
-        <a href="#" style="color: lightgray">题目清单</a>
+        <a th:href="@{/problems}" style="color: lightgray">题目清单</a>
         <span>></span>
-        <a href="#" th:text="${problem.title}" style="color: lightgray"></a>
+        <span th:text="${problem.title}" style="color: lightgray"></span>
     </p>
     <h2 th:text="${problem.title}"
         style="padding-bottom: 10px;font-weight: bolder"></h2>
     <a class="btn btn-primary mb-3">提交代码</a>
-    <a class="btn btn-secondary mb-3">提交记录</a>
+    <a class="btn btn-secondary mb-3" th:href="@{/problems}">返回题单</a>
 
     <div class="problem-status-box">
         <div class="problem-status-item">
@@ -46,7 +47,7 @@
 
 <main role="main" class="container">
     <div class="lr-container">
-        <div class="card problem-card problem-main">
+        <div class="card my-card problem-main">
             <div class="card-body">
                 <div class="problem-part">
                     <h3>题目描述</h3>
@@ -77,7 +78,7 @@
         </div>
 
 
-        <div class="card problem-card problem-brief">
+        <div class="card my-card problem-brief">
             <div class="info-line">
                 <p>出题人</p>
                 <p>Leo</p>

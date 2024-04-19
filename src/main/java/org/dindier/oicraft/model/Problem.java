@@ -1,4 +1,4 @@
-package org.dindier.oicraft.util;
+package org.dindier.oicraft.model;
 
 public class Problem {
     private int id;
