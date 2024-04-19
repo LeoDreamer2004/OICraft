@@ -6,6 +6,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="/plugins/bootstrap-4.6.2-dist/css/bootstrap.min.css" th:fragment="bootstrap" />
     <link rel="stylesheet" href="/css/base.css" th:fragment="baseStyle" />
+
     <!-- MathJax -->
     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" th:fragment="mathJaxScript"></script>
     <script type="text/x-mathjax-config" th:fragment="mathJaxConfig">
@@ -45,6 +46,11 @@
           }
         })
     </script>
+
+    <!-- grammar highlight -->
+    <link rel="stylesheet" href="/plugins/grammar-highlight/styles/docco.css" th:fragment="highlightStyle">
+    <script src="/plugins/grammar-highlight/highlight.min.js" th:fragment="highlightJS"></script>
+    <script th:fragment="highlightAll">hljs.highlightAll();</script>
 </head>
 <body>
 

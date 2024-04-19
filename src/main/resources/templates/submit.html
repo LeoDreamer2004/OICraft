@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>提交代码</title>
+    <link th:replace="~{base :: bootstrap}"/>
+    <link th:replace="~{base :: baseStyle}"/>
+    <link rel="stylesheet" href="/css/submit.css">
+</head>
+<body>
+<div class="header">
+    <p style="font-size: 15px; color: lightgray">
+        <a th:href="@{/}" style="color: lightgray">首页</a>
+        <span>></span>
+        <a th:href="@{/problems}" style="color: lightgray">题目清单</a>
+        <span>></span>
+        <span th:href="@{/problem/{id}(id=${problem.id})}" th:text="${problem.title}"
+              style="color: lightgray"></span>
+        <span>></span>
+        <span style="color: lightgray">提交代码</span>
+    </p>
+    <h2 style="padding-bottom: 10px;font-weight: bolder">提交代码</h2>
+    <a class="btn btn-secondary mb-3" th:href="@{/problem/{id}(id=${problem.id})}">返回题目</a>
+</div>
+<main role="main" class="container">
+    <!-- Input code -->
+
+    <form role="form" class="form" th:action="@{result}" method="post">
+        <div class="lr-container">
+
+            <label class="form-inline">
+                <span>代码语言</span>
+                <select name="language" class="form-control form-control-placeholder mb-3 ml-3 mt-3">
+                    <option value="Python">Python</option>
+                    <option value="Java">Java</option>
+                    <option value="C++">C++</option>
+                    <option value="C">C</option>
+                </select>
+            </label>
+            <label>
+                <input class="btn btn-primary mt-3" type="submit" value="提交代码" style="float: right">
+            </label>
+        </div>
+        <label class="submit-code-block">
+                <textarea name="code" type="text" class="form-control"
+                          style="resize: none; height: 400px"></textarea>
+        </label>
+    </form>
+</main>
+</body>
+</html>

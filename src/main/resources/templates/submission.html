@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link th:replace="~{base :: bootstrap}"/>
+    <link th:replace="~{base :: baseStyle}"/>
+    <link th:replace="~{base :: highlightStyle}"/>
+    <script th:replace="~{base :: highlightJS}"></script>
+    <script th:replace="~{base :: highlightAll}"></script>
+    <link rel="stylesheet" href="/static/css/submission.css">
+
+    <title>测试结果</title>
+</head>
+<body>
+<div class="header">
+    <p style="font-size: 15px; color: lightgray">
+        <a th:href="@{/}" style="color: lightgray">首页</a>
+        <span>></span>
+        <a th:href="@{/problems}" style="color: lightgray">题目清单</a>
+        <span>></span>
+        <a th:href="@{/problem/{id}(id=${problem.id})}" th:text="${problem.title}"
+              style="color: lightgray"></a>
+        <span>></span>
+        <span style="color: lightgray">提交结果</span>
+    </p>
+    <h2 style="padding-bottom: 10px;font-weight: bolder">提交结果</h2>
+    <a class="btn btn-secondary mb-3" th:href="@{/problem/{id}(id=${problem.id})}">返回题目</a>
+</div>
+<main role="main" class="container">
+    <h4>代码</h4>
+    <pre>
+    <code th:text="${submission.code}">
+    </code>
+    </pre>
+    <h4>测试结果</h4>
+</main>
+</body>
+</html>

@@ -14,6 +14,7 @@
         <span style="color: lightgray">题目清单</span>
     </p>
     <h2 style="padding-bottom: 10px;font-weight: bolder">题目列表</h2>
+    <a class="btn btn-secondary mb-3" th:href="@{/}">返回首页</a>
 </div>
 <main role="main" class="container">
     <div class="card my-card p-3">
@@ -22,18 +23,31 @@
                 <th>状态</th>
                 <th>题号</th>
                 <th>题目名称</th>
-                <th>提交</th>
                 <th>难度</th>
                 <th>通过率</th>
             </tr>
-            <tr>
-                <td>-</td>
-                <td>1000</td>
-                <td>a+b问题</td>
-                <td>0</td>
-                <td>简单</td>
-                <td>0%</td>
-            </tr>
+
+            <tr th:each="problem : ${problems}">
+                <td>
+                    -
+                </td>
+                <td th:text="${problem.id}"></td>
+                <td>
+                    <a th:href="@{/problem/{id}(id=${problem.id})}" th:text="${problem.title}"></a>
+                </td>
+                <td th:if="${problem.difficulty} eq 'easy'">
+                    <span class="badge badge-success my-large-badge">简单</span>
+                </td>
+                <td th:if="${problem.difficulty} eq 'medium'">
+                    <span class="badge badge-warning my-large-badge">中等</span>
+                </td>
+                <td th:if="${problem.difficulty} eq 'hard'">
+                    <span class="badge badge-danger my-large-badge">困难</span>
+                </td>
+                <td th:unless="${problem.difficulty} eq 'easy' or ${problem.difficulty} eq 'medium' or ${problem.difficulty} eq 'hard'">
+                    <span class="badge badge-secondary my-large-badge">未评定</span>
+                <td th:if="${problem.submit == 0}">NaN</td>
+                <td th:unless="${problem.submit == 0}" th:text="${problem.passed / problem.submit}"></td>
         </table>
     </div>
 </main>

@@ -1,0 +1,78 @@
+h4 {
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 10px;
+}
+
+.box-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.checkpoint-box {
+    position: relative;
+    margin: 5px;
+    color: white;
+    text-align: center;
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
+}
+
+.msg-box {
+    z-index: 5;
+    position: absolute;
+    background-color: #234356;
+    font-family: consolas, monospace;
+    top: 5px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    font-size: 12px;
+    white-space: nowrap;
+    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+}
+
+.checkpoint-box:hover .msg-box {
+    opacity: 1;
+}
+
+.p-box {
+    background-color: #666666;
+}
+
+.ac-box {
+    background-color: #22aa22;
+}
+
+.wa-box {
+    background-color: #aa2222;
+}
+
+.ce-box {
+    background-color: #aaaa22;
+}
+
+.re-box {
+    background-color: #aaaa22;
+}
+
+.tle-box {
+    background-color: #222233;
+}
+
+.mle-box {
+    background-color: #222233;
+}
+
+.text-status {
+    position: relative;
+    top: 20%;
+    font-size: 28px;
+}
+
+.text-cost {
+    position: relative;
+    font-size: 15px;
+}
