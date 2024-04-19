@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/css/problem.css">
     <link th:replace="~{base::mathJaxScript}"/>
     <link th:replace="~{base::mathJaxConfig}"/>
+    <link rel="stylesheet" href="//at.alicdn.com/t/c/font_4514574_ewqhg9dgp2o.css">
 </head>
 <body>
 <div class="header">
@@ -21,14 +22,32 @@
         style="padding-bottom: 10px;font-weight: bolder"></h2>
     <a class="btn btn-primary mb-3">提交代码</a>
     <a class="btn btn-secondary mb-3">提交记录</a>
+
+    <div class="problem-status-box">
+        <div class="problem-status-item">
+            <p>提交</p>
+            <p>0</p>
+        </div>
+        <div class="problem-status-item">
+            <p>通过</p>
+            <p>0</p>
+        </div>
+        <div class="problem-status-item">
+            <p>时间限制</p>
+            <p>1.00s</p>
+        </div>
+        <div class="problem-status-item">
+            <p>内存限制</p>
+            <p>512.0MB</p>
+        </div>
+    </div>
 </div>
 
 
 <main role="main" class="container">
-    <div class="problem-container">
+    <div class="lr-container">
         <div class="card problem-card problem-main">
             <div class="card-body">
-
                 <div class="problem-part">
                     <h3>题目描述</h3>
                     <p th:text="${problem.description}"></p>
@@ -43,7 +62,7 @@
                 </div>
                 <div class="problem-part">
                     <h3>输入输出样例</h3>
-                    <div class="io-container" th:each="sample : ${problem.samples}">
+                    <div class="lr-container" th:each="sample : ${problem.samples}">
                         <div class="io-item">
                             <h5 class="card-subtitle mb-2 text-muted ">输入</h5>
                             <pre class="code" th:text="${sample.input}"></pre>
@@ -60,14 +79,6 @@
 
         <div class="card problem-card problem-brief">
             <div class="info-line">
-                <p>时间限制</p>
-                <p>1.00s</p>
-            </div>
-            <div class="info-line">
-                <p>内存限制</p>
-                <p>512.0MB</p>
-            </div>
-            <div class="info-line">
                 <p>出题人</p>
                 <p>Leo</p>
             </div>
@@ -81,7 +92,8 @@
                 <p>历史分数</p>
                 <p>0</p>
             </div>
-            <a href="#" style="padding-left: 20px;">提交记录</a>
+
+            <a class="iconfont icon-toupiao" href="#" style="padding-left: 20px; text-decoration: none"> 提交记录</a>
         </div>
     </div>
 </main>

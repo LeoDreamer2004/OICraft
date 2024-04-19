@@ -1,4 +1,5 @@
 .header {
+    position: relative;
     top: 0;
     left: 0;
     width: 100%;
@@ -9,10 +10,9 @@
     padding: 20px 150px 20px 150px;
 }
 
-.problem-container {
+.lr-container {
     display: flex;
     justify-content: space-between;
-    flex-wrap: wrap;
     margin: 0;
     padding: 0;
 }
@@ -30,8 +30,9 @@
 .problem-brief {
     width: calc(33.33% - .5em);
     float: right;
-    height: 300px;
+    height: 220px;
     padding-top: 30px;
+    padding-bottom: 30px;
 }
 
 .problem-brief .info-line {
@@ -58,11 +59,7 @@
 
 .problem-part p {
     margin-bottom: 1em;
-    font-size: 20px;
-}
-
-.io-container {
-    display: flex;
+    font-size: 18px;
 }
 
 .io-item {
@@ -80,4 +77,28 @@
     margin-bottom: 1em;
     font-size: 15px;
     font-family: Consolas, monospace;
+}
+
+.problem-status-box {
+    float: right;
+    bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.problem-status-item {
+    padding-left: 10px;
+    padding-right: 10px;
+    border-right: 1px solid #ddd;
+}
+
+.problem-status-item:last-child {
+    border-right: none;
+}
+
+.problem-status-item p {
+    text-align: center;
+    font-size: 15px;
+    font-weight: bold;
+    margin: 0;
 }
