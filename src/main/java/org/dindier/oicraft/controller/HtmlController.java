@@ -3,20 +3,20 @@ package org.dindier.oicraft.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.*;
 
 @Controller
 public class HtmlController {
     @GetMapping("/")
-    public String hello(Model model) {
+    public String index(Model model) {
         model.addAttribute("user", "Dindier");
         return "index";
     }
 
-    @GetMapping("/problem")
-    public String problem(Model model) {
-
+    @GetMapping("/problem/{id}")
+    public String problem(@PathVariable int id, Model model) {
         // Just a temp test page
 
         class Sample {
@@ -54,9 +54,15 @@ public class HtmlController {
         samples.add(new Sample("3 4", "7"));
 
         Problem problem = new Problem(1, "a+b 问题", "把两个数相加",
-                "两个整数 $a$, $b$，以空格隔开", "一个整数 $n = a + b$" , "easy", samples);
+                "两个整数 $a$, $b$，以空格隔开", "一个整数 $n = a + b$", "easy", samples);
         model.addAttribute("problem", problem);
 
         return "problem";
+    }
+
+
+    @GetMapping("/problems")
+    public String problems(Model model) {
+        return "problems";
     }
 }

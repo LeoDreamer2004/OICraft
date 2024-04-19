@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>题目列表</title>
+    <link th:replace="~{base :: bootstrap}"/>
+    <link th:replace="~{base :: baseStyle}"/>
+</head>
+<body>
+<div class="header">
+    <p style="font-size: 15px; color: lightgray">
+        <a th:href="@{/}" style="color: lightgray">首页</a>
+        <span>></span>
+        <span style="color: lightgray">题目清单</span>
+    </p>
+    <h2 style="padding-bottom: 10px;font-weight: bolder">题目列表</h2>
+</div>
+<main role="main" class="container">
+    <div class="card my-card p-3">
+        <table class="table">
+            <tr>
+                <th>状态</th>
+                <th>题号</th>
+                <th>题目名称</th>
+                <th>提交</th>
+                <th>难度</th>
+                <th>通过率</th>
+            </tr>
+            <tr>
+                <td>-</td>
+                <td>1000</td>
+                <td>a+b问题</td>
+                <td>0</td>
+                <td>简单</td>
+                <td>0%</td>
+            </tr>
+        </table>
+    </div>
+</main>
+
+</body>
+</html>
