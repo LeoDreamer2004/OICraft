@@ -1,7 +1,6 @@
 package org.dindier.oicraft.dao;
 
 import org.dindier.oicraft.model.Submission;
-import org.springframework.stereotype.Repository;
 
 public interface SubmissionDao {
 

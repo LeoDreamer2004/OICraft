@@ -51,6 +51,10 @@
     <link rel="stylesheet" href="/plugins/grammar-highlight/docco.css" th:fragment="highlightStyle">
     <script src="/plugins/grammar-highlight/highlight.min.js" th:fragment="highlightJS"></script>
     <script th:fragment="highlightAll">hljs.highlightAll();</script>
+
+    <!-- iconfont -->
+    <link rel="stylesheet" href="//at.alicdn.com/t/c/font_4514574_tm17t6a8za.css" th:fragment="iconfont">
+
 </head>
 <body>
 
@@ -70,7 +74,7 @@
                     <a class="nav-link">注册</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" >登录</a>
+                    <a class="nav-link" th:href="@{/login}">登录</a>
                 </li>
             </ul>
         </div>

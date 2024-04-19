@@ -1,5 +1,6 @@
 package org.dindier.oicraft.controller;
 
+import org.dindier.oicraft.dao.CheckpointDao;
 import org.dindier.oicraft.dao.ProblemDao;
 import org.dindier.oicraft.dao.SubmissionDao;
 import org.dindier.oicraft.model.Submission;
@@ -20,6 +21,7 @@ public class HtmlController {
     private ProblemDao problemDao;
     private ProblemService problemService;
     private SubmissionDao submissionDao;
+    private CheckpointDao checkpointDao;
 
     @Autowired
     public void setProblemDao(ProblemDao problemDao) {
@@ -36,10 +38,20 @@ public class HtmlController {
         this.submissionDao = submissionDao;
     }
 
+    @Autowired
+    public void setCheckpointDao(CheckpointDao checkpointDao) {
+        this.checkpointDao = checkpointDao;
+    }
+
     @GetMapping("/")
     public String index(Model model) {
         model.addAttribute("user", "Dindier");
         return "index";
+    }
+
+    @GetMapping("/login")
+    public String login() {
+        return "login";
     }
 
     @GetMapping("/problems")
@@ -82,6 +94,7 @@ public class HtmlController {
 
         model.addAttribute("submission", submission);
         model.addAttribute("problem", problemDao.getProblemById(submission.getProblemId()));
+        model.addAttribute("checkpoints", checkpointDao.getCheckpointsBySubmissionId(id));
         return "submission";
     }
 }

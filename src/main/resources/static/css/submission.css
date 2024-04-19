@@ -11,22 +11,23 @@ h4 {
 .checkpoint-box {
     position: relative;
     margin: 5px;
+    padding: 5px;
     color: white;
     text-align: center;
     width: 100px;
     height: 100px;
-    border-radius: 10px;
-    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
 }
 
 .msg-box {
     z-index: 5;
     position: absolute;
-    background-color: #234356;
+    background-color: #222222;
     font-family: consolas, monospace;
     top: 5px;
     left: 50%;
     transform: translate(-50%, 0);
+    padding: 2px;
     font-size: 12px;
     white-space: nowrap;
     box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
@@ -34,8 +35,15 @@ h4 {
     transition: opacity 0.3s ease-out;
 }
 
+.checkpoint-num {
+    position: absolute;
+    top: 2px;
+    font-size: 13px;
+}
+
 .checkpoint-box:hover .msg-box {
-    opacity: 1;
+    padding: 2px;
+    opacity: 0.8;
 }
 
 .p-box {
@@ -43,11 +51,11 @@ h4 {
 }
 
 .ac-box {
-    background-color: #22aa22;
+    background-color: rgb(82, 196, 26);
 }
 
 .wa-box {
-    background-color: #aa2222;
+    background-color: rgb(231, 76, 60);
 }
 
 .ce-box {
@@ -55,24 +63,50 @@ h4 {
 }
 
 .re-box {
-    background-color: #aaaa22;
+    background-color: rgb(157, 61, 207);
 }
 
 .tle-box {
-    background-color: #222233;
+    background-color: rgb(5, 34, 66);
 }
 
 .mle-box {
-    background-color: #222233;
+    background-color: rgb(5, 34, 66);
 }
 
 .text-status {
     position: relative;
-    top: 20%;
-    font-size: 28px;
+    top: 23%;
+    font-size: 23px;
 }
 
 .text-cost {
     position: relative;
-    font-size: 15px;
+    top: 10%;
+    font-size: 12px;
+}
+
+.result-box {
+    border-left: 5px solid;
+    padding: 15px 20px;
+    font-size: 20px;
+    margin-bottom: 50px;
+}
+
+.passed-box {
+    background-color: rgba(82, 196, 26, 0.2);
+    border-color: rgba(82, 196, 26, 0.8);
+    color: rgb(41, 89, 17);
+}
+
+.failed-box {
+    background-color: rgba(231, 76, 60, 0.2);
+    border-color: rgba(231, 76, 60, 0.8);
+    color: rgb(89, 20, 17);
+}
+
+.pending-box {
+    background-color: rgba(188, 188, 188, 0.2);
+    border-color: rgba(188, 188, 188, 0.8);
+    color: rgb(80, 80, 80);
 }
