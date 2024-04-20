@@ -2,15 +2,13 @@ package org.dindier.oicraft.dao;
 
 import org.dindier.oicraft.model.Submission;
 
+import java.util.List;
+
 public interface SubmissionDao {
 
-    /**
-     * Create the submission
-     */
     void createSubmission(Submission submission);
 
-    /**
-     * Get the submission by id
-     */
     Submission getSubmissionById(int id);
+
+    List<Submission> getSubmissionsByProblemId(int problemId);
 }

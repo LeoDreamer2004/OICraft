@@ -10,6 +10,22 @@
     padding: 20px 150px 20px 150px;
 }
 
+.hide {
+    display: none;
+}
+
+.colored-background {
+    min-height: 100vh;
+    background: linear-gradient(120deg, #66acdd, #bf87d8);
+    display: flex;
+}
+
+.full-screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
 .my-card {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border: 2px solid #eee;
@@ -27,3 +43,4 @@
     margin: 0;
     padding: 0;
 }
+

@@ -4,6 +4,8 @@ import org.dindier.oicraft.dao.SubmissionDao;
 import org.dindier.oicraft.model.Submission;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository("submissionDao")
 public class JdbcSubmissionDao implements SubmissionDao {
     @Override
@@ -20,5 +22,12 @@ public class JdbcSubmissionDao implements SubmissionDao {
         Submission submission = new Submission(1, "a,b=map(input().split())\nprint(a+b)", "python");
         submission.setStatus("failed");
         return submission;
+    }
+
+    @Override
+    public List<Submission> getSubmissionsByProblemId(int problemId) {
+        return List.of(
+                getSubmissionById(1)
+        );
     }
 }

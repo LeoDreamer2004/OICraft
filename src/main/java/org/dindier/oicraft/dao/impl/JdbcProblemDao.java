@@ -32,7 +32,7 @@ public class JdbcProblemDao implements ProblemDao {
     }
 
     @Override
-    public List<Problem> getProblems() {
+    public List<Problem> getProblemList() {
         // TODO: Implement this method
 
 

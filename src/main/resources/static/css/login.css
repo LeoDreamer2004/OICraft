@@ -1,17 +1,17 @@
-body {
+.card-container {
     font-family: sans-serif;
-    min-height: 100vh;
-    background: linear-gradient(120deg, #3498db, #8e44ad);
     display: flex;
     align-items: center;
     justify-content: center;
+    margin: 8rem;
 }
 
 .login-card {
+    padding: 2rem;
     width: 450px;
     background: rgba(255, 255, 255, 0.4);
     border-radius: 10px;
-    height: 410px;
+    height: 440px;
     position: relative;
     backdrop-filter: blur(50px);
 }
@@ -31,10 +31,6 @@ body {
     text-decoration: underline;
 }
 
-
-.login-title {
-    margin-bottom: 2rem;
-}
 
 .login-title h1 {
     font-size: 2rem;
@@ -56,9 +52,9 @@ body {
     border: none;
     outline: none;
     background: rgba(255, 255, 255, 0.1);
+    width: 80%;
     padding: 1rem 3rem;
     margin-left: 2rem;
-    width: 60%;
     border-radius: 50px;
     font-size: 1rem;
 }
@@ -73,7 +69,6 @@ body {
     color: white;
     width: 60%;
     padding: 1rem;
-    margin: 1rem;
     border-radius: 50px;
     align-self: center;
     font-size: 1rem;

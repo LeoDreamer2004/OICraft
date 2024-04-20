@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <title>OICraft</title>
     <link th:replace="~{base :: bootstrap}"/>
+    <link th:replace="~{base :: baseStyle}"/>
     <script th:replace="~{base :: mathJaxScript}"></script>
     <script th:replace="~{base :: mathJaxConfig}"></script>
-
     <style>
         .welcome {
             animation: flowUp 0.5s ease-in-out 1;
@@ -28,30 +28,64 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            color: #aaa;
+            color: #777;
             padding: 10px 0;
             text-align: center;
         }
     </style>
 
 </head>
-<body>
+<body class="colored-background">
+<div class="full-screen">
 
-<div th:insert="~{base :: nav}"></div>
 
-<main role="main" class="container">
-
-    <div class="jumbotron welcome">
-        <h1 class="display-4">OICraft</h1>
-        <p class="lead">
-            一个更简单的代码评测网站。 <br />
-            欢迎使用，以提升您的编程能力。
-        </p>
+    <div th:fragment="nav">
+        <nav class="navbar navbar-expand-md navbar-light" style="background-color: rgba(255,255,255,0.5); border:none;">
+            <a class="navbar-brand" th:href="@{/}">OICraft</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                    aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span
+                    class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a th:href="@{/}" class="nav-link">首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a th:href="@{/problems}" class="nav-link">题目清单</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto" th:if="${user} eq null">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/register}">注册</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/login}">登录</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto" th:unless="${user} eq null">
+                    <li class="nav-item" style="color: gray">
+                        <span>欢迎 &nbsp;</span>
+                        <span th:text="${user.name}"></span>
+                        <span>！</span>
+                    </li>
+                </ul>
+            </div>
+        </nav>
     </div>
+    <main role="main" class="container pt-4">
 
-    <footer class="footer">
-        <p>&copy; 2024 OICraft. All rights reserved.</p>
-    </footer>
-</main>
+        <div class="jumbotron welcome" style="background-color: rgba(200, 230, 230, 0.5)">
+            <h1 class="display-4">OICraft</h1>
+            <p class="lead">
+                一个更简单的代码评测网站。 <br/>
+                欢迎使用，以提升您的编程能力。
+            </p>
+        </div>
+
+        <footer class="footer">
+            <p>&copy; 2024 OICraft. All rights reserved.</p>
+        </footer>
+    </main>
+</div>
 </body>
 </html>

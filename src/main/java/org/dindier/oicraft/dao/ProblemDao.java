@@ -11,23 +11,11 @@ public interface ProblemDao {
      */
     void createProblem(Problem problem);
 
-    /**
-     * Get the problem by id
-     */
     Problem getProblemById(int id);
 
-    /**
-     * Get the list of problems
-     */
-    List<Problem> getProblems();
+    List<Problem> getProblemList();
 
-    /**
-     * Get the samples of the problem by id
-     */
     List<IOPair> getSamplesById(int id);
 
-    /**
-     * Get the tests of the problem by id
-     */
     List<IOPair> getTestsById(int id);
 }

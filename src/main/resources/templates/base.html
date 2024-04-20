@@ -4,11 +4,12 @@
     <title>OICraft</title>
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="/plugins/bootstrap-4.6.2-dist/css/bootstrap.min.css" th:fragment="bootstrap" />
-    <link rel="stylesheet" href="/css/base.css" th:fragment="baseStyle" />
+    <link rel="stylesheet" href="/plugins/bootstrap-4.6.2-dist/css/bootstrap.min.css" th:fragment="bootstrap"/>
+    <link rel="stylesheet" href="/css/base.css" th:fragment="baseStyle"/>
 
     <!-- MathJax -->
-    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" th:fragment="mathJaxScript"></script>
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+            th:fragment="mathJaxScript"></script>
     <script type="text/x-mathjax-config" th:fragment="mathJaxConfig">
         MathJax.Hub.Config({
           tex2jax: {
@@ -59,27 +60,6 @@
 <body>
 
 <!-- header -->
-<div th:fragment="nav">
-    <nav class="navbar navbar-expand-md navbar-light bg-light mb-4 border">
-        <a class="navbar-brand" href="#">OICraft</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    <a th:href="@{/problems}" class="nav-link">题目列表</a>
-                </li>
-            </ul>
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link">注册</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/login}">登录</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-</div>
 
 </body>
 </html>
