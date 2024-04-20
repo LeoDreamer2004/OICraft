@@ -3,32 +3,31 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>登录</title>
+    <title>注册</title>
     <link th:replace="~{base :: baseStyle}"/>
     <link th:replace="~{base :: bootstrap}"/>
     <link rel="stylesheet" href="/css/login.css">
 </head>
 
 <body class="colored-background">
-
 <div class="full-screen">
-    <div th:insert="~{index :: nav}"></div>
+    <div th:insert="~{base :: nav}"></div>
     <main role="main" class="card-container">
-        <div class="login-card" id="loginForm">
-            <form class="login-form" th:action="@{/login}" method="post">
+        <div class="login-card" id="registerForm">
+            <form class="login-form">
                 <div class="login-title">
-                    <h1>登录</h1>
-                    <p>登录以在OICraft练习</p>
+                    <h1>注册</h1>
+                    <p>注册一个新用户</p>
                 </div>
                 <div class="form-item">
-                    <input type="text" name="username" placeholder="用户名" required autofocus>
+                    <input type="text" placeholder="用户名" required autofocus>
                 </div>
                 <div class="form-item">
-                    <input type="password" name="password" placeholder="密码" required>
+                    <input type="password" placeholder="密码" required>
                 </div>
-                <button type="submit">登录</button>
+                <button type="submit">注册</button>
                 <div class="login-footer">
-                    还没有账户？<a th:href="@{/register}">点击注册</a>
+                    已有账户，<a th:href="@{/login}">点击登录</a>
                 </div>
             </form>
         </div>

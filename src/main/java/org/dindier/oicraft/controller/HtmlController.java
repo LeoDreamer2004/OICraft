@@ -1,10 +1,12 @@
 package org.dindier.oicraft.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.dindier.oicraft.dao.CheckpointDao;
 import org.dindier.oicraft.dao.ProblemDao;
 import org.dindier.oicraft.dao.SubmissionDao;
 import org.dindier.oicraft.model.Submission;
 import org.dindier.oicraft.service.ProblemService;
+import org.dindier.oicraft.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +24,8 @@ public class HtmlController {
     private ProblemService problemService;
     private SubmissionDao submissionDao;
     private CheckpointDao checkpointDao;
+    private HttpServletRequest request;
+    private UserServiceImpl userService;
 
     @Autowired
     public void setProblemDao(ProblemDao problemDao) {
@@ -43,9 +47,20 @@ public class HtmlController {
         this.checkpointDao = checkpointDao;
     }
 
+    @Autowired
+    public void setRequest(HttpServletRequest request) {
+        this.request = request;
+    }
+
+    @Autowired
+    public void setUserService(UserServiceImpl userService) {
+        this.userService = userService;
+    }
+
     @GetMapping("/")
     public String index(Model model) {
-        model.addAttribute("user", "Dindier");
+        model.addAttribute("user", userService.getUserByRequest(request));
+        System.out.println(request.getRemoteUser());
         return "index";
     }
 
@@ -54,9 +69,15 @@ public class HtmlController {
         return "login";
     }
 
+    @GetMapping("/register")
+    public String register() {
+        return "register";
+    }
+
+
     @GetMapping("/problems")
     public String problems(Model model) {
-        model.addAttribute("problems", problemDao.getProblems());
+        model.addAttribute("problems", problemDao.getProblemList());
         return "problems";
     }
 
@@ -68,9 +89,16 @@ public class HtmlController {
     }
 
     @GetMapping("/problem/{id}/submit")
-    public String submit(@PathVariable int id, Model model) {
+    public String submitCode(@PathVariable int id, Model model) {
         model.addAttribute("problem", problemDao.getProblemById(id));
-        return "submit";
+        return "submitCode";
+    }
+
+    @GetMapping("/problem/{id}/history")
+    public String history(@PathVariable int id, Model model) {
+        model.addAttribute("problem", problemDao.getProblemById(id));
+        model.addAttribute("submissions", submissionDao.getSubmissionsByProblemId(id));
+        return "submitHistory";
     }
 
     @PostMapping("/problem/{id}/result")
@@ -78,7 +106,6 @@ public class HtmlController {
                                @RequestParam("code") String code,
                                @RequestParam("language") String language,
                                Model model) {
-
         System.out.println("Language: " + language + "\nGet the code: " + code);
         model.addAttribute("problem", problemDao.getProblemById(id));
 
@@ -97,5 +124,7 @@ public class HtmlController {
         model.addAttribute("checkpoints", checkpointDao.getCheckpointsBySubmissionId(id));
         return "submission";
     }
+
+
 }
 
