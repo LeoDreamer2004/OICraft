@@ -21,8 +21,10 @@
     </p>
     <h2 th:text="${problem.title}"
         style="padding-bottom: 10px;font-weight: bolder"></h2>
-    <a class="btn btn-primary mb-3" th:href="@{/problem/{id}/submit(id=${problem.id})}">提交代码</a>
-    <a class="btn btn-secondary mb-3" th:href="@{/problems}">返回题单</a>
+    <!--/*@thymesVar id="user" type="org.dindier.oicraft.model.User"*/-->
+    <a th:unless="${user eq null}" class="btn btn-primary mb-3" th:href="@{/problem/{id}/submit(id=${problem.id})}">提交代码</a>
+    <a th:if="${user eq null}" class="btn btn-primary mb-3" th:href="@{/login}">登录后提交</a>
+    <a class="btn btn-secondary mb-3" th:href="@{/problem}">返回题单</a>
 
     <div class="problem-status-box">
         <div class="problem-status-item">
@@ -94,7 +96,7 @@
                 <p>0</p>
             </div>
 
-            <a class="iconfont icon-toupiao" href="#" style="padding-left: 20px; text-decoration: none"> 提交记录</a>
+            <a class="iconfont icon-toupiao" th:href="@{/problem/{id}/history(id=${problem.id})}" style="padding-left: 20px; text-decoration: none"> 提交记录</a>
         </div>
     </div>
 </main>

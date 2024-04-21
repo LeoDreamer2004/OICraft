@@ -43,6 +43,8 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/submission/**").authenticated()
+                        .requestMatchers("/problem/*/submit").authenticated()
                         .anyRequest().permitAll()
                 ) // Permit all requests to any endpoint temporarily
                 .formLogin(formLogin -> formLogin

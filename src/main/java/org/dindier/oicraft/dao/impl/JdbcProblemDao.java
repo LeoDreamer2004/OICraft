@@ -11,8 +11,12 @@ import java.util.List;
 
 @Repository("problemDao")
 public class JdbcProblemDao implements ProblemDao {
-    @Autowired
     private ProblemRepository problemRepository;
+
+    @Autowired
+    public void setProblemRepository(ProblemRepository problemRepository) {
+        this.problemRepository = problemRepository;
+    }
 
     @Override
     public void createProblem(Problem problem) {
