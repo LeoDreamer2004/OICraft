@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 
@@ -57,28 +58,32 @@ public class HtmlController {
         this.userService = userService;
     }
 
+
     @GetMapping("/")
-    public String index(Model model) {
-        model.addAttribute("user", userService.getUserByRequest(request));
+    public ModelAndView index() {
         System.out.println(request.getRemoteUser());
-        return "index";
+        return new ModelAndView("index");
     }
 
     @GetMapping("/login")
-    public String login() {
-        return "login";
+    public ModelAndView login() {
+        return new ModelAndView("login");
     }
 
     @GetMapping("/register")
-    public String register() {
-        return "register";
+    public ModelAndView register() {
+        return new ModelAndView("register");
     }
 
+    @GetMapping("/logout")
+    public ModelAndView logout() {
+        return new ModelAndView("logout");
+    }
 
     @GetMapping("/problems")
-    public String problems(Model model) {
-        model.addAttribute("problems", problemDao.getProblemList());
-        return "problems";
+    public ModelAndView problems() {
+        return new ModelAndView("problems")
+                .addObject("problems", problemDao.getProblemList());
     }
 
     @GetMapping("/problem/{id}")

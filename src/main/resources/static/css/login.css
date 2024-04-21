@@ -13,7 +13,15 @@
     border-radius: 10px;
     height: 440px;
     position: relative;
-    backdrop-filter: blur(50px);
+}
+
+.logout-card {
+    padding: 3rem;
+    width: 450px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 10px;
+    height: 200px;
+    position: relative;
 }
 
 .login-title,
@@ -48,6 +56,24 @@
     position: relative;
 }
 
+.login-form .form-item-other {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+.login-card .checkbox {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.form-item-other label {
+    margin-bottom: 0;
+    width: 300%;
+}
+
 .login-form input {
     border: none;
     outline: none;
@@ -63,7 +89,9 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.login-card button {
+.login-card button,
+.logout-card button
+{
     background-color: rgb(53, 123, 177);
     border: none;
     color: white;
@@ -74,7 +102,9 @@
     font-size: 1rem;
 }
 
-.login-card button:hover {
+.login-card button:hover,
+.logout-card button:hover
+{
     background-color: rgba(53, 123, 177, 0.8);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     cursor: pointer;

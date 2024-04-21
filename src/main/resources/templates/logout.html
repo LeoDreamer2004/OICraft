@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>登出</title>
+    <link th:replace="~{base :: baseStyle}"/>
+    <link th:replace="~{base :: bootstrap}"/>
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+
+<body class="colored-background">
+
+<div class="full-screen">
+    <div th:insert="~{index :: nav}"></div>
+    <main role="main" class="card-container">
+        <div class="logout-card" id="logoutForm">
+            <form class="login-form" th:action="@{/logout}" method="post">
+                <div class="login-title">
+                    <h3>确定要登出吗？</h3>
+                </div>
+                <button type="submit">登出</button>
+            </form>
+        </div>
+    </main>
+</div>
+</body>
+
+</html>

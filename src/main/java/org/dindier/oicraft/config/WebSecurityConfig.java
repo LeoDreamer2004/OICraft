@@ -6,6 +6,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.*;
+import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -50,7 +51,14 @@ public class WebSecurityConfig {
                         .loginProcessingUrl("/login")
                         .permitAll()
                 ) // redirect to the login page
-                .rememberMe(withDefaults())  // use cookie to remember the user
+                .logout(logout -> logout
+                        .deleteCookies("remove")
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                )  // logout, delete cookies
+                .rememberMe(rememberMe ->rememberMe
+                        .rememberMeParameter("rememberMe")
+                )  // use cookie to remember the user
         ;
         return http.build();
     }
