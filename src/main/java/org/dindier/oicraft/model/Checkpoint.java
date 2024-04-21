@@ -3,7 +3,12 @@ package org.dindier.oicraft.model;
 public class Checkpoint {
     private int submissionId;
     private int ioPairId;
-    private String status; // P, AC, WA, TLE, MLE, RE, CE
+
+    public enum Status {
+        P, AC, WA, TLE, MLE, RE, CE
+    }
+    private Status status ;
+
     private int usedTime;
     private int usedMemory;
     private String info;
@@ -30,10 +35,10 @@ public class Checkpoint {
     }
 
     public String getStatus() {
-        return status;
+        return status.toString();
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 

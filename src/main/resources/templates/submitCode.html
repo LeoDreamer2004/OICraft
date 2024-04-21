@@ -14,8 +14,8 @@
         <span>></span>
         <a th:href="@{/problems}" style="color: lightgray">题目清单</a>
         <span>></span>
-        <span th:href="@{/problem/{id}(id=${problem.id})}" th:text="${problem.title}"
-              style="color: lightgray"></span>
+        <a th:href="@{/problem/{id}(id=${problem.id})}" th:text="${problem.title}"
+           style="color: lightgray"></a>
         <span>></span>
         <span style="color: lightgray">提交代码</span>
     </p>

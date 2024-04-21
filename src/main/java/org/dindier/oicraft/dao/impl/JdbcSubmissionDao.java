@@ -20,7 +20,7 @@ public class JdbcSubmissionDao implements SubmissionDao {
 
         // A temporary implementation for testing
         Submission submission = new Submission(1, "a,b=map(input().split())\nprint(a+b)", "python");
-        submission.setStatus("failed");
+        submission.setStatus(Submission.Status.PASSED);
         return submission;
     }
 

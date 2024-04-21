@@ -35,7 +35,7 @@
         <span class="iconfont icon-ziyuan" style="font-size: 20px"></span>
         <span> 您未通过此题！</span>
     </div>
-    <div th:if="${submission.status eq 'pending'}" class="result-box pending-box">
+    <div th:if="${submission.status eq 'waiting'}" class="result-box pending-box">
         <span class="iconfont icon-shenglvehao" style="font-size: 20px"></span>
         <span> 正在测试中...请稍后刷新重试。</span>
     </div>
