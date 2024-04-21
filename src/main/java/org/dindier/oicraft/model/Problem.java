@@ -1,17 +1,25 @@
 package org.dindier.oicraft.model;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Problem {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private String title;
     private String description;
     private String inputFormat;
     private String outputFormat;
+
+    @Enumerated(EnumType.STRING)
     private Difficulty difficulty;
 
     public enum Difficulty {
         EASY("easy"), MEDIUM("medium"), HARD("hard");
 
         private final String displayName;
+
         Difficulty(String displayName) {
             this.displayName = displayName;
         }
@@ -25,6 +33,9 @@ public class Problem {
     private int memoryLimit; // KB
     private int submit = 0;
     private int passed = 0;
+
+    public Problem() {
+    }
 
     public Problem(String title, String description, String inputFormat, String outputFormat,
                    Difficulty difficulty, int timeLimit, int memoryLimit) {

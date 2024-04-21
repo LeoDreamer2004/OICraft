@@ -19,7 +19,8 @@ public class JdbcSubmissionDao implements SubmissionDao {
 
 
         // A temporary implementation for testing
-        Submission submission = new Submission(1, "a,b=map(input().split())\nprint(a+b)", "python");
+        Submission submission = new Submission(1,
+                "a, b = map(input().split())\nprint(a + b)", Submission.Language.PYTHON);
         submission.setStatus(Submission.Status.PASSED);
         return submission;
     }

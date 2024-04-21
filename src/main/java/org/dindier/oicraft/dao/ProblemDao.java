@@ -2,6 +2,7 @@ package org.dindier.oicraft.dao;
 
 import org.dindier.oicraft.model.IOPair;
 import org.dindier.oicraft.model.Problem;
+
 import java.util.List;
 
 public interface ProblemDao {
@@ -13,7 +14,7 @@ public interface ProblemDao {
 
     Problem getProblemById(int id);
 
-    List<Problem> getProblemList();
+    Iterable<Problem> getProblemList();
 
     List<IOPair> getSamplesById(int id);
 

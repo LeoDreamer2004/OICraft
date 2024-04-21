@@ -55,7 +55,7 @@ public class WebSecurityConfig {
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
                 )  // logout, delete cookies
-                .rememberMe(rememberMe ->rememberMe
+                .rememberMe(rememberMe -> rememberMe
                         .rememberMeParameter("rememberMe")
                 )  // use cookie to remember the user
         ;

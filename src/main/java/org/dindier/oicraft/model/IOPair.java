@@ -8,12 +8,15 @@ public class IOPair {
     private int id;
     private String input;
     private String output;
-    private int type;
-    public static final int SAMPLE = 0;
-    public static final int TEST = 1;
+    private Type type;
+
+    public enum Type {
+        SAMPLE, TEST
+    }
+
     private int score;
 
-    public IOPair(int problemId, String input, String output, int type, int score) {
+    public IOPair(int problemId, String input, String output, Type type, int score) {
         this.problemId = problemId;
         this.input = input;
         this.output = output;
@@ -53,11 +56,11 @@ public class IOPair {
         this.output = output;
     }
 
-    public int getType() {
+    public Type getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(Type type) {
         this.type = type;
     }
 
