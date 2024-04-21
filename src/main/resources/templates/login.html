@@ -26,10 +26,16 @@
                 <div class="form-item">
                     <input type="password" name="password" placeholder="密码" required>
                 </div>
-                <button type="submit">登录</button>
-                <div class="login-footer">
-                    还没有账户？<a th:href="@{/register}">点击注册</a>
+                <div class="form-item-other">
+                    <div class="checkbox">
+                        <input type="checkbox" id="rememberMe" name="rememberMe">
+                        <label for="rememberMe">记住我</label>
+                    </div>
+                    <div class="login-footer ml-auto">
+                        还没有账户？<a th:href="@{/register}">点击注册</a>
+                    </div>
                 </div>
+                <button type="submit">登录</button>
             </form>
         </div>
     </main>
