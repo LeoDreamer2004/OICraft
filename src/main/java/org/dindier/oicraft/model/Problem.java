@@ -1,25 +1,33 @@
 package org.dindier.oicraft.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Problem {
     private int id;
     private String title;
     private String description;
     private String inputFormat;
     private String outputFormat;
-    private String difficulty;
-    public static final String EASY = "easy";
-    public static final String MEDIUM = "medium";
-    public static final String HARD = "hard";
-    private int timeLimit; // time limit in milliseconds
-    private int memoryLimit; // memory limit in kb
+    private Difficulty difficulty;
+
+    public enum Difficulty {
+        EASY("easy"), MEDIUM("medium"), HARD("hard");
+
+        private final String displayName;
+        Difficulty(String displayName) {
+            this.displayName = displayName;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+    }
+
+    private int timeLimit; // ms
+    private int memoryLimit; // KB
     private int submit = 0;
     private int passed = 0;
 
     public Problem(String title, String description, String inputFormat, String outputFormat,
-                   String difficulty, int timeLimit, int memoryLimit) {
+                   Difficulty difficulty, int timeLimit, int memoryLimit) {
         this.title = title;
         this.description = description;
         this.inputFormat = inputFormat;
@@ -70,10 +78,10 @@ public class Problem {
     }
 
     public String getDifficulty() {
-        return difficulty;
+        return difficulty.displayName;
     }
 
-    public void setDifficulty(String difficulty) {
+    public void setDifficulty(Difficulty difficulty) {
         this.difficulty = difficulty;
     }
 
@@ -107,5 +115,21 @@ public class Problem {
 
     public void setPassed(int passed) {
         this.passed = passed;
+    }
+
+    public String getTimeLimitString() {
+        if (timeLimit < 1000) {
+            return timeLimit + "ms";
+        } else {
+            return String.format("%.2fs", timeLimit / 1000.0);
+        }
+    }
+
+    public String getMemoryLimitString() {
+        if (memoryLimit < 1024) {
+            return memoryLimit + "KB";
+        } else {
+            return String.format("%.2fMB", memoryLimit / 1024.0);
+        }
     }
 }

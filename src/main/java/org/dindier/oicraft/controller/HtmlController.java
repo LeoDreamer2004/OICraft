@@ -6,7 +6,7 @@ import org.dindier.oicraft.dao.ProblemDao;
 import org.dindier.oicraft.dao.SubmissionDao;
 import org.dindier.oicraft.model.Submission;
 import org.dindier.oicraft.service.ProblemService;
-import org.dindier.oicraft.service.impl.UserServiceImpl;
+import org.dindier.oicraft.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,7 +26,7 @@ public class HtmlController {
     private SubmissionDao submissionDao;
     private CheckpointDao checkpointDao;
     private HttpServletRequest request;
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @Autowired
     public void setProblemDao(ProblemDao problemDao) {
@@ -54,7 +54,7 @@ public class HtmlController {
     }
 
     @Autowired
-    public void setUserService(UserServiceImpl userService) {
+    public void setUserService(UserService userService) {
         this.userService = userService;
     }
 
@@ -87,23 +87,23 @@ public class HtmlController {
     }
 
     @GetMapping("/problem/{id}")
-    public String problem(@PathVariable int id, Model model) {
-        model.addAttribute("problem", problemDao.getProblemById(id));
-        model.addAttribute("samples", problemDao.getSamplesById(1));
-        return "problem";
+    public ModelAndView problem(@PathVariable int id) {
+        return new ModelAndView("problem")
+                .addObject("problem", problemDao.getProblemById(id))
+                .addObject("samples", problemDao.getSamplesById(id));
     }
 
     @GetMapping("/problem/{id}/submit")
-    public String submitCode(@PathVariable int id, Model model) {
-        model.addAttribute("problem", problemDao.getProblemById(id));
-        return "submitCode";
+    public ModelAndView submitCode(@PathVariable int id) {
+        return new ModelAndView("submitCode")
+                .addObject("problem", problemDao.getProblemById(id));
     }
 
     @GetMapping("/problem/{id}/history")
-    public String history(@PathVariable int id, Model model) {
-        model.addAttribute("problem", problemDao.getProblemById(id));
-        model.addAttribute("submissions", submissionDao.getSubmissionsByProblemId(id));
-        return "submitHistory";
+    public ModelAndView history(@PathVariable int id) {
+        return new ModelAndView("submitHistory")
+                .addObject("problem", problemDao.getProblemById(id))
+                .addObject("submissions", submissionDao.getSubmissionsByProblemId(id));
     }
 
     @PostMapping("/problem/{id}/result")
@@ -121,13 +121,12 @@ public class HtmlController {
     }
 
     @GetMapping("/submission/{id}")
-    public String submission(@PathVariable int id, Model model) {
+    public ModelAndView submission(@PathVariable int id) {
         Submission submission = submissionDao.getSubmissionById(id);
-
-        model.addAttribute("submission", submission);
-        model.addAttribute("problem", problemDao.getProblemById(submission.getProblemId()));
-        model.addAttribute("checkpoints", checkpointDao.getCheckpointsBySubmissionId(id));
-        return "submission";
+        return new ModelAndView("submission")
+                .addObject("submission", submission)
+                .addObject("problem", problemDao.getProblemById(submission.getProblemId()))
+                .addObject("checkpoints", checkpointDao.getCheckpointsBySubmissionId(id));
     }
 
 

@@ -65,11 +65,11 @@
                 </ul>
                 <ul class="navbar-nav ml-auto" th:unless="${user} eq null">
                     <li class="nav-item">
-                        <span class="navbar-text" style="text-decoration: none; color:lightgray; ">欢迎 &nbsp;</span>
+                        <span class="navbar-text" style="text-decoration: none; color:gray; ">欢迎 &nbsp;</span>
                     </li>
                     <li class="nav-item">
                         <span class="navbar-text pr-3" th:text="${user.name}"
-                              style="text-decoration: none; color:lightgray;"></span>
+                              style="text-decoration: none; color:gray;"></span>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/logout}">登出</a>

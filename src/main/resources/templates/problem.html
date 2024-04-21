@@ -35,11 +35,11 @@
         </div>
         <div class="problem-status-item">
             <p>时间限制</p>
-            <p>1.00s</p>
+            <p th:text="${problem.getTimeLimitString()}"></p>
         </div>
         <div class="problem-status-item">
             <p>内存限制</p>
-            <p>512.0MB</p>
+            <p th:text="${problem.getMemoryLimitString()}"></p>
         </div>
     </div>
 </div>

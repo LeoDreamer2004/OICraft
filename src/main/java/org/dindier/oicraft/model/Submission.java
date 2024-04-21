@@ -5,7 +5,21 @@ public class Submission {
     private int problemId;
     private String code;
     private String language;
-    private String status; // pending, passed, failed
+
+    public enum Status {
+        WAITING("waiting"), PASSED("passed"), FAILED("failed");
+
+        private final String displayName;
+        Status(String displayName) {
+            this.displayName = displayName;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+    }
+
+    private Status status;
     private int score;
 
     public Submission(int problemId, String code, String language) {
@@ -47,10 +61,10 @@ public class Submission {
     }
 
     public String getStatus() {
-        return status;
+        return status.getDisplayName();
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 

@@ -26,7 +26,9 @@ public class JdbcProblemDao implements ProblemDao {
 
         // A temporary implementation for testing
         Problem problem = new Problem("a+b 问题", "把两个数相加",
-                "两个整数 $a$, $b$，以空格隔开", "一个整数 $n = a + b$", "easy", 0, 0);
+                "两个整数 $a$, $b$，以空格隔开",
+                "一个整数 $n = a + b$",
+                Problem.Difficulty.EASY, 1400, 256);
         problem.setId(1);
         return problem;
     }
