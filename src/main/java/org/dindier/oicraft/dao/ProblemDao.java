@@ -19,4 +19,6 @@ public interface ProblemDao {
     List<IOPair> getSamplesById(int id);
 
     List<IOPair> getTestsById(int id);
+
+
 }

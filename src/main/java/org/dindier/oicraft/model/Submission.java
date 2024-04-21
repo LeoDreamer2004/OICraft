@@ -5,6 +5,9 @@ public class Submission {
     private int problemId;
     private String code;
 
+    // TODO: Add a user
+    // private int userId;
+
     public enum Language {
         JAVA("java"), PYTHON("python"), C("c");
 

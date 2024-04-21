@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>提交记录</title>
+    <link th:replace="~{base :: bootstrap}"/>
+    <link th:replace="~{base :: baseStyle}"/>
+</head>
+<body>
+<div class="header">
+    <p style="font-size: 15px; color: lightgray">
+        <a th:href="@{/}" style="color: lightgray">首页</a>
+        <span>></span>
+        <a th:href="@{/problems}" style="color: lightgray">题目清单</a>
+        <span>></span>
+        <a th:href="@{/problem/{id}(id=${problem.id})}" th:text="${problem.title}"
+           style="color: lightgray"></a>
+        <span>></span>
+        <span style="color: lightgray">提交记录</span>
+    </p>
+    <h2 style="padding-bottom: 10px;font-weight: bolder">提交记录</h2>
+    <a class="btn btn-secondary mb-3" th:href="@{/problem/{id}(id=${problem.id})}">返回题目</a>
+</div>
+<main role="main" class="container">
+    <h3 th:text="${problem.title}"
+        style="margin-bottom: 2rem; padding: 1rem; border-bottom: gray 1px solid"></h3>
+    <div class="card my-card p-3">
+        <table class="table">
+            <tr>
+                <th></th>
+                <th>状态</th>
+                <th>提交者</th>
+                <th>代码</th>
+            </tr>
+
+            <tr th:each="submission : ${submissions}">
+                <td th:text="${submission.id}"></td>
+                <td th:text="${submission.status}"></td>
+                <td th:text="${submission}">
+                <td>
+                    <a th:href="@{/submission/{id}(id=${submission.id})}">查看</a>
+                </td>
+        </table>
+    </div>
+</main>
+
+</body>
+</html>

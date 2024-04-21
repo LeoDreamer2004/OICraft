@@ -12,6 +12,9 @@ public class Problem {
     private String inputFormat;
     private String outputFormat;
 
+    // TODO: Add an author here
+    // private int authorId;
+
     @Enumerated(EnumType.STRING)
     private Difficulty difficulty;
 
