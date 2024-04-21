@@ -278,9 +278,23 @@ public class CodeChecker {
         return "Unknown Error";
     }
 
-    private void clearFiles() throws IOException {
+    private void clearFiles() {
         if (workingDirectory.exists()) {
-            deleteFolder(workingDirectory);
+            // FIXME
+            // delete the folder after 5 seconds because on Windows,
+            // if a process encounters runtime error, it may not exit immediately
+            // It's not a good idea, but I don't have a better solution
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    try {
+                        deleteFolder(workingDirectory);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }, 5000);
         }
     }
 

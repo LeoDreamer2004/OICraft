@@ -89,4 +89,15 @@ public class CodeCheckerTest {
         System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedTime() + "ms/" + codeChecker.getUsedMemory() + "KB");
         assert codeChecker.getStatus().equals("AC");
     }
+
+    @Test
+    void testJavaWrongAnswer() throws IOException, InterruptedException {
+        CodeChecker codeChecker = new CodeChecker();
+        String code = getCode(CodeChecker.class.getClassLoader().getResource("test_codes/wrong_answer.java"));
+        codeChecker.setIO(code, "Java", "1 2", "3", 7)
+                .setLimit(1000, 128 * 1024)
+                .test();
+        System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedMemory() + "ms/" + codeChecker.getUsedMemory() + "KB");
+        assert codeChecker.getStatus().equals("WA");
+    }
 }
