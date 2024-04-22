@@ -1,10 +1,19 @@
 use homework;
 
-drop table if exists User;
 drop table if exists CheckPoint;
 drop table if exists Submission;
 drop table if exists IOPair;
 drop table if exists Problem;
+drop table if exists User;
+
+create table if not exists User
+(
+    id       int primary key auto_increment,
+    username varchar(255)                                            not null,
+    password varchar(255)                                            not null,
+    role     enum ('ADMIN', 'USER')                                  not null,
+    grade    enum ('BEGINNER', 'INTERMEDIATE', 'ADVANCED', 'EXPERT') not null
+);
 
 create table if not exists Problem
 (
@@ -17,7 +26,9 @@ create table if not exists Problem
     time_limit    int                             not null,
     memory_limit  int                             not null,
     submit        int default 0,
-    passed        int default 0
+    passed        int default 0,
+    author_id     int                             not null,
+    foreign key (author_id) references User (id)
 );
 
 
@@ -31,6 +42,8 @@ create table if not exists IOPair
     foreign key (problem_id) references Problem (id)
 );
 
+
+
 create table if not exists Submission
 (
     id         int primary key auto_increment,
@@ -38,8 +51,10 @@ create table if not exists Submission
     language   enum ('C', 'CPP', 'JAVA', 'PYTHON')  not null,
     status     enum ('PASSED', 'FAILED', 'WAITING') not null,
     io_pair_id int                                  not null,
+    user_id    int                                  not null,
     score      int                                  not null,
-    foreign key (io_pair_id) references IOPair (id)
+    foreign key (io_pair_id) references IOPair (id),
+    foreign key (user_id) references User (id)
 );
 
 create table if not exists CheckPoint
@@ -50,19 +65,7 @@ create table if not exists CheckPoint
     used_time     int                                              not null,
     used_memory   int                                              not null,
     info          text                                             not null,
+    primary key (submission_id, io_pair_id),
     foreign key (io_pair_id) references IOPair (id),
     foreign key (submission_id) references Submission (id)
 );
-
-create table if not exists User
-(
-    id       int primary key auto_increment,
-    username varchar(255)                                            not null,
-    password varchar(255)                                            not null,
-    role     enum ('ADMIN', 'USER')                                  not null,
-    grade    enum ('BEGINNER', 'INTERMEDIATE', 'ADVANCED', 'EXPORT') not null
-);
-
-insert into Problem(title, description, input_format, output_format, difficulty, time_limit, memory_limit)
-values ('a + b 问题', '把两个数相加', '两个整数 $a$, $b$，以空格隔开',
-        '一个整数 $n = a + b$', 'EASY', 100, 256);

@@ -1,12 +1,19 @@
 package org.dindier.oicraft.model;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Submission {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private int problemId;
     private String code;
 
-    // TODO: Add a user
-    // private int userId;
+    private int userId;
+
+    protected Submission() {
+    }
 
     public enum Language {
         JAVA("java"), PYTHON("python"), C("c");
@@ -22,6 +29,7 @@ public class Submission {
         }
     }
 
+    @Enumerated(EnumType.STRING)
     private Language language;
 
     public enum Status {
@@ -38,6 +46,7 @@ public class Submission {
         }
     }
 
+    @Enumerated(EnumType.STRING)
     private Status status;
     private int score;
 
@@ -93,5 +102,13 @@ public class Submission {
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }

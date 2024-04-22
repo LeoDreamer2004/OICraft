@@ -34,19 +34,20 @@ public class JdbcProblemDao implements ProblemDao {
     }
 
     @Override
-    public List<IOPair> getSamplesById(int id) {
-        // TODO: Implement this method
-
-
-        // A temporary implementation for testing
-        return List.of(
-                new IOPair(1, "1 2", "3", IOPair.Type.SAMPLE, 10),
-                new IOPair(1, "3 4", "7", IOPair.Type.SAMPLE, 10)
-        );
+    public List<IOPair> getSamplesByProblemId(int id) {
+        List<IOPair> ioPairs = problemRepository.findById(id).map(Problem::getIoPairs).orElse(null);
+        if (ioPairs == null) {
+            return List.of();
+        }
+        return ioPairs.stream().filter(ioPair -> ioPair.getType().equals(IOPair.Type.SAMPLE)).toList();
     }
 
     @Override
     public List<IOPair> getTestsById(int id) {
-        return List.of();
+        List<IOPair> ioPairs = problemRepository.findById(id).map(Problem::getIoPairs).orElse(null);
+        if (ioPairs == null) {
+            return List.of();
+        }
+        return ioPairs.stream().filter(ioPair -> ioPair.getType().equals(IOPair.Type.TEST)).toList();
     }
 }

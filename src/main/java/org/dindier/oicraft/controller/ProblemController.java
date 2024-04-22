@@ -1,15 +1,9 @@
 package org.dindier.oicraft.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import org.dindier.oicraft.dao.CheckpointDao;
 import org.dindier.oicraft.dao.ProblemDao;
 import org.dindier.oicraft.dao.SubmissionDao;
-import org.dindier.oicraft.dao.impl.JdbcUserDao;
 import org.dindier.oicraft.model.Problem;
-import org.dindier.oicraft.model.Submission;
-import org.dindier.oicraft.model.User;
 import org.dindier.oicraft.service.ProblemService;
-import org.dindier.oicraft.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,7 +31,7 @@ public class ProblemController {
     public ModelAndView problem(@PathVariable int id) {
         return new ModelAndView("problem/problem")
                 .addObject("problem", problemDao.getProblemById(id))
-                .addObject("samples", problemDao.getSamplesById(id));
+                .addObject("samples", problemDao.getSamplesByProblemId(id));
     }
 
     @GetMapping("/problem/new")
