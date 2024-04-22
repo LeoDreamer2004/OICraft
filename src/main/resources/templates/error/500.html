@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>用户登出</title>
+    <title>登录</title>
     <link th:replace="~{base :: baseStyle}"/>
     <link th:replace="~{base :: bootstrap}"/>
     <link th:replace="~{index :: indexStyle}"/>
@@ -15,13 +15,19 @@
 <div class="full-screen">
     <div th:insert="~{index :: nav}"></div>
     <main role="main" class="card-container">
-        <div class="login-card" id="logoutForm">
-            <form class="login-form" th:action="@{/logout}" method="post">
+        <div class="login-card" id="loginForm">
+            <form class="login-form" th:action="@{/}" method="get">
                 <div class="login-title">
-                    <h3>确定要登出吗？</h3>
+                    <h1>私密马赛</h1>
+                    <p>* 作者被 全是bug的代码 杀死了 *</p>
                 </div>
-                <button type="submit">登出</button>
+                <button type="submit">回到主页</button>
             </form>
+            <div style="align-self: center; text-align: center; padding-top: 5px;">
+                <span>觉得作者太菜？</span>
+                <a href="https://github.com/LeoDreamer2004/OICraft/issues"
+                   target="_blank" style="text-decoration: none">我要反馈！！</a>
+            </div>
         </div>
     </main>
     <footer th:replace="~{index :: footer}"></footer>

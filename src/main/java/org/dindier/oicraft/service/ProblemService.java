@@ -12,8 +12,14 @@ public interface ProblemService {
 
     /**
      * Return whether the user has passed the problem
-     * Tips: get all the submissions of the user and the problem,
-     * and check whether there is a submission that has passed
+     * @return 1 if the user passed,
+     * 0 if the user hasn't submitted,
+     * -1 if the user hasn't passed
      */
-    boolean hasPassed(User user, Problem problem);
+    int hasPassed(User user, Problem problem);
+
+    /**
+     * Return the problems that the user has passed
+     */
+    Iterable<Problem> getPassedProblems(User user);
 }

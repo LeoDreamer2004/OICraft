@@ -8,17 +8,16 @@
 </head>
 <body>
 <div class="header">
-    <p style="font-size: 15px; color: lightgray">
-        <a th:href="@{/}" style="color: lightgray">首页</a>
+    <p class="link">
+        <a th:href="@{/}">首页</a>
         <span>></span>
-        <a th:href="@{/problems}" style="color: lightgray">题目清单</a>
+        <a th:href="@{/problems}">题目清单</a>
         <span>></span>
-        <a th:href="@{/problem/{id}(id=${problem.id})}" th:text="${problem.title}"
-           style="color: lightgray"></a>
+        <a th:href="@{/problem/{id}(id=${problem.id})}" th:text="${problem.title}"></a>
         <span>></span>
-        <span style="color: lightgray">提交记录</span>
+        <span>提交记录</span>
     </p>
-    <h2 style="padding-bottom: 10px;font-weight: bolder">提交记录</h2>
+    <h2>提交记录</h2>
     <a class="btn btn-secondary mb-3" th:href="@{/problem/{id}(id=${problem.id})}">返回题目</a>
 </div>
 <main role="main" class="container">
@@ -33,10 +32,13 @@
                 <th>代码</th>
             </tr>
 
-            <tr th:each="submission : ${submissions}">
-                <td th:text="${submission.id}"></td>
+            <tr th:each="submission, stat : ${submissions}">
+                <td>
+                    <span></span>
+                    <span th:text="${submission.id}"></span>
+                </td>
                 <td th:text="${submission.status}"></td>
-                <td th:text="${submission}">
+                <td th:text="${users[stat.index].name}">
                 <td>
                     <a th:href="@{/submission/{id}(id=${submission.id})}">查看</a>
                 </td>

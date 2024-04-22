@@ -10,5 +10,5 @@ public interface SubmissionDao {
 
     Submission getSubmissionById(int id);
 
-    List<Submission> getSubmissionsByProblemId(int problemId);
+    Iterable<Submission> getSubmissionsByProblemId(int problemId);
 }

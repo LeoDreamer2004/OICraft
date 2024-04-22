@@ -5,15 +5,17 @@
     <title>题目列表</title>
     <link th:replace="~{base :: bootstrap}"/>
     <link th:replace="~{base :: baseStyle}"/>
+    <link th:replace="~{base :: iconfont}"/>
 </head>
 <body>
 <div class="header">
-    <p style="font-size: 15px; color: lightgray">
-        <a th:href="@{/}" style="color: lightgray">首页</a>
+    <p class="link">
+        <a th:href="@{/}">首页</a>
         <span>></span>
-        <span style="color: lightgray">题目清单</span>
+        <span>题目清单</span>
     </p>
-    <h2 style="padding-bottom: 10px;font-weight: bolder">题目列表</h2>
+    <h2>题目列表</h2>
+    <a class="btn btn-primary mb-3" th:href="@{/problem/new}">我要出题</a>
     <a class="btn btn-secondary mb-3" th:href="@{/}">返回首页</a>
 </div>
 <main role="main" class="container">
@@ -27,9 +29,11 @@
                 <th>通过率</th>
             </tr>
 
-            <tr th:each="problem : ${problems}">
-                <td>
-                    -
+            <tr th:each="problem, stat : ${problems}">
+                <td th:switch="${hasPassed[stat.index]}">
+                    <span th:case="1" class="iconfont icon-duihao" style="color: forestgreen"></span>
+                    <span th:case="0" class="iconfont icon-jianhao" style="color: gray"></span>
+                    <span th:case="-1" class="iconfont icon-cuowu" style="color: firebrick"></span>
                 </td>
                 <td th:text="${problem.id}"></td>
                 <td>

@@ -7,5 +7,5 @@ import java.util.List;
 public interface CheckpointDao {
     void createCheckpoint(Checkpoint checkpoint);
 
-    List<Checkpoint> getCheckpointsBySubmissionId(int id);
+    Iterable<Checkpoint> getCheckpointsBySubmissionId(int id);
 }

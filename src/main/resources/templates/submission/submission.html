@@ -13,29 +13,28 @@
 </head>
 <body>
 <div class="header">
-    <p style="font-size: 15px; color: lightgray">
-        <a th:href="@{/}" style="color: lightgray">首页</a>
+    <p class="link">
+        <a th:href="@{/}">首页</a>
         <span>></span>
-        <a th:href="@{/problems}" style="color: lightgray">题目清单</a>
+        <a th:href="@{/problems}">题目清单</a>
         <span>></span>
-        <a th:href="@{/problem/{id}(id=${problem.id})}" th:text="${problem.title}"
-           style="color: lightgray"></a>
+        <a th:href="@{/problem/{id}(id=${problem.id})}" th:text="${problem.title}"></a>
         <span>></span>
-        <span style="color: lightgray">提交结果</span>
+        <span>提交结果</span>
     </p>
-    <h2 style="padding-bottom: 10px;font-weight: bolder">提交结果</h2>
+    <h2>提交结果</h2>
     <a class="btn btn-secondary mb-3" th:href="@{/problem/{id}(id=${problem.id})}">返回题目</a>
 </div>
-<main role="main" class="container">
-    <div th:if="${submission.status eq 'passed'}" class="result-box passed-box">
+<main role="main" class="container" th:switch="${submission.status}">
+    <div th:case="'passed'" class="result-box passed-box">
         <span class="iconfont icon-duigou1" style="font-size: 20px"></span>
         <span> 您通过了此题！</span>
     </div>
-    <div th:if="${submission.status eq 'failed'}" class="result-box failed-box">
+    <div th:case="'failed'" class="result-box failed-box">
         <span class="iconfont icon-ziyuan" style="font-size: 20px"></span>
         <span> 您未通过此题！</span>
     </div>
-    <div th:if="${submission.status eq 'waiting'}" class="result-box pending-box">
+    <div th:case="'waiting'" class="result-box pending-box">
         <span class="iconfont icon-shenglvehao" style="font-size: 20px"></span>
         <span> 正在测试中...请稍后刷新重试。</span>
     </div>
@@ -47,11 +46,11 @@
     </pre>
     <h4>测试结果</h4>
     <div class="box-container">
-        <div th:each="checkpoint : ${checkpoints}">
-            <div th:if="${checkpoint.status eq 'P'}" class="checkpoint-box p-box">
+        <div th:each="checkpoint : ${checkpoints}" th:switch="${checkpoint.status}">
+            <div th:case="'P'" class="checkpoint-box p-box">
                 <p class="text-status">...</p>
             </div>
-            <div th:if="${checkpoint.status eq 'AC'}" class="checkpoint-box ac-box">
+            <div th:case="'AC'" class="checkpoint-box ac-box">
                 <p class="text-status">AC</p>
                 <p class="text-cost" th:text="${checkpoint.formatUsageString()}"></p>
                 <div class="msg-box" th:text="${checkpoint.info}"></div>
@@ -60,7 +59,7 @@
                     <span th:text="${checkpoint.ioPairId}"></span>
                 </div>
             </div>
-            <div th:if="${checkpoint.status eq 'WA'}" class="checkpoint-box wa-box">
+            <div th:case="'WA'" class="checkpoint-box wa-box">
                 <p class="text-status">WA</p>
                 <p class="text-cost" th:text="${checkpoint.formatUsageString()}"></p>
                 <div class="msg-box" th:text="${checkpoint.info}"></div>
@@ -69,7 +68,7 @@
                     <span th:text="${checkpoint.ioPairId}"></span>
                 </div>
             </div>
-            <div th:if="${checkpoint.status eq 'CE'}" class="checkpoint-box ce-box">
+            <div th:case="'CE'" class="checkpoint-box ce-box">
                 <p class="text-status">CE</p>
                 <p class="text-cost" th:text="${checkpoint.formatUsageString()}"></p>
                 <div class="msg-box" th:text="${checkpoint.info}"></div>
@@ -78,7 +77,7 @@
                     <span th:text="${checkpoint.ioPairId}"></span>
                 </div>
             </div>
-            <div th:if="${checkpoint.status eq 'RE'}" class="checkpoint-box re-box">
+            <div th:case="'RE'" class="checkpoint-box re-box">
                 <p class="text-status">RE</p>
                 <p class="text-cost" th:text="${checkpoint.formatUsageString()}"></p>
                 <div class="msg-box" th:text="${checkpoint.info}"></div>
@@ -87,7 +86,7 @@
                     <span th:text="${checkpoint.ioPairId}"></span>
                 </div>
             </div>
-            <div th:if="${checkpoint.status eq 'TLE'}" class="checkpoint-box tle-box">
+            <div th:case="'TLE'" class="checkpoint-box tle-box">
                 <p class="text-status">TLE</p>
                 <p class="text-cost" th:text="${checkpoint.formatUsageString()}"></p>
                 <div class="msg-box" th:text="${checkpoint.info}"></div>
@@ -96,7 +95,7 @@
                     <span th:text="${checkpoint.ioPairId}"></span>
                 </div>
             </div>
-            <div th:if="${checkpoint.status eq 'MLE'}" class="checkpoint-box mle-box">
+            <div th:case="'MLE'" class="checkpoint-box mle-box">
                 <p class="text-status">MLE</p>
                 <p class="text-cost" th:text="${checkpoint.formatUsageString()}"></p>
                 <div class="msg-box" th:text="${checkpoint.info}"></div>

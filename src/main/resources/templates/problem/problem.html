@@ -12,15 +12,14 @@
 </head>
 <body>
 <div class="header">
-    <p style="font-size: 15px; color: lightgray">
-        <a th:href="@{/}" style="color: lightgray">首页</a>
+    <p class="link">
+        <a th:href="@{/}">首页</a>
         <span>></span>
-        <a th:href="@{/problems}" style="color: lightgray">题目清单</a>
+        <a th:href="@{/problems}">题目清单</a>
         <span>></span>
-        <span th:text="${problem.title}" style="color: lightgray"></span>
+        <span th:text="${problem.title}"></span>
     </p>
-    <h2 th:text="${problem.title}"
-        style="padding-bottom: 10px;font-weight: bolder"></h2>
+    <h2 th:text="${problem.title}"></h2>
     <!--/*@thymesVar id="user" type="org.dindier.oicraft.model.User"*/-->
     <a th:unless="${user eq null}" class="btn btn-primary mb-3" th:href="@{/problem/{id}/submit(id=${problem.id})}">提交代码</a>
     <a th:if="${user eq null}" class="btn btn-primary mb-3" th:href="@{/login}">登录后提交</a>

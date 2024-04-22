@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>哦！出错了！</title>
+    <link rel="stylesheet" href="/css/submission.css">
+    <link th:replace="~{base :: bootstrap}"/>
+    <link th:replace="~{base :: baseStyle}"/>
+</head>
+<body>
+<div class="header">
+    <p class="link">
+        <a th:href="@{/}">首页</a>
+        <span>></span>
+        <a th:href="@{/problems}">题目清单</a>
+        <span>></span>
+        <a th:href="@{/problem/{id}(id=${problem.id})}" th:text="${problem.title}"></a>
+        <span>></span>
+        <span>提交结果</span>
+    </p>
+    <h2>提交结果</h2>
+    <a class="btn btn-secondary mb-3" th:href="@{/problem/{id}(id=${problem.id})}">返回题目</a>
+</div>
+<main role="main" class="container">
+    <h4>提示信息</h4>
+    <p>您无权查看此提交！再努力努力尝试通过这道题吧！</p>
+</main>
+</body>
+</html>

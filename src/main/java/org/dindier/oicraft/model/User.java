@@ -92,8 +92,7 @@ public class User {
         }
     }
 
-    public User(int id, String name, String password, Role role, Grade grade) {
-        this.id = id;
+    public User(String name, String password, Role role, Grade grade) {
         this.name = name;
         this.password = password;
         this.role = role;
