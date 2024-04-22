@@ -16,7 +16,7 @@ public interface ProblemDao {
 
     Iterable<Problem> getProblemList();
 
-    List<IOPair> getSamplesById(int id);
+    List<IOPair> getSamplesByProblemId(int id);
 
     List<IOPair> getTestsById(int id);
 

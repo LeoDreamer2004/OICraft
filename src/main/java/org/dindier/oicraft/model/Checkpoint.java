@@ -1,37 +1,96 @@
 package org.dindier.oicraft.model;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Checkpoint {
-    private int submissionId;
-    private int ioPairId;
+    @EmbeddedId
+    private SubmissionAndIOPair submissionAndIOPair;
 
     public enum Status {
         P, AC, WA, TLE, MLE, RE, CE
     }
-    private Status status ;
+
+    private Status status;
 
     private int usedTime;
     private int usedMemory;
     private String info;
 
+    protected Checkpoint() {
+    }
+
     public Checkpoint(int submissionId, int ioPairId) {
-        this.submissionId = submissionId;
-        this.ioPairId = ioPairId;
+        this.submissionAndIOPair = new SubmissionAndIOPair(submissionId, ioPairId);
+    }
+
+    @Embeddable
+    public static class SubmissionAndIOPair {
+        // FIXME: This may be wrong
+        @OneToOne
+        @JoinColumn(name = "submission_id")
+        private Submission submission;
+        @OneToOne
+        @JoinColumn(name = "io_pair_id")
+        private IOPair ioPairId;
+
+        public SubmissionAndIOPair(int submissionId, int ioPairId) {
+            this.submission = new Submission();
+            this.ioPairId = new IOPair();
+            this.submission.setId(submissionId);
+            this.ioPairId.setId(ioPairId);
+        }
+
+        protected SubmissionAndIOPair() {
+        }
+
+        public int getSubmissionId() {
+            return submission.getId();
+        }
+
+        public void setSubmissionId(int submissionId) {
+            this.submission.setUserId(submissionId);
+        }
+
+        public int getIoPairId() {
+            return ioPairId.getId();
+        }
+
+        public void setIoPairId(int ioPairId) {
+            this.ioPairId.setId(ioPairId);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == this) {
+                return true;
+            }
+            if (!(obj instanceof SubmissionAndIOPair other)) {
+                return false;
+            }
+            return submission.getId() == other.getSubmissionId() && ioPairId.getId() == other.getIoPairId();
+        }
+
+        @Override
+        public int hashCode() {
+            return submission.getId() * 31 + ioPairId.getId();
+        }
     }
 
     public int getSubmissionId() {
-        return submissionId;
+        return submissionAndIOPair.getSubmissionId();
     }
 
     public void setSubmissionId(int submissionId) {
-        this.submissionId = submissionId;
+        this.submissionAndIOPair.setSubmissionId(submissionId);
     }
 
     public int getIoPairId() {
-        return ioPairId;
+        return submissionAndIOPair.getIoPairId();
     }
 
     public void setIoPairId(int ioPairId) {
-        this.ioPairId = ioPairId;
+        this.submissionAndIOPair.setIoPairId(ioPairId);
     }
 
     public String getStatus() {
@@ -67,8 +126,8 @@ public class Checkpoint {
     }
 
     /*
-    * A method to format the usage string
-    */
+     * A method to format the usage string
+     */
     public String formatUsageString() {
         String timeStr, memoryStr;
         if (usedTime < 1000) {

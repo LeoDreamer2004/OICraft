@@ -1,14 +1,23 @@
 package org.dindier.oicraft.model;
 
+import jakarta.persistence.*;
+
 /**
  * The input-output pair of a problem (Weak Entity)
  */
+@Entity
 public class IOPair {
-    private int problemId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String input;
     private String output;
+    @Enumerated(EnumType.STRING)
     private Type type;
+
+    @ManyToOne
+    @JoinColumn(name = "problem_id")
+    private Problem problem;
 
     public enum Type {
         SAMPLE, TEST
@@ -16,8 +25,10 @@ public class IOPair {
 
     private int score;
 
-    public IOPair(int problemId, String input, String output, Type type, int score) {
-        this.problemId = problemId;
+    protected IOPair() {
+    }
+
+    public IOPair(String input, String output, Type type, int score) {
         this.input = input;
         this.output = output;
         this.type = type;
@@ -25,11 +36,7 @@ public class IOPair {
     }
 
     public int getProblemId() {
-        return problemId;
-    }
-
-    public void setProblemId(int problemId) {
-        this.problemId = problemId;
+        return problem.getId();
     }
 
     public int getId() {

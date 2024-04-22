@@ -24,7 +24,7 @@
     <!--/*@thymesVar id="user" type="org.dindier.oicraft.model.User"*/-->
     <a th:unless="${user eq null}" class="btn btn-primary mb-3" th:href="@{/problem/{id}/submit(id=${problem.id})}">提交代码</a>
     <a th:if="${user eq null}" class="btn btn-primary mb-3" th:href="@{/login}">登录后提交</a>
-    <a class="btn btn-secondary mb-3" th:href="@{/problem}">返回题单</a>
+    <a class="btn btn-secondary mb-3" th:href="@{/problems}">返回题单</a>
 
     <div class="problem-status-box">
         <div class="problem-status-item">

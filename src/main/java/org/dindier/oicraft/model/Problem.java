@@ -2,18 +2,22 @@ package org.dindier.oicraft.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 public class Problem {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String title;
     private String description;
     private String inputFormat;
     private String outputFormat;
 
-    // TODO: Add an author here
-    // private int authorId;
+    private int authorId;
+
+    @OneToMany(mappedBy = "problem", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<IOPair> ioPairs;
 
     @Enumerated(EnumType.STRING)
     private Difficulty difficulty;
@@ -37,7 +41,7 @@ public class Problem {
     private int submit = 0;
     private int passed = 0;
 
-    public Problem() {
+    protected Problem() {
     }
 
     public Problem(String title, String description, String inputFormat, String outputFormat,
@@ -145,5 +149,17 @@ public class Problem {
         } else {
             return String.format("%.2fMB", memoryLimit / 1024.0);
         }
+    }
+
+    public int getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(int authorId) {
+        this.authorId = authorId;
+    }
+
+    public List<IOPair> getIoPairs() {
+        return ioPairs;
     }
 }

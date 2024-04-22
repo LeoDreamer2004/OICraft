@@ -1,15 +1,26 @@
 package org.dindier.oicraft.model;
 
 
+import jakarta.persistence.*;
+
 /*
-* FIXME: May use springSecurity for user authentication later
-*/
+ * FIXME: May use springSecurity for user authentication later
+ */
+@Entity
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(name = "username")
     private String name;
     private String password;
+    @Enumerated(EnumType.STRING)
     private Role role;
+    @Enumerated(EnumType.STRING)
     private Grade grade;
+
+    protected User() {
+    }
 
     public int getId() {
         return id;
@@ -59,7 +70,7 @@ public class User {
         BEGINNER("Beginner"),
         INTERMEDIATE("Intermediate"),
         ADVANCED("Advanced"),
-        EXPORT("Export");
+        EXPERT("Expert");
 
         private final String displayName;
 
@@ -72,8 +83,8 @@ public class User {
         }
 
         public static Grade fromString(String text) {
-            for (Grade g: Grade.values()){
-                if (g.displayName.equalsIgnoreCase(text)){
+            for (Grade g : Grade.values()) {
+                if (g.displayName.equalsIgnoreCase(text)) {
                     return g;
                 }
             }
