@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>个人主页</title>
+    <link th:replace="~{base :: baseStyle}"/>
+    <link th:replace="~{base :: bootstrap}"/>
+    <link th:replace="~{index :: indexStyle}"/>
+    <link th:replace="~{base :: iconfont}"/>
+    <link rel="stylesheet" href="/css/profile.css">
+</head>
+<body>
+<div class="profile-header">
+    <div th:insert="~{index :: nav}"></div>
+    <h2 th:text="${seeUser.name}"></h2>
+    <p>这个人很懒，什么都没有留下</p>
+</div>
+<main role="main" class="container">
+    <div class="card">
+        <h5 class="card-header">通过题目</h5>
+        <div class="card-body">
+            <span th:if = "${passed eq null}">无</span>
+            <span th:each="problem : ${passed}">
+                <a th:href="@{'/problems/' + ${problem.id}}" th:text="${problem.title}"></a>
+            </span>
+        </div>
+</main>
+</body>
+</html>

@@ -30,16 +30,15 @@ public class SubmissionController {
     @GetMapping("/submission/{id}")
     public ModelAndView submission(@PathVariable int id) {
         Submission submission = submissionDao.getSubmissionById(id);
-
-        // See if the user can visit
-        // if (!submission.getUserId().equals(request.getRemoteUser())) {
-        //     return new ModelAndView("error")
-        //             .addObject("message", "You are not allowed to view this submission");
-        // }
         User user = userService.getUserByRequest(request);
+        if (user == null) return null; // Actually, this page has been protected by interceptor
+
         Problem problem = problemDao.getProblemById(submission.getProblemId());
-        if (!problemService.hasPassed(user, problem) && !userDao.isAdmin(user)) {
-            return new ModelAndView("submissionNotAllowed");
+        if (problemService.hasPassed(user, problem) <= 0
+                && !(user.getRole().equals(User.Role.ADMIN))
+                && !(user.getId() == submission.getUserId())) {
+            return new ModelAndView("submission/notAllowed")
+                    .addObject("problem", problemDao.getProblemById(submission.getProblemId()));
         }
 
         return new ModelAndView("submission/submission")

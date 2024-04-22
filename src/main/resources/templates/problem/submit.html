@@ -9,17 +9,16 @@
 </head>
 <body>
 <div class="header">
-    <p style="font-size: 15px; color: lightgray">
-        <a th:href="@{/}" style="color: lightgray">首页</a>
+    <p class="link">
+        <a th:href="@{/}">首页</a>
         <span>></span>
-        <a th:href="@{/problems}" style="color: lightgray">题目清单</a>
+        <a th:href="@{/problems}">题目清单</a>
         <span>></span>
-        <a th:href="@{/problem/{id}(id=${problem.id})}" th:text="${problem.title}"
-           style="color: lightgray"></a>
+        <a th:href="@{/problem/{id}(id=${problem.id})}" th:text="${problem.title}"></a>
         <span>></span>
-        <span style="color: lightgray">提交代码</span>
+        <span>提交代码</span>
     </p>
-    <h2 style="padding-bottom: 10px;font-weight: bolder">提交代码</h2>
+    <h2>提交代码</h2>
     <a class="btn btn-secondary mb-3" th:href="@{/problem/{id}(id=${problem.id})}">返回题目</a>
 </div>
 <main role="main" class="container">

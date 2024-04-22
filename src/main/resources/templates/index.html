@@ -7,6 +7,8 @@
     <link th:replace="~{base :: baseStyle}"/>
     <script th:replace="~{base :: mathJaxScript}"></script>
     <script th:replace="~{base :: mathJaxConfig}"></script>
+    <script th:replace="~{base :: iconfont}"></script>
+    <link rel="stylesheet" href="/css/index.css" th:fragment="indexStyle">
     <style>
         .welcome {
             animation: flowUp 0.5s ease-in-out 1;
@@ -21,16 +23,6 @@
                 transform: translateY(0);
                 opacity: 1;
             }
-        }
-
-        .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            color: #777;
-            padding: 10px 0;
-            text-align: center;
         }
     </style>
 
@@ -65,11 +57,11 @@
                 </ul>
                 <ul class="navbar-nav ml-auto" th:unless="${user} eq null">
                     <li class="nav-item">
-                        <span class="navbar-text" style="text-decoration: none; color:gray; ">欢迎 &nbsp;</span>
+                        <span class="navbar-text"
+                              style="text-decoration: none; color:rgba(0,0,0,0.5); ">欢迎 &nbsp;</span>
                     </li>
                     <li class="nav-item">
-                        <span class="navbar-text pr-3" th:text="${user.name}"
-                              style="text-decoration: none; color:gray;"></span>
+                        <a class="nav-link pr-3 pl-0" th:text="${user.name}" th:href="@{/profile}"></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/logout}">登出</a>
@@ -88,8 +80,12 @@
             </p>
         </div>
 
-        <footer class="footer">
-            <p>&copy; 2024 OICraft. All rights reserved.</p>
+        <footer class="footer" th:fragment="footer">
+            <span class="mb-0">&copy; 2024 OICraft. All rights reserved.</span>
+            <span class="iconfont icon-github pl-5"></span>
+            <a href="https://github.com/LeoDreamer2004/OICraft" class="pl-2">项目主页</a>
+            <span class="pl-2">|</span>
+            <a href="https://github.com/LeoDreamer2004" class="pl-2">联系作者</a>
         </footer>
     </main>
 </div>

@@ -5,5 +5,5 @@ import org.dindier.oicraft.model.User;
 public interface UserDao {
     void createUser(User user);
 
-    boolean isAdmin(User user);
+    User getUserById(int id);
 }

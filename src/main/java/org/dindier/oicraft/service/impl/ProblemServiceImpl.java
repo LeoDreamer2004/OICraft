@@ -15,9 +15,16 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
-    public boolean hasPassed(User user, Problem problem) {
+    public int hasPassed(User user, Problem problem) {
         // TODO: Implement this method
 
-        return true;
+        return 1;
+    }
+
+    @Override
+    public Iterable<Problem> getPassedProblems(User user) {
+        // TODO: Implement this method
+
+        return null;
     }
 }

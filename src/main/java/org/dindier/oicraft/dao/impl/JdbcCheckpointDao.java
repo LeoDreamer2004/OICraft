@@ -14,7 +14,7 @@ public class JdbcCheckpointDao implements CheckpointDao {
     }
 
     @Override
-    public List<Checkpoint> getCheckpointsBySubmissionId(int id) {
+    public Iterable<Checkpoint> getCheckpointsBySubmissionId(int id) {
         // TODO: Implement this method
 
 

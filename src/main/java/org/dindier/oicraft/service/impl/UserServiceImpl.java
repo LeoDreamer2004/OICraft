@@ -16,6 +16,8 @@ public class UserServiceImpl implements UserService {
             return null;
 
         // A temporary implementation
-        return new User(1, username, "password", User.Role.USER, User.Grade.BEGINNER);
+        User user = new User(username, "password", User.Role.ADMIN, User.Grade.BEGINNER);
+        user.setId(1);
+        return user;
     }
 }

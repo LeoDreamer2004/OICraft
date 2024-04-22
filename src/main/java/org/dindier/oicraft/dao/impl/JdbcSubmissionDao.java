@@ -26,7 +26,7 @@ public class JdbcSubmissionDao implements SubmissionDao {
     }
 
     @Override
-    public List<Submission> getSubmissionsByProblemId(int problemId) {
+    public Iterable<Submission> getSubmissionsByProblemId(int problemId) {
         return List.of(
                 getSubmissionById(1)
         );

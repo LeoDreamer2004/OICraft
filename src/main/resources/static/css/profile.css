@@ -1,0 +1,29 @@
+.profile-header {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 250px;
+    margin-bottom: 40px;
+    background-color: #333333;
+    color: white;
+    background-image:url(//www.mcmod.cn/static/center/images/user/banner/1/1.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.profile-header h2,
+.profile-header p {
+    padding-left: 150px;
+    text-shadow: #000 1px 0 0, #000 0 1px 0, #000 -1px 0 0, #000 0 -1px 0;
+    position: absolute;
+}
+
+.profile-header h2 {
+    bottom: 40px;
+}
+
+.profile-header p {
+    bottom: 0;
+}

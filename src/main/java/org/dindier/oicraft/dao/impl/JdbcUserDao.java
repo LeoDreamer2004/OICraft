@@ -12,9 +12,7 @@ public class JdbcUserDao implements UserDao {
     }
 
     @Override
-    public boolean isAdmin(User user) {
-        // TODO: Implement this method
-
-        return true;
+    public User getUserById(int id) {
+        return new User("user", "111", User.Role.ADMIN, User.Grade.BEGINNER);
     }
 }
