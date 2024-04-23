@@ -46,9 +46,11 @@ public class ProblemController {
 
     @GetMapping("/problem/{id}")
     public ModelAndView problem(@PathVariable int id) {
+        Problem problem = problemDao.getProblemById(id);
         return new ModelAndView("problem/problem")
-                .addObject("problem", problemDao.getProblemById(id))
-                .addObject("samples", problemDao.getSamplesById(id));
+                .addObject("problem", problem)
+                .addObject("samples", problemDao.getSamplesById(id))
+                .addObject("author", userDao.getUserById(problem.getAuthorId()));
     }
 
     @GetMapping("/problem/new")
@@ -70,7 +72,9 @@ public class ProblemController {
                 "hard", Problem.Difficulty.HARD
         );
         User user = userService.getUserByRequest(request);
-        Problem problem = new Problem(title, description, inputFormat, outputFormat,
+        if (user == null)
+            return new RedirectView("/login");
+        Problem problem = new Problem(user.getId(), title, description, inputFormat, outputFormat,
                 difficultyMap.get(difficulty), timeLimit, memoryLimit);
         problemDao.createProblem(problem);
         return new RedirectView("/problem/" + problem.getId());

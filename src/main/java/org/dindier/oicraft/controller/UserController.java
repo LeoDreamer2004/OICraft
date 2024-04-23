@@ -2,9 +2,11 @@ package org.dindier.oicraft.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.dindier.oicraft.dao.UserDao;
+import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.User;
 import org.dindier.oicraft.service.UserService;
 import org.dindier.oicraft.service.impl.ProblemServiceImpl;
+import org.dindier.oicraft.util.IterableUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -70,8 +72,9 @@ public class UserController {
         if (user == null)
             return new ModelAndView("error/404");
         // use 'seeUser' in case of conflict with 'user' in the interceptor
+
         return new ModelAndView("user/profile", "seeUser", user)
-                .addObject("passed", problemService.getPassedProblems(user));
+                .addObject("passed",  problemService.getPassedProblems(user));
     }
 
     @Autowired

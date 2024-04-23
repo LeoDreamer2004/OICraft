@@ -45,6 +45,7 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/submission/**").authenticated()
                         .requestMatchers("/problem/*/submit").authenticated()
+                        .requestMatchers("/problem/new").authenticated()
                         .anyRequest().permitAll()
                 ) // Permit all requests to any endpoint temporarily
                 .formLogin(formLogin -> formLogin

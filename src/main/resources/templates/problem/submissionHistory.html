@@ -29,16 +29,30 @@
                 <th></th>
                 <th>状态</th>
                 <th>提交者</th>
-                <th>代码</th>
+                <th>语言</th>
+                <th>详情</th>
             </tr>
 
             <tr th:each="submission, stat : ${submissions}">
                 <td>
-                    <span></span>
-                    <span th:text="${submission.id}"></span>
+                    <span>#[[${submission.id}]]</span>
                 </td>
-                <td th:text="${submission.status}"></td>
-                <td th:text="${users[stat.index].name}">
+                <td th:if="${submission.status eq 'passed'}">
+                    <span class="badge badge-success my-large-badge">通过</span>
+                </td>
+                <td th:if="${submission.status eq 'failed'}">
+                    <span class="badge badge-danger my-large-badge">未通过</span>
+                </td>
+                <td th:if="${submission.status eq 'pending'}">
+                    <span class="badge badge-warning my-large-badge">测试中</span>
+                </td>
+                <td>
+                    <a th:href="@{/profile/{id}(id=${submission.userId})}" th:text="${users[stat.index].name}"
+                       th:class="${users[stat.index].getGradeString()}"></a>
+                </td>
+                <td>
+                    <span th:text="${submission.language}"></span>
+                </td>
                 <td>
                     <a th:href="@{/submission/{id}(id=${submission.id})}">查看</a>
                 </td>

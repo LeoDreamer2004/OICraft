@@ -19,9 +19,10 @@
         <span>></span>
         <span th:text="${problem.title}"></span>
     </p>
-    <h2 th:text="${problem.title}"></h2>
+    <h2>-[[${problem.getIdString}]]- &nbsp;&nbsp; [[${problem.title}]]</h2>
     <!--/*@thymesVar id="user" type="org.dindier.oicraft.model.User"*/-->
-    <a th:unless="${user eq null}" class="btn btn-primary mb-3" th:href="@{/problem/{id}/submit(id=${problem.id})}">提交代码</a>
+    <a th:unless="${user eq null}" class="btn btn-primary mb-3"
+       th:href="@{/problem/{id}/submit(id=${problem.id})}">提交代码</a>
     <a th:if="${user eq null}" class="btn btn-primary mb-3" th:href="@{/login}">登录后提交</a>
     <a class="btn btn-secondary mb-3" th:href="@{/problems}">返回题单</a>
 
@@ -48,10 +49,10 @@
 
 <main role="main" class="container">
     <div class="lr-container">
-        <div class="card my-card problem-main">
-            <div class="card-body">
+        <div class="problem-main">
+            <div class="card my-card">
                 <div class="problem-part">
-                    <h3>题目描述</h3>
+                    <h3 class="mt-0">题目描述</h3>
                     <p th:text="${problem.description}"></p>
                 </div>
                 <div class="problem-part">
@@ -78,24 +79,37 @@
             </div>
         </div>
 
+        <div class="problem-brief">
+            <div class="card my-card">
+                <div class="info-line">
+                    <p>出题人</p>
+                    <a th:text="${author.name}" th:href="@{/profile/{id}(id=${author.id})}"
+                       th:class="${author.getGradeString()}"></a>
+                </div>
+                <div class="info-line">
+                    <p>题目难度</p>
+                    <p th:if="${problem.isEasy()}">简单</p>
+                    <p th:if="${problem.isMedium()}">中等</p>
+                    <p th:if="${problem.isHard()}">困难</p>
+                </div>
+                <div class="info-line">
+                    <p>历史分数</p>
+                    <p>0</p>
+                </div>
 
-        <div class="card my-card problem-brief">
-            <div class="info-line">
-                <p>出题人</p>
-                <p>Leo</p>
+                <a class="iconfont icon-toupiao" th:href="@{/problem/{id}/history(id=${problem.id})}"
+                   style="text-decoration: none"> 提交记录</a>
             </div>
-            <div class="info-line">
-                <p>题目难度</p>
-                <p th:if="${problem.difficulty} eq 'easy'">简单</p>
-                <p th:if="${problem.difficulty} eq 'medium'">中等</p>
-                <p th:if="${problem.difficulty} eq 'hard'">困难</p>
+            <div class="card my-card mt-3">
+                <h5 class="pb-2 mb-3" style="padding-bottom: 10px; border-bottom: gray 1px solid">出题者选项</h5>
+                <div>
+                    <a class="btn btn-primary" style="width:auto"
+                       th:href="@{/problem/{id}/edit(id=${problem.id})}">编辑题目</a>
+                    <a class="btn btn-primary" style="width:auto"
+                       th:href="@{/problem/{id}/edit/checkpoints(id=${problem.id})}">编辑测试点</a>
+                    <a class="btn btn-danger" style="width:auto" th:href="@{/problem/{id}/delete}">删除题目</a>
+                </div>
             </div>
-            <div class="info-line">
-                <p>历史分数</p>
-                <p>0</p>
-            </div>
-
-            <a class="iconfont icon-toupiao" th:href="@{/problem/{id}/history(id=${problem.id})}" style="padding-left: 20px; text-decoration: none"> 提交记录</a>
         </div>
     </div>
 </main>

@@ -28,11 +28,13 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border: 2px solid #eee;
     border-radius: 8px;
+    padding: 30px;
 }
 
 .my-large-badge {
-    font-size: 100%;
-    font-weight: normal;
+    font-size: 100% !important;
+    font-weight: normal !important;
+    padding: 3px 6px 5px !important;
 }
 
 .lr-container {
@@ -42,3 +44,22 @@
     padding: 0;
 }
 
+.BEGINNER {
+    color: rgb(82, 196, 26) !important;
+    text-decoration: none !important;
+}
+
+.INTERMEDIATE {
+    color: rgb(70, 161, 222) !important;
+    text-decoration: none !important;
+}
+
+.ADVANCED {
+    color: rgb(243, 156, 17) !important;
+    text-decoration: none !important;
+}
+
+.EXPERT {
+    color: rgb(254, 76, 97) !important;
+    text-decoration: none !important;
+}
