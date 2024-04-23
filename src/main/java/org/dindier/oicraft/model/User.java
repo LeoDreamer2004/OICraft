@@ -90,7 +90,7 @@ public class User {
         return grade.toString();
     }
 
-    public boolean equals(User other) {
-        return this.id == other.id;
+    public List<Submission> getSubmissions() {
+        return submissions;
     }
 }

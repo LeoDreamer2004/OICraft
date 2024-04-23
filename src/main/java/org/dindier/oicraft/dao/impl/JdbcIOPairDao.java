@@ -47,10 +47,8 @@ public class JdbcIOPairDao implements IOPairDao {
     }
 
     @Override
-    public void addIOPairs(List<IOPair> ioPairs) {
-        for (IOPair ioPair : ioPairs) {
-            createIOPair(ioPair);
-        }
+    public Iterable<IOPair> addIOPairs(List<IOPair> ioPairs) {
+        return ioPairRepository.saveAll(ioPairs);
     }
 
     @Override
@@ -58,7 +56,7 @@ public class JdbcIOPairDao implements IOPairDao {
         return problemRepository
                 .findById(problemId)
                 .map(Problem::getIoPairs)
-                .orElse(null);
+                .orElse(List.of());
     }
 
     @Override

@@ -5,6 +5,7 @@
       <item index="0" class="java.lang.String" itemvalue="jakarta.persistence.OneToMany" />
     </list>
     <writeAnnotations>
+      <writeAnnotation name="jakarta.persistence.Id" />
       <writeAnnotation name="jakarta.persistence.JoinColumn" />
       <writeAnnotation name="jakarta.persistence.OneToMany" />
     </writeAnnotations>
