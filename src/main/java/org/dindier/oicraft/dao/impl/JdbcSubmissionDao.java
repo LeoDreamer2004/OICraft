@@ -35,10 +35,9 @@ public class JdbcSubmissionDao implements SubmissionDao {
 
     @Override
     public Iterable<Submission> getSubmissionsByProblemId(int problemId) {
-        return null;
-        // return problemRepository
-        //         .findById(problemId)
-        //         .map(Problem::getSubmissions)
-        //         .orElse(null);
+        return problemRepository
+                .findById(problemId)
+                .map(Problem::getSubmissions)
+                .orElse(null);
     }
 }

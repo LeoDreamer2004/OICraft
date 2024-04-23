@@ -60,13 +60,13 @@ create table if not exists Submission
 
 create table if not exists CheckPoint
 (
+    id            int primary key auto_increment,
     submission_id int                                              not null,
     io_pair_id    int                                              not null,
     status        enum ('P', 'AC', 'WA', 'TLE', 'MLE', 'RE', 'CE') not null,
     used_time     int                                              not null,
     used_memory   int                                              not null,
     info          text                                             not null,
-    primary key (submission_id, io_pair_id),
     foreign key (io_pair_id) references IOPair (id),
     foreign key (submission_id) references Submission (id)
 );
