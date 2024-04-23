@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 @Service("submissionService")
 public class SubmissionServiceImpl implements SubmissionService {
-
     private UserDao userDao;
 
     @Autowired

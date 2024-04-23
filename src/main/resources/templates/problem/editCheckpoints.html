@@ -1,10 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>编辑测试点</title>
+    <link th:replace="~{base :: bootstrap}"/>
+    <link th:replace="~{base :: baseStyle}"/>
 </head>
 <body>
-
+<div class="header">
+    <p class="link">
+        <a th:href="@{/}">首页</a>
+        <span>></span>
+        <a th:href="@{/problems}">题目清单</a>
+        <span>></span>
+        <a th:href="@{/problem/{id}(id=${problem.id})}" th:text="${problem.title}"></a>
+        <span>></span>
+        <span>编辑测试点</span>
+    </p>
+    <h2>编辑测试点：[[${problem.title}]]</h2>
+    <!--/*@thymesVar id="user" type="org.dindier.oicraft.model.User"*/-->
+    <a class="btn btn-secondary mb-3" th:href="@{/problems}">返回题单</a>
+</div>
+<main role="main" class="container">
+    <h4 class="underlined-title">上传测试点</h4>
+    <div class="card my-card p-3">
+        <form th:action="@{/problem/{id}/edit/checkpoints(id=${problem.id})}" method="post">
+            <div class="form-group">
+                <label for="file">文件格式：请上传一个zip文件，其中包含两个文件夹sample和test，分别代表样例用/测试用。<br />
+                    其内输入用X.in和X.out表示，当X相同时认为是匹配的一对输入输出对。</label>
+                <input type="file" id="file" name="file" required>
+            </div>
+            <button type="submit" class="btn btn-primary">确认修改</button>
+        </form>
+    </div>
+</main>
 </body>
 </html>

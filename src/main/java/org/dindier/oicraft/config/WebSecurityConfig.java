@@ -34,6 +34,9 @@ public class WebSecurityConfig {
         manager.createUser(User.builder().
                 username("user").password(passwordEncoder().encode("111"))
                 .roles("USER").build());
+        manager.createUser(User.builder().
+                username("admin").password(passwordEncoder().encode("admin"))
+                .roles("ADMIN").build());
         return manager;
     }
 

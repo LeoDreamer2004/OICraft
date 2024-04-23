@@ -1,10 +1,64 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>编辑题目</title>
+    <link th:replace="~{base :: bootstrap}"/>
+    <link th:replace="~{base :: baseStyle}"/>
 </head>
 <body>
-
+<div class="header">
+    <p class="link">
+        <a th:href="@{/}">首页</a>
+        <span>></span>
+        <a th:href="@{/problems}">题目清单</a>
+        <span>></span>
+        <a th:href="@{/problem/{id}(id=${problem.id})}" th:text="${problem.title}"></a>
+        <span>></span>
+        <span>编辑题目</span>
+    </p>
+    <h2>编辑题目：[[${problem.title}]]</h2>
+    <!--/*@thymesVar id="user" type="org.dindier.oicraft.model.User"*/-->
+    <a class="btn btn-secondary mb-3" th:href="@{/problems}">返回题单</a>
+</div>
+<main role="main" class="container">
+    <div class="card my-card p-3">
+        <form th:action="@{/problem/{id}/edit(id=${problem.id})}" method="post">
+            <div class="form-group">
+                <label for="title">题目名称</label>
+                <input type="text" class="form-control" id="title" name="title" th:value="${problem.title}" required>
+            </div>
+            <div class="form-group">
+                <label for="description">题目描述</label>
+                <textarea class="form-control" id="description" name="description" rows="5" th:text="${problem.description}" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="inputFormat">输入格式</label>
+                <textarea class="form-control" id="inputFormat" name="inputFormat" rows="3" th:text="${problem.inputFormat}" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="outputFormat">输出格式</label>
+                <textarea class="form-control" id="outputFormat" name="outputFormat" rows="3" th:text="${problem.outputFormat}" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="difficulty">难度</label>
+                <select class="form-control" id="difficulty" name="difficulty">
+                    <option value="easy">简单</option>
+                    <option value="medium">中等</option>
+                    <option value="hard">困难</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="timeLimit">时间限制（ms）</label>
+                <input type="number" class="form-control" id="timeLimit" name="timeLimit" th:value="${problem.timeLimit}" required>
+            </div>
+            <div class="form-group">
+                <label for="memoryLimit">内存限制（MB）</label>
+                <input type="number" class="form-control" id="memoryLimit" name="memoryLimit" th:value="${problem.memoryLimit}" required>
+            </div>
+            <button type="submit" class="btn btn-primary">确认修改</button>
+        </form>
+    </div>
+</main>
 </body>
 </html>

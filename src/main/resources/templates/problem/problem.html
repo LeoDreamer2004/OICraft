@@ -67,7 +67,7 @@
                     <h3>输入输出样例</h3>
                     <div class="lr-container" th:each="sample : ${samples}">
                         <div class="io-item">
-                            <h5 class="card-subtitle mb-2 text-muted ">输入</h5>
+                            <h5 class="card-subtitle mb-2 text-muted">输入</h5>
                             <pre class="code" th:text="${sample.input}"></pre>
                         </div>
                         <div class="io-item">
@@ -101,7 +101,7 @@
                    style="text-decoration: none"> 提交记录</a>
             </div>
             <div class="card my-card mt-3" th:if="${canEdit}">
-                <h5 class="pb-2 mb-3" style="padding-bottom: 10px; border-bottom: gray 1px solid">开发者选项</h5>
+                <h5 class="mb-3 underlined-title">开发者选项</h5>
                 <div>
                     <a class="btn btn-primary" style="width:auto"
                        th:href="@{/problem/{id}/edit(id=${problem.id})}">编辑题目</a>

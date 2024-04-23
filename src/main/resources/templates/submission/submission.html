@@ -8,7 +8,7 @@
     <link th:replace="~{base :: highlightStyle}"/>
     <script th:replace="~{base :: highlightJS}"></script>
     <script th:replace="~{base :: highlightAll}"></script>
-    <script th:replace="~{base ::iconfont}"></script>
+    <script th:replace="~{base :: iconfont}"></script>
     <title>测试结果</title>
 </head>
 <body>
@@ -39,12 +39,12 @@
         <span> 正在测试中...请稍后刷新重试。</span>
     </div>
 
-    <h4>代码</h4>
+    <h4 class="underlined-title">代码</h4>
     <pre>
     <code th:text="${submission.code}">
     </code>
     </pre>
-    <h4>测试结果</h4>
+    <h4 class="underlined-title">测试结果</h4>
     <div class="box-container">
         <div th:each="checkpoint : ${checkpoints}" th:switch="${checkpoint.status}">
             <div th:case="'P'" class="checkpoint-box p-box">
@@ -56,7 +56,7 @@
                 <div class="msg-box" th:text="${checkpoint.info}"></div>
                 <div class="checkpoint-num">
                     <span>#</span>
-                    <span th:text="${checkpoint.ioPairId}"></span>
+                    <span th:text="${checkpoint.getIOPair().id}"></span>
                 </div>
             </div>
             <div th:case="'WA'" class="checkpoint-box wa-box">
@@ -65,7 +65,7 @@
                 <div class="msg-box" th:text="${checkpoint.info}"></div>
                 <div class="checkpoint-num">
                     <span>#</span>
-                    <span th:text="${checkpoint.ioPairId}"></span>
+                    <span th:text="${checkpoint.getIOPair().id}"></span>
                 </div>
             </div>
             <div th:case="'CE'" class="checkpoint-box ce-box">
@@ -74,7 +74,7 @@
                 <div class="msg-box" th:text="${checkpoint.info}"></div>
                 <div class="checkpoint-num">
                     <span>#</span>
-                    <span th:text="${checkpoint.ioPairId}"></span>
+                    <span th:text="${checkpoint.getIOPair().id}"></span>
                 </div>
             </div>
             <div th:case="'RE'" class="checkpoint-box re-box">
@@ -83,7 +83,7 @@
                 <div class="msg-box" th:text="${checkpoint.info}"></div>
                 <div class="checkpoint-num">
                     <span>#</span>
-                    <span th:text="${checkpoint.ioPairId}"></span>
+                    <span th:text="${checkpoint.getIOPair().id}"></span>
                 </div>
             </div>
             <div th:case="'TLE'" class="checkpoint-box tle-box">
@@ -92,7 +92,7 @@
                 <div class="msg-box" th:text="${checkpoint.info}"></div>
                 <div class="checkpoint-num">
                     <span>#</span>
-                    <span th:text="${checkpoint.ioPairId}"></span>
+                    <span th:text="${checkpoint.getIOPair().id}"></span>
                 </div>
             </div>
             <div th:case="'MLE'" class="checkpoint-box mle-box">

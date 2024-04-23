@@ -17,4 +17,8 @@ public interface ProblemDao {
     Iterable<IOPair> getSamplesById(int id);
 
     Iterable<IOPair> getTestsById(int id);
+
+    void updateProblem(Problem problem);
+
+    void deleteProblem(Problem problem);
 }
