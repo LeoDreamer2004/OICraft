@@ -11,6 +11,7 @@ public class Checkpoint {
         P, AC, WA, TLE, MLE, RE, CE
     }
 
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     private int usedTime;
@@ -20,26 +21,19 @@ public class Checkpoint {
     protected Checkpoint() {
     }
 
-    public Checkpoint(int submissionId, int ioPairId) {
-        this.submissionAndIOPair = new SubmissionAndIOPair(submissionId, ioPairId);
-    }
+    // public Checkpoint(int submissionId, int ioPairId) {
+    //     this.submissionAndIOPair = new SubmissionAndIOPair(submissionId, ioPairId);
+    // }
 
     @Embeddable
     public static class SubmissionAndIOPair {
-        // FIXME: This may be wrong
         @OneToOne
         @JoinColumn(name = "submission_id")
         private Submission submission;
+
         @OneToOne
         @JoinColumn(name = "io_pair_id")
-        private IOPair ioPairId;
-
-        public SubmissionAndIOPair(int submissionId, int ioPairId) {
-            this.submission = new Submission();
-            this.ioPairId = new IOPair();
-            this.submission.setId(submissionId);
-            this.ioPairId.setId(ioPairId);
-        }
+        private IOPair ioPair;
 
         protected SubmissionAndIOPair() {
         }
@@ -49,15 +43,11 @@ public class Checkpoint {
         }
 
         public void setSubmissionId(int submissionId) {
-            this.submission.setUserId(submissionId);
+            this.submission.setId(submissionId);
         }
 
-        public int getIoPairId() {
-            return ioPairId.getId();
-        }
-
-        public void setIoPairId(int ioPairId) {
-            this.ioPairId.setId(ioPairId);
+        public IOPair getIOPair() {
+            return ioPair;
         }
 
         @Override
@@ -68,12 +58,12 @@ public class Checkpoint {
             if (!(obj instanceof SubmissionAndIOPair other)) {
                 return false;
             }
-            return submission.getId() == other.getSubmissionId() && ioPairId.getId() == other.getIoPairId();
+            return submission.getId() == other.submission.getId() && ioPair.equals(other.ioPair);
         }
 
         @Override
         public int hashCode() {
-            return submission.getId() * 31 + ioPairId.getId();
+            return submission.getId() + ioPair.hashCode();
         }
     }
 
@@ -85,12 +75,8 @@ public class Checkpoint {
         this.submissionAndIOPair.setSubmissionId(submissionId);
     }
 
-    public int getIoPairId() {
-        return submissionAndIOPair.getIoPairId();
-    }
-
-    public void setIoPairId(int ioPairId) {
-        this.submissionAndIOPair.setIoPairId(ioPairId);
+    public IOPair getIOPair() {
+        return submissionAndIOPair.getIOPair();
     }
 
     public String getStatus() {

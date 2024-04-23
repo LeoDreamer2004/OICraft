@@ -1,34 +1,44 @@
 package org.dindier.oicraft.dao.impl;
 
 import org.dindier.oicraft.dao.SubmissionDao;
+import org.dindier.oicraft.dao.repository.ProblemRepository;
+import org.dindier.oicraft.dao.repository.SubmissionRepository;
+import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.Submission;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository("submissionDao")
 public class JdbcSubmissionDao implements SubmissionDao {
+    private SubmissionRepository submissionRepository;
+    private ProblemRepository problemRepository;
+
+    @Autowired
+    public void setSubmissionRepository(SubmissionRepository submissionRepository) {
+        this.submissionRepository = submissionRepository;
+    }
+
+    @Autowired
+    public void setProblemRepository(ProblemRepository problemRepository) {
+        this.problemRepository = problemRepository;
+    }
+
     @Override
     public void createSubmission(Submission submission) {
-
+        submissionRepository.save(submission);
     }
 
     @Override
     public Submission getSubmissionById(int id) {
-        // TODO: Implement this method
-
-
-        // A temporary implementation for testing
-        Submission submission = new Submission(1,
-                "a, b = map(input().split())\nprint(a + b)", Submission.Language.PYTHON);
-        submission.setStatus(Submission.Status.PASSED);
-        return submission;
+        return submissionRepository.findById(id).orElse(null);
     }
 
     @Override
     public Iterable<Submission> getSubmissionsByProblemId(int problemId) {
-        return List.of(
-                getSubmissionById(1)
-        );
+        return null;
+        // return problemRepository
+        //         .findById(problemId)
+        //         .map(Problem::getSubmissions)
+        //         .orElse(null);
     }
 }

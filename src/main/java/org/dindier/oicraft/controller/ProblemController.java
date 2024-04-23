@@ -48,7 +48,7 @@ public class ProblemController {
     public ModelAndView problem(@PathVariable int id) {
         return new ModelAndView("problem/problem")
                 .addObject("problem", problemDao.getProblemById(id))
-                .addObject("samples", problemDao.getSamplesById(id));
+                .addObject("samples", problemDao.getSamplesByProblemId(id));
     }
 
     @GetMapping("/problem/new")
@@ -85,7 +85,7 @@ public class ProblemController {
     @GetMapping("/problem/{id}/history")
     public ModelAndView history(@PathVariable int id) {
         Iterable<Submission> submissions = submissionDao.getSubmissionsByProblemId(id);
-        Iterable<User> users = IterableUtil.map(submissions, submission -> userDao.getUserById(submission.getUserId()));
+        Iterable<User> users = IterableUtil.map(submissions, submission -> userDao.getUserById(submission.getUser().getId()));
         return new ModelAndView("problem/submissionHistory")
                 .addObject("problem", problemDao.getProblemById(id))
                 .addObject("submissions", submissions)

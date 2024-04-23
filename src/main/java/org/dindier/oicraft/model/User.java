@@ -3,6 +3,8 @@ package org.dindier.oicraft.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 /*
  * FIXME: May use springSecurity for user authentication later
  */
@@ -18,6 +20,9 @@ public class User {
     private Role role;
     @Enumerated(EnumType.STRING)
     private Grade grade;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Submission> submissions;
 
     protected User() {
     }
