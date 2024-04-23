@@ -35,21 +35,19 @@
                     <span th:case="0" class="iconfont icon-jianhao" style="color: gray"></span>
                     <span th:case="-1" class="iconfont icon-cuowu" style="color: firebrick"></span>
                 </td>
-                <td th:text="${problem.id}"></td>
+                <td th:text="${problem.getIdString()}"></td>
                 <td>
                     <a th:href="@{/problem/{id}(id=${problem.id})}" th:text="${problem.title}"></a>
                 </td>
-                <td th:if="${problem.difficulty} eq 'easy'">
+                <td th:if="${problem.isEasy()}">
                     <span class="badge badge-success my-large-badge">简单</span>
                 </td>
-                <td th:if="${problem.difficulty} eq 'medium'">
+                <td th:if="${problem.isMedium()}">
                     <span class="badge badge-warning my-large-badge">中等</span>
                 </td>
-                <td th:if="${problem.difficulty} eq 'hard'">
+                <td th:if="${problem.isHard()}">
                     <span class="badge badge-danger my-large-badge">困难</span>
                 </td>
-                <td th:unless="${problem.difficulty} eq 'easy' or ${problem.difficulty} eq 'medium' or ${problem.difficulty} eq 'hard'">
-                    <span class="badge badge-secondary my-large-badge">未评定</span>
                 <td th:if="${problem.submit == 0}">NaN</td>
                 <td th:unless="${problem.submit == 0}" th:text="${problem.passed / problem.submit}"></td>
         </table>

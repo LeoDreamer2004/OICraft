@@ -35,7 +35,7 @@ public class SubmissionController {
 
         Problem problem = problemDao.getProblemById(submission.getProblemId());
         if (problemService.hasPassed(user, problem) <= 0
-                && !(user.getRole().equals(User.Role.ADMIN))
+                && !(user.isAdmin())
                 && !(user.getId() == submission.getUserId())) {
             return new ModelAndView("submission/notAllowed")
                     .addObject("problem", problemDao.getProblemById(submission.getProblemId()));

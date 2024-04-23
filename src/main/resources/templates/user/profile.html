@@ -12,18 +12,35 @@
 <body>
 <div class="profile-header">
     <div th:insert="~{index :: nav}"></div>
-    <h2 th:text="${seeUser.name}"></h2>
+    <h2 th:text="${seeUser.name}" th:class="${seeUser.getGradeString()}"></h2>
     <p>这个人很懒，什么都没有留下</p>
 </div>
 <main role="main" class="container">
     <div class="card">
         <h5 class="card-header">通过题目</h5>
         <div class="card-body">
-            <span th:if = "${passed eq null}">无</span>
+            <span class="badge badge-success mt-2 my-large-badge">简单</span>
+            <br/>
             <span th:each="problem : ${passed}">
-                <a th:href="@{'/problems/' + ${problem.id}}" th:text="${problem.title}"></a>
+                <a th:if="${problem.isEasy()}" th:href="@{'/problems/' + ${problem.id}}"
+                   th:text="${problem.getIdString()}"></a>
+            </span>
+            <br/>
+            <span class="badge badge-warning mt-2 my-large-badge">中等</span>
+            <br/>
+            <span th:each="problem : ${passed}">
+                <a th:if="${problem.isMedium()}" th:href="@{'/problems/' + ${problem.id}}"
+                   th:text="${problem.getIdString()}"></a>
+            </span>
+            <br/>
+            <span class="badge badge-danger mt-2 my-large-badge">困难</span>
+            <br/>
+            <span th:each="problem : ${passed}">
+                <a th:if="${problem.isHard()}" th:href="@{'/problems/' + ${problem.id}}"
+                   th:text="${problem.getIdString()}"></a>
             </span>
         </div>
+    </div>
 </main>
 </body>
 </html>

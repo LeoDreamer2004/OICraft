@@ -67,29 +67,7 @@ public class User {
     }
 
     public enum Grade {
-        BEGINNER("Beginner"),
-        INTERMEDIATE("Intermediate"),
-        ADVANCED("Advanced"),
-        EXPERT("Expert");
-
-        private final String displayName;
-
-        Grade(String displayName) {
-            this.displayName = displayName;
-        }
-
-        public String getDisplayName() {
-            return displayName;
-        }
-
-        public static Grade fromString(String text) {
-            for (Grade g : Grade.values()) {
-                if (g.displayName.equalsIgnoreCase(text)) {
-                    return g;
-                }
-            }
-            return null;
-        }
+        BEGINNER, INTERMEDIATE, ADVANCED, EXPERT
     }
 
     public User(String name, String password, Role role, Grade grade) {
@@ -97,5 +75,13 @@ public class User {
         this.password = password;
         this.role = role;
         this.grade = grade;
+    }
+
+    public boolean isAdmin() {
+        return role.equals(Role.ADMIN);
+    }
+
+    public String getGradeString() {
+        return grade.toString();
     }
 }

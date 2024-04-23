@@ -99,10 +99,7 @@
                 <p class="text-status">MLE</p>
                 <p class="text-cost" th:text="${checkpoint.formatUsageString()}"></p>
                 <div class="msg-box" th:text="${checkpoint.info}"></div>
-                <div class="checkpoint-num">
-                    <span>#</span>
-                    <span th:text="${checkpoint.ioPairId}"></span>
-                </div>
+                <div class="checkpoint-num">#[[${checkpoint.ioPairId}]]</div>
             </div>
         </div>
     </div>
