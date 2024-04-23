@@ -19,6 +19,9 @@ public class Problem {
     @OneToMany(mappedBy = "problem", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<IOPair> ioPairs;
 
+    @OneToMany(mappedBy = "problem", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Submission> submissions;
+
     @Enumerated(EnumType.STRING)
     private Difficulty difficulty;
 
@@ -161,5 +164,9 @@ public class Problem {
 
     public List<IOPair> getIoPairs() {
         return ioPairs;
+    }
+
+    public List<Submission> getSubmissions() {
+        return submissions;
     }
 }
