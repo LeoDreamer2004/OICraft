@@ -2,8 +2,10 @@ package org.dindier.oicraft.dao.impl;
 
 import org.dindier.oicraft.dao.ProblemDao;
 import org.dindier.oicraft.dao.repository.ProblemRepository;
+import org.dindier.oicraft.model.Checkpoint;
 import org.dindier.oicraft.model.IOPair;
 import org.dindier.oicraft.model.Problem;
+import org.dindier.oicraft.model.Submission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -59,5 +61,31 @@ public class JdbcProblemDao implements ProblemDao {
     @Override
     public void deleteProblem(Problem problem) {
         this.problemRepository.delete(problem);
+    }
+
+    @Override
+    public Integer getSubmissionCount(int problemId) {
+        return problemRepository
+                .findById(problemId)
+                .map(Problem::getSubmissions)
+                .map(List::size)
+                .orElse(null);
+    }
+
+    @Override
+    public Integer getPassedSubmissionCount(int problemId) {
+        return problemRepository
+                .findById(problemId)
+                .map(Problem::getSubmissions)
+                .map(submissions -> submissions
+                        .stream()
+                        .map(submission -> submission
+                                .getCheckpoints()
+                                .stream()
+                                .allMatch(Checkpoint::isPassed) ? 1 : 0
+                        )
+                        .reduce(0, Integer::sum)
+                )
+                .orElse(null);
     }
 }

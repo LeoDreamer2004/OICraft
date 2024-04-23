@@ -31,10 +31,15 @@ public class JdbcCheckpointDao implements CheckpointDao {
     }
 
     @Override
+    public Checkpoint updateCheckpoint(Checkpoint checkpoint) {
+        return this.checkpointRepository.save(checkpoint);
+    }
+
+    @Override
     public Iterable<Checkpoint> getCheckpointsBySubmissionId(int id) {
         return submissionRepository
                 .findById(id)
                 .map(Submission::getCheckpoints)
-                .orElse(null);
+                .orElse(List.of());
     }
 }

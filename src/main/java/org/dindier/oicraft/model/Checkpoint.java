@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 @Entity
 public class Checkpoint {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -17,7 +18,7 @@ public class Checkpoint {
         P, AC, WA, TLE, MLE, RE, CE;
 
         public static Status fromString(String status) {
-            for (Status s: Status.values()) {
+            for (Status s : Status.values()) {
                 if (s.toString().equals(status)) {
                     return s;
                 }
@@ -96,6 +97,10 @@ public class Checkpoint {
 
     public void setIoPair(IOPair ioPair) {
         this.ioPair = ioPair;
+    }
+
+    public boolean isPassed() {
+        return status == Status.AC;
     }
 
     /**

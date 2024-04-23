@@ -8,6 +8,8 @@ import org.dindier.oicraft.model.Submission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository("submissionDao")
 public class JdbcSubmissionDao implements SubmissionDao {
     private SubmissionRepository submissionRepository;
@@ -38,7 +40,7 @@ public class JdbcSubmissionDao implements SubmissionDao {
         return problemRepository
                 .findById(problemId)
                 .map(Problem::getSubmissions)
-                .orElse(null);
+                .orElse(List.of());
     }
 
     @Override
