@@ -50,7 +50,8 @@ public class ProblemController {
         return new ModelAndView("problem/problem")
                 .addObject("problem", problem)
                 .addObject("samples", problemDao.getSamplesById(id))
-                .addObject("author", userDao.getUserById(problem.getAuthorId()));
+                .addObject("author", userDao.getUserById(problem.getAuthorId()))
+                .addObject("canEdit", canEdit(problem));
     }
 
     @GetMapping("/problem/new")
@@ -107,6 +108,29 @@ public class ProblemController {
         RedirectView redirectView = new RedirectView();
         redirectView.setUrl("/submission/" + submissionId);
         return redirectView;
+    }
+
+    @GetMapping("/problem/{id}/edit")
+    public ModelAndView edit(@PathVariable int id) {
+        Problem problem = problemDao.getProblemById(id);
+        if (!canEdit(problem))
+            return new ModelAndView("error/403");
+        return new ModelAndView("problem/edit")
+                .addObject("problem", problem);
+    }
+
+    @GetMapping("/problem/{id}/delete")
+    public ModelAndView delete(@PathVariable int id) {
+        Problem problem = problemDao.getProblemById(id);
+        if (!canEdit(problem))
+            return new ModelAndView("error/403");
+        return new ModelAndView("/problem/delete").
+                addObject("problem", problem);
+    }
+
+    private boolean canEdit(Problem problem){
+        User user = userService.getUserByRequest(request);
+        return (user != null) && ((user.isAdmin()) || (user.getId() == problem.getAuthorId()));
     }
 
     @Autowired
