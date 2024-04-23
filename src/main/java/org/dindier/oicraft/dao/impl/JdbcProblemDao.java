@@ -50,4 +50,14 @@ public class JdbcProblemDao implements ProblemDao {
         }
         return ioPairs.stream().filter(ioPair -> ioPair.getType().equals(IOPair.Type.TEST)).toList();
     }
+
+    @Override
+    public void updateProblem(Problem problem) {
+        this.problemRepository.save(problem);
+    }
+
+    @Override
+    public void deleteProblem(Problem problem) {
+        this.problemRepository.delete(problem);
+    }
 }

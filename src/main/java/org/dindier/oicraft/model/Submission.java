@@ -70,10 +70,6 @@ public class Submission {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public int getProblemId() {
         return problem.getId();
     }

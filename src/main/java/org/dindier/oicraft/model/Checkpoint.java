@@ -72,7 +72,7 @@ public class Checkpoint {
         return id;
     }
 
-    /*
+    /**
      * A method to format the usage string
      */
     public String formatUsageString() {

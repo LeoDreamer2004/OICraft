@@ -34,6 +34,12 @@ public class ProblemController {
     private SubmissionService submissionService;
     private HttpServletRequest request;
 
+    private static final Map<String, Problem.Difficulty> difficultyMap = Map.of(
+            "easy", Problem.Difficulty.EASY,
+            "medium", Problem.Difficulty.MEDIUM,
+            "hard", Problem.Difficulty.HARD
+    );
+
     @GetMapping("/problems")
     public ModelAndView problems() {
         Iterable<Problem> problems = problemDao.getProblemList();
@@ -67,16 +73,12 @@ public class ProblemController {
                                       @RequestParam String difficulty,
                                       @RequestParam int timeLimit,
                                       @RequestParam int memoryLimit) {
-        Map<String, Problem.Difficulty> difficultyMap = Map.of(
-                "easy", Problem.Difficulty.EASY,
-                "medium", Problem.Difficulty.MEDIUM,
-                "hard", Problem.Difficulty.HARD
-        );
+
         User user = userService.getUserByRequest(request);
         if (user == null)
             return new RedirectView("/login");
         Problem problem = new Problem(user.getId(), title, description, inputFormat, outputFormat,
-                difficultyMap.get(difficulty), timeLimit, memoryLimit);
+                difficultyMap.get(difficulty), timeLimit * 1024, memoryLimit);
         problemDao.createProblem(problem);
         return new RedirectView("/problem/" + problem.getId());
     }
@@ -119,6 +121,29 @@ public class ProblemController {
                 .addObject("problem", problem);
     }
 
+    @PostMapping("/problem/{id}/edit")
+    public RedirectView editConfirm(@PathVariable int id,
+                                    @RequestParam String title,
+                                    @RequestParam String description,
+                                    @RequestParam String inputFormat,
+                                    @RequestParam String outputFormat,
+                                    @RequestParam String difficulty,
+                                    @RequestParam int timeLimit,
+                                    @RequestParam int memoryLimit) {
+        Problem problem = problemDao.getProblemById(id);
+        problem.setTitle(title);
+        problem.setDescription(description);
+        problem.setInputFormat(inputFormat);
+        problem.setOutputFormat(outputFormat);
+        problem.setDifficulty(difficultyMap.get(difficulty));
+        problem.setTimeLimit(timeLimit);
+        problem.setMemoryLimit(memoryLimit * 1024);
+
+        if (!canEdit(problem))
+            return new RedirectView("error/403");
+        return new RedirectView("/problem");
+    }
+
     @GetMapping("/problem/{id}/delete")
     public ModelAndView delete(@PathVariable int id) {
         Problem problem = problemDao.getProblemById(id);
@@ -128,7 +153,26 @@ public class ProblemController {
                 addObject("problem", problem);
     }
 
-    private boolean canEdit(Problem problem){
+    @PostMapping("/problem/{id}/delete")
+    public RedirectView deleteConfirm(@PathVariable int id) {
+        Problem problem = problemDao.getProblemById(id);
+        if (!canEdit(problem))
+            return new RedirectView("error/403");
+        problemDao.deleteProblem(problem);
+        return new RedirectView("/problem");
+    }
+
+    @GetMapping("/problem/{id}/edit/checkpoints")
+    public ModelAndView editCheckpoints(@PathVariable int id) {
+        Problem problem = problemDao.getProblemById(id);
+        if (!canEdit(problem))
+            return new ModelAndView("error/403");
+        return new ModelAndView("/problem/editCheckpoints").
+                addObject("problem", problem);
+    }
+
+
+    private boolean canEdit(Problem problem) {
         User user = userService.getUserByRequest(request);
         return (user != null) && ((user.isAdmin()) || (user.getId() == problem.getAuthorId()));
     }
