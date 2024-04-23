@@ -40,6 +40,7 @@ public class Problem {
     public Problem(int authorId, String title, String description, String inputFormat, String outputFormat,
                    Difficulty difficulty, int timeLimit, int memoryLimit) {
         this.authorId = authorId;
+        this.title = title;
         this.description = description;
         this.inputFormat = inputFormat;
         this.outputFormat = outputFormat;

@@ -9,6 +9,8 @@ import org.dindier.oicraft.util.CodeChecker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -18,6 +20,7 @@ public class ProblemServiceImpl implements ProblemService {
     private ProblemDao problemDao;
     private CheckpointDao checkpointDao;
     private final ExecutorService executorService = Executors.newCachedThreadPool();
+
     /**
      * Create the submission model and return its id first,
      * and then use the threading pool to test the code
@@ -43,36 +46,33 @@ public class ProblemServiceImpl implements ProblemService {
             CodeChecker codeChecker = new CodeChecker();
             int score = 0;
             boolean ifPass = true;
-            for(IOPair ioPair : ioPairs) {
-                if(ioPair.getType()== IOPair.Type.SAMPLE) continue;
+            for (IOPair ioPair : ioPairs) {
+                if (ioPair.getType() == IOPair.Type.SAMPLE) continue;
                 try {
                     codeChecker.setIO(code, language, ioPair.getInput(), ioPair.getOutput(), id)
                             .setLimit(problem.getTimeLimit(), problem.getMemoryLimit())
                             .test();
-                }
-                catch(Exception e) {
+                } catch (Exception e) {
                 }
                 Checkpoint checkpoint = new Checkpoint(finalSubmission,
                         ioPair,
                         Checkpoint.Status.fromString(codeChecker.getStatus()),
-                        codeChecker.getUsedTime(),codeChecker.getUsedMemory(),
+                        codeChecker.getUsedTime(), codeChecker.getUsedMemory(),
                         codeChecker.getInfo()
                 );
                 checkpoint.setSubmission(finalSubmission);
                 checkpoint.setIoPair(ioPair);
                 checkpointDao.createCheckpoint(checkpoint);
-                if(codeChecker.getStatus().equals("AC")){
-                    score+=ioPair.getScore();
-                }
-                else{
+                if (codeChecker.getStatus().equals("AC")) {
+                    score += ioPair.getScore();
+                } else {
                     ifPass = false;
                 }
             }
             finalSubmission.setScore(score);
-            if(ifPass){
+            if (ifPass) {
                 finalSubmission.setStatus(Submission.Status.PASSED);
-            }
-            else{
+            } else {
                 finalSubmission.setStatus(Submission.Status.FAILED);
             }
             submissionDao.updateSubmission(finalSubmission);
@@ -92,6 +92,21 @@ public class ProblemServiceImpl implements ProblemService {
         // TODO: Implement this method
 
         return null;
+    }
+
+    @Override
+    public byte[] getProblemMarkdown(Problem problem) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("# ").append(problem.getTitle()).append("\n\n")
+                .append("## 题目描述\n\n").append(problem.getDescription()).append("\n\n")
+                .append("## 输入格式\n\n").append(problem.getInputFormat()).append("\n\n")
+                .append("## 输出格式\n\n").append(problem.getOutputFormat()).append("\n\n");
+        for (IOPair ioPair : problemDao.getTestsById(problem.getId())) {
+            sb.append("## 样例\n\n")
+                    .append("#### 输入\n\n").append(ioPair.getInput()).append("\n\n")
+                    .append("#### 输出\n\n").append(ioPair.getOutput()).append("\n\n");
+        }
+        return sb.toString().getBytes();
     }
 
     @Autowired

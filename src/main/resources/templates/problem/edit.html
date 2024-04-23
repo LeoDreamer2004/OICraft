@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>编辑题目</title>
-    <link th:replace="~{base :: bootstrap}"/>
-    <link th:replace="~{base :: baseStyle}"/>
+    <th:block th:replace="~{base :: baseStyle}"></th:block>
 </head>
 <body>
 <div class="header">
@@ -54,7 +53,7 @@
             </div>
             <div class="form-group">
                 <label for="memoryLimit">内存限制（MB）</label>
-                <input type="number" class="form-control" id="memoryLimit" name="memoryLimit" th:value="${problem.memoryLimit}" required>
+                <input type="number" class="form-control" id="memoryLimit" name="memoryLimit" th:value="${problem.memoryLimit / 1024}" required>
             </div>
             <button type="submit" class="btn btn-primary">确认修改</button>
         </form>

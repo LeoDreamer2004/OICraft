@@ -13,6 +13,8 @@ import org.dindier.oicraft.service.SubmissionService;
 import org.dindier.oicraft.service.UserService;
 import org.dindier.oicraft.util.IterableUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -72,20 +74,20 @@ public class ProblemController {
     }
 
     @PostMapping("/problem/new")
-    public RedirectView createProblem(@RequestParam String title,
-                                      @RequestParam String description,
-                                      @RequestParam String inputFormat,
-                                      @RequestParam String outputFormat,
-                                      @RequestParam String difficulty,
-                                      @RequestParam int timeLimit,
-                                      @RequestParam int memoryLimit) {
+    public RedirectView createProblem(@RequestParam("title") String title,
+                                      @RequestParam("description") String description,
+                                      @RequestParam("inputFormat") String inputFormat,
+                                      @RequestParam("outputFormat") String outputFormat,
+                                      @RequestParam("difficulty") String difficulty,
+                                      @RequestParam("timeLimit") int timeLimit,
+                                      @RequestParam("memoryLimit") int memoryLimit) {
 
         User user = userService.getUserByRequest(request);
         if (user == null)
             return new RedirectView("/login");
         Problem problem = new Problem(user.getId(), title, description, inputFormat, outputFormat,
                 difficultyMap.get(difficulty), timeLimit * 1024, memoryLimit);
-        problemDao.createProblem(problem);
+        problem = problemDao.createProblem(problem);
         return new RedirectView("/problem/" + problem.getId());
     }
 
@@ -93,6 +95,15 @@ public class ProblemController {
     public ModelAndView submitCode(@PathVariable int id) {
         return new ModelAndView("problem/submit")
                 .addObject("problem", problemDao.getProblemById(id));
+    }
+
+    @GetMapping("/problem/{id}/download")
+    public ResponseEntity<InputStreamSource> download(@PathVariable int id){
+        Problem problem = problemDao.getProblemById(id);
+        InputStreamSource inputStreamSource = new ByteArrayResource(problemService.getProblemMarkdown(problem));
+        return ResponseEntity.ok().header("Content-Disposition",
+                "attachment; filename=\"%s.md\"".formatted(problem.getIdString()))
+                .body(inputStreamSource);
     }
 
     @GetMapping("/problem/{id}/history")
@@ -127,14 +138,16 @@ public class ProblemController {
 
     @PostMapping("/problem/{id}/edit")
     public RedirectView editConfirm(@PathVariable int id,
-                                    @RequestParam String title,
-                                    @RequestParam String description,
-                                    @RequestParam String inputFormat,
-                                    @RequestParam String outputFormat,
-                                    @RequestParam String difficulty,
-                                    @RequestParam int timeLimit,
-                                    @RequestParam int memoryLimit) {
+                                    @RequestParam("title") String title,
+                                    @RequestParam("description") String description,
+                                    @RequestParam("inputFormat") String inputFormat,
+                                    @RequestParam("outputFormat") String outputFormat,
+                                    @RequestParam("difficulty") String difficulty,
+                                    @RequestParam("timeLimit") int timeLimit,
+                                    @RequestParam("memoryLimit") int memoryLimit) {
         Problem problem = problemDao.getProblemById(id);
+        if (!canEdit(problem))
+            return new RedirectView("error/403");
         problem.setTitle(title);
         problem.setDescription(description);
         problem.setInputFormat(inputFormat);
@@ -142,10 +155,8 @@ public class ProblemController {
         problem.setDifficulty(difficultyMap.get(difficulty));
         problem.setTimeLimit(timeLimit);
         problem.setMemoryLimit(memoryLimit * 1024);
-
-        if (!canEdit(problem))
-            return new RedirectView("error/403");
-        return new RedirectView("/problem");
+        problemDao.updateProblem(problem);
+        return new RedirectView("/problem/" + id);
     }
 
     @GetMapping("/problem/{id}/delete")
