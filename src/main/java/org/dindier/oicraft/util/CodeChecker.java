@@ -9,7 +9,7 @@ import java.util.TimerTask;
 
 public class CodeChecker {
 
-    public static final String FOLDER = "_temp_codes/";
+    public static final String FOLDER = "temp/";
     private String codePath;
     private String language;
     private String inputData;

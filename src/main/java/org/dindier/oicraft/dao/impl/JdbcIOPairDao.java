@@ -27,13 +27,13 @@ public class JdbcIOPairDao implements IOPairDao {
     }
 
     @Override
-    public void createIOPair(IOPair ioPair) {
-        ioPairRepository.save(ioPair);
+    public IOPair createIOPair(IOPair ioPair) {
+        return ioPairRepository.save(ioPair);
     }
 
     @Override
-    public void updateIOPair(IOPair ioPair) {
-        ioPairRepository.save(ioPair);
+    public IOPair updateIOPair(IOPair ioPair) {
+        return ioPairRepository.save(ioPair);
     }
 
     @Override
@@ -59,5 +59,13 @@ public class JdbcIOPairDao implements IOPairDao {
                 .findById(problemId)
                 .map(Problem::getIoPairs)
                 .orElse(null);
+    }
+
+    @Override
+    public void deleteIOPairByProblemId(int problemId) {
+        List<IOPair> ioPairs = getIOPairByProblemId(problemId);
+        for (IOPair ioPair : ioPairs) {
+            deleteIOPair(ioPair);
+        }
     }
 }

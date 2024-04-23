@@ -24,8 +24,8 @@ public class JdbcSubmissionDao implements SubmissionDao {
     }
 
     @Override
-    public void createSubmission(Submission submission) {
-        submissionRepository.save(submission);
+    public Submission createSubmission(Submission submission) {
+        return submissionRepository.save(submission);
     }
 
     @Override
@@ -39,5 +39,15 @@ public class JdbcSubmissionDao implements SubmissionDao {
                 .findById(problemId)
                 .map(Problem::getSubmissions)
                 .orElse(null);
+    }
+
+    @Override
+    public Iterable<Submission> getAllSubmissions() {
+        return submissionRepository.findAll();
+    }
+
+    @Override
+    public Submission updateSubmission(Submission submission) {
+        return submissionRepository.save(submission);
     }
 }

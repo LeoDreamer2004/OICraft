@@ -3,7 +3,8 @@ package org.dindier.oicraft.dao;
 import org.dindier.oicraft.model.User;
 
 public interface UserDao {
-    void createUser(User user);
+    User createUser(User user);
+    User updateUser(User user);
 
     /**
      * Get user by ID from database

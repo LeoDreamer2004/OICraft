@@ -26,8 +26,8 @@ public class JdbcCheckpointDao implements CheckpointDao {
     }
 
     @Override
-    public void createCheckpoint(Checkpoint checkpoint) {
-        this.checkpointRepository.save(checkpoint);
+    public Checkpoint createCheckpoint(Checkpoint checkpoint) {
+        return this.checkpointRepository.save(checkpoint);
     }
 
     @Override

@@ -26,11 +26,13 @@
     <div class="card my-card p-3">
         <form th:action="@{/problem/{id}/edit/checkpoints(id=${problem.id})}" method="post">
             <div class="form-group">
-                <label for="file">文件格式：请上传一个zip文件，其中包含两个文件夹sample和test，分别代表样例用/测试用。<br />
-                    其内输入用X.in和X.out表示，当X相同时认为是匹配的一对输入输出对。</label>
-                <input type="file" id="file" name="file" required>
+                <p>文件格式：请上传一个zip文件，其中包含两个文件夹sample和test，分别代表样例用/测试用。<br/>
+                    其内输入用X.in和X.out表示，当X相同时认为是匹配的一对输入输出对。</p>
+                <b>请注意：每次上传之后会覆盖掉原有的测试点，如果需要请下载之前的测试点！</b>
+                <input type="file" id="file" name="file" accept="application/zip" required>
             </div>
-            <button type="submit" class="btn btn-primary">确认修改</button>
+            <a th:href="@{/problem/{id}/checkpoints/download(id=${problem.id})}" class="btn btn-primary">下载测试点</a>
+            <button type="submit" class="btn btn-danger">确认修改</button>
         </form>
     </div>
 </main>

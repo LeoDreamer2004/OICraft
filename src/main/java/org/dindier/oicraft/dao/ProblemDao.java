@@ -8,7 +8,7 @@ public interface ProblemDao {
     /**
      * Create a new problem into the database
      */
-    void createProblem(Problem problem);
+    Problem createProblem(Problem problem);
 
     Problem getProblemById(int id);
 
@@ -18,7 +18,7 @@ public interface ProblemDao {
 
     Iterable<IOPair> getTestsById(int id);
 
-    void updateProblem(Problem problem);
+    Problem updateProblem(Problem problem);
 
     void deleteProblem(Problem problem);
 }

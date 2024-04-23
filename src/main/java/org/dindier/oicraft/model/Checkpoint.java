@@ -14,7 +14,16 @@ public class Checkpoint {
     private IOPair ioPair;
 
     public enum Status {
-        P, AC, WA, TLE, MLE, RE, CE
+        P, AC, WA, TLE, MLE, RE, CE;
+
+        public static Status fromString(String status) {
+            for (Status s: Status.values()) {
+                if (s.toString().equals(status)) {
+                    return s;
+                }
+            }
+            return null;
+        }
     }
 
     @Enumerated(EnumType.STRING)
@@ -26,6 +35,15 @@ public class Checkpoint {
     private String info;
 
     protected Checkpoint() {
+    }
+
+    public Checkpoint(Submission submission, IOPair ioPair, Status status, int usedTime, int usedMemory, String info) {
+        this.submission = submission;
+        this.ioPair = ioPair;
+        this.status = status;
+        this.usedTime = usedTime;
+        this.usedMemory = usedMemory;
+        this.info = info;
     }
 
     public Submission getSubmission() {
@@ -70,6 +88,14 @@ public class Checkpoint {
 
     public int getId() {
         return id;
+    }
+
+    public void setSubmission(Submission submission) {
+        this.submission = submission;
+    }
+
+    public void setIoPair(IOPair ioPair) {
+        this.ioPair = ioPair;
     }
 
     /**

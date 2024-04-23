@@ -19,8 +19,8 @@ public class JdbcProblemDao implements ProblemDao {
     }
 
     @Override
-    public void createProblem(Problem problem) {
-        problemRepository.save(problem);
+    public Problem createProblem(Problem problem) {
+        return problemRepository.save(problem);
     }
 
     @Override
@@ -52,8 +52,8 @@ public class JdbcProblemDao implements ProblemDao {
     }
 
     @Override
-    public void updateProblem(Problem problem) {
-        this.problemRepository.save(problem);
+    public Problem updateProblem(Problem problem) {
+        return this.problemRepository.save(problem);
     }
 
     @Override
