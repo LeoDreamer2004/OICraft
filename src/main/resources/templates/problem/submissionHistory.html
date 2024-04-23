@@ -47,8 +47,8 @@
                     <span class="badge badge-warning my-large-badge">测试中</span>
                 </td>
                 <td>
-                    <a th:href="@{/profile/{id}(id=${submission.userId})}" th:text="${users[stat.index].name}"
-                       th:class="${users[stat.index].getGradeString()}"></a>
+                    <a th:href="@{/profile/{id}(id=${submission.user.id})}" th:text="${submission.user.name}"
+                       th:class="${submission.user.getGradeString()}"></a>
                 </td>
                 <td>
                     <span th:text="${submission.language}"></span>
