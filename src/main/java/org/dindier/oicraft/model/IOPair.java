@@ -15,7 +15,7 @@ public class IOPair {
     @Enumerated(EnumType.STRING)
     private Type type;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "problem_id")
     private Problem problem;
 
