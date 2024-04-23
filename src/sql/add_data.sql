@@ -8,7 +8,7 @@ values ('a + b 问题', '把两个数相加', '两个整数 $a$, $b$，以空格
 insert into IOPair(problem_id, input, output, score, type)
 values (1, '1 2', '3', 100, 'SAMPLE'),
        (1, '2 3', '5', 100, 'SAMPLE'),
-       (1, '5 7', '12', 100, 'SAMPLE');
+       (1, '5 7', '12', 100, 'TEST');
 
 insert into submission(user_id, problem_id, code, language, status, score)
 values (1, 1, 'a, b = map(input().split())\nprint(a + b)', 'PYTHON', 'PASSED', 100);

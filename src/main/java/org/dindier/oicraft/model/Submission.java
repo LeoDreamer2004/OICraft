@@ -19,8 +19,8 @@ public class Submission {
     @JoinColumn(name = "user_id")
     private User user;
 
-    // @OneToMany(mappedBy = "submissionAndIOPair", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    // private List<Checkpoint> checkpoints;
+    @OneToMany(mappedBy = "submission", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Checkpoint> checkpoints;
 
     protected Submission() {
     }
@@ -122,7 +122,7 @@ public class Submission {
         return problem;
     }
 
-    // public List<Checkpoint> getCheckpoints() {
-    //     return checkpoints;
-    // }
+    public List<Checkpoint> getCheckpoints() {
+        return checkpoints;
+    }
 }
