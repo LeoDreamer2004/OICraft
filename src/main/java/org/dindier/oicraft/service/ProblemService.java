@@ -3,6 +3,8 @@ package org.dindier.oicraft.service;
 import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.User;
 
+import java.io.InputStream;
+
 public interface ProblemService {
     /**
      * Create the submission model and return its id first,
@@ -20,6 +22,15 @@ public interface ProblemService {
 
     /**
      * Return the problems that the user has passed
+     * @param user The user to get the problems from
+     * @return The problems that the user has passed
      */
     Iterable<Problem> getPassedProblems(User user);
+
+    /**
+     * Return a byte array of the markdown file of the problem
+     * @param problem The problem to get the markdown from
+     * @return The byte array of the markdown file
+     */
+    byte[] getProblemMarkdown(Problem problem);
 }

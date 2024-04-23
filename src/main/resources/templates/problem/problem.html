@@ -3,12 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${problem.title}"></title>
-    <link th:replace="~{base :: bootstrap}"/>
-    <link th:replace="~{base :: baseStyle}"/>
+    <th:block th:replace="~{base :: baseStyle}"></th:block>
+    <th:block th:replace="~{base :: markdown}"></th:block>
     <link rel="stylesheet" href="/css/problem.css">
-    <link th:replace="~{base :: mathJaxScript}"/>
-    <link th:replace="~{base :: mathJaxConfig}"/>
-    <link th:replace="~{base :: iconfont}"/>
 </head>
 <body>
 <div class="header">
@@ -19,7 +16,7 @@
         <span>></span>
         <span th:text="${problem.title}"></span>
     </p>
-    <h2>-[[${problem.getIdString}]]- &nbsp;&nbsp; [[${problem.title}]]</h2>
+    <h2>[[${problem.getIdString}]] &nbsp;&nbsp; [[${problem.title}]]</h2>
     <!--/*@thymesVar id="user" type="org.dindier.oicraft.model.User"*/-->
     <a th:unless="${user eq null}" class="btn btn-primary mb-3"
        th:href="@{/problem/{id}/submit(id=${problem.id})}">提交代码</a>
@@ -51,17 +48,19 @@
     <div class="lr-container">
         <div class="problem-main">
             <div class="card my-card">
+                <a th:href="@{/problem/{id}/download(id=${problem.id})}"
+                style="position: absolute; right: 20px;">下载Markdown</a>
                 <div class="problem-part">
                     <h3 class="mt-0">题目描述</h3>
-                    <p th:text="${problem.description}"></p>
+                    <p id="description" th:text="${problem.description}"></p>
                 </div>
                 <div class="problem-part">
                     <h3>输入格式</h3>
-                    <p th:text="${problem.inputFormat}"></p>
+                    <p id="inputFormat" th:text="${problem.inputFormat}"></p>
                 </div>
                 <div class="problem-part">
                     <h3>输出格式</h3>
-                    <p th:text="${problem.outputFormat}"></p>
+                    <p id="outputFormat" th:text="${problem.outputFormat}"></p>
                 </div>
                 <div class="problem-part">
                     <h3>输入输出样例</h3>
@@ -113,6 +112,14 @@
             </div>
         </div>
     </div>
+    <script>
+        document.getElementById('description').innerHTML =
+            marked.parse(document.getElementById('description').innerHTML);
+        document.getElementById('inputFormat').innerHTML =
+            marked.parse(document.getElementById('inputFormat').innerHTML);
+        document.getElementById('outputFormat').innerHTML =
+            marked.parse(document.getElementById('outputFormat').innerHTML);
+    </script>
 </main>
 
 </body>

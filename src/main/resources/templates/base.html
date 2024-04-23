@@ -3,62 +3,65 @@
 <head>
     <title>OICraft</title>
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="/plugins/bootstrap-4.6.2-dist/css/bootstrap.min.css" th:fragment="bootstrap"/>
-    <link rel="stylesheet" href="/css/base.css" th:fragment="baseStyle"/>
+    <!-- Base Styles -->
+    <th:block th:fragment="baseStyle">
+        <link rel="stylesheet" href="/plugins/bootstrap-4.6.2-dist/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="/css/base.css"/>
+        <link rel="shortcut icon" href="favicon.ico">
+        <link rel="stylesheet" href="//at.alicdn.com/t/c/font_4514574_wkc5ieu6y3j.css">
+    </th:block>
 
-    <!-- MathJax -->
-    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
-            th:fragment="mathJaxScript"></script>
-    <script type="text/x-mathjax-config" th:fragment="mathJaxConfig">
-        MathJax.Hub.Config({
-          tex2jax: {
-            inlineMath: [
-              ['$', '$'],
-              ['\\(', '\\)']
-            ],
-            displayMath: [
-              ['$$', '$$'],
-              ['\\[', '\\]']
-            ],
-            processEscapes: true
-          },
-          TeX: {
-            extensions: ['AMSmath.js', 'AMSsymbols.js'],
-            equationNumbers: {
-              autoNumber: ['AMS'],
-              useLabelIds: true
-            },
-            Macros: {
-              hfill: '{}'
-            }
-          },
-          'HTML-CSS': {
-            linebreaks: {
-              automatic: true
-            },
-            availableFonts: ['TeX'],
-            scale: 110
-          },
-          SVG: {
-            linebreaks: {
-              automatic: true
-            }
-          }
-        })
-    </script>
+    <!-- MathJax and Markdown Support -->
+    <th:block th:fragment="markdown">
+        <!-- MathJax -->
+        <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({
+              tex2jax: {
+                inlineMath: [
+                  ['$', '$'],
+                  ['\\(', '\\)']
+                ],
+                displayMath: [
+                  ['$$', '$$'],
+                  ['\\[', '\\]']
+                ],
+                processEscapes: true
+              },
+              TeX: {
+                extensions: ['AMSmath.js', 'AMSsymbols.js'],
+                equationNumbers: {
+                  autoNumber: ['AMS'],
+                  useLabelIds: true
+                },
+                Macros: {
+                  hfill: '{}'
+                }
+              },
+              'HTML-CSS': {
+                linebreaks: {
+                  automatic: true
+                },
+                availableFonts: ['TeX'],
+                scale: 110
+              },
+              SVG: {
+                linebreaks: {
+                  automatic: true
+                }
+              }
+            })
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    </th:block>
 
     <!-- grammar highlight -->
-    <link rel="stylesheet" href="/plugins/grammar-highlight/docco.css" th:fragment="highlightStyle">
-    <script src="/plugins/grammar-highlight/highlight.min.js" th:fragment="highlightJS"></script>
-    <script th:fragment="highlightAll">hljs.highlightAll();</script>
-
-    <!-- iconfont -->
-    <link rel="stylesheet" href="//at.alicdn.com/t/c/font_4514574_wkc5ieu6y3j.css" th:fragment="iconfont">
+    <th:block th:fragment="highlight">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/docco.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script>
+    </th:block>
 </head>
 <body>
-
-<!-- header -->
-
 </body>
 </html>
