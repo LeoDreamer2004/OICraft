@@ -89,4 +89,8 @@ public class User {
     public String getGradeString() {
         return grade.toString();
     }
+
+    public boolean equals(User other) {
+        return this.id == other.id;
+    }
 }
