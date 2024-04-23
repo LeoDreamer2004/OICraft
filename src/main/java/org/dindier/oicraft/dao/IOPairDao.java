@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface IOPairDao {
 
-    void createIOPair(IOPair ioPair);
+    IOPair createIOPair(IOPair ioPair);
 
-    void updateIOPair(IOPair ioPair);
+    IOPair updateIOPair(IOPair ioPair);
 
     void deleteIOPair(IOPair ioPair);
 
@@ -17,4 +17,11 @@ public interface IOPairDao {
     void addIOPairs(List<IOPair> ioPairs);
 
     List<IOPair> getIOPairByProblemId(int problemId);
+
+    /**
+     * delete all IOPair with the problem id
+     *
+     * @param problemId the problem id which shows the IOPairs.
+     */
+    void deleteIOPairByProblemId(int problemId);
 }

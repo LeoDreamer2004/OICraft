@@ -7,20 +7,25 @@ import org.dindier.oicraft.dao.UserDao;
 import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.Submission;
 import org.dindier.oicraft.model.User;
+import org.dindier.oicraft.service.IOPairService;
 import org.dindier.oicraft.service.ProblemService;
 import org.dindier.oicraft.service.SubmissionService;
 import org.dindier.oicraft.service.UserService;
 import org.dindier.oicraft.util.IterableUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 
 
@@ -32,6 +37,7 @@ public class ProblemController {
     private UserService userService;
     private ProblemService problemService;
     private SubmissionService submissionService;
+    private IOPairService ioPairService;
     private HttpServletRequest request;
 
     private static final Map<String, Problem.Difficulty> difficultyMap = Map.of(
@@ -106,10 +112,8 @@ public class ProblemController {
         Problem problem = problemDao.getProblemById(id);
         model.addAttribute("problem", problem);
 
-        int submissionId = problemService.testCode(problem, code, language);
-        RedirectView redirectView = new RedirectView();
-        redirectView.setUrl("/submission/" + submissionId);
-        return redirectView;
+        int submissionId = problemService.testCode(userService.getUserByRequest(request), problem, code, language);
+        return new RedirectView("/submission/" + submissionId);
     }
 
     @GetMapping("/problem/{id}/edit")
@@ -167,8 +171,28 @@ public class ProblemController {
         Problem problem = problemDao.getProblemById(id);
         if (!canEdit(problem))
             return new ModelAndView("error/403");
-        return new ModelAndView("/problem/editCheckpoints").
-                addObject("problem", problem);
+        return new ModelAndView("/problem/editCheckpoints")
+                .addObject("problem", problem);
+    }
+
+    @PostMapping("/problem/{id}/edit/checkpoints")
+    public RedirectView editCheckpointsConfirm(@PathVariable int id,
+                                               @RequestParam("file") MultipartFile file) throws IOException {
+        Problem problem = problemDao.getProblemById(id);
+        if (!canEdit(problem))
+            return new RedirectView("error/403");
+        InputStream inputStream = file.getInputStream();
+        ioPairService.addIOPairByZip(inputStream, problem.getId());
+        return new RedirectView("/problems");
+    }
+
+    @GetMapping("/problem/{id}/checkpoints/download")
+    public ResponseEntity<byte[]> downloadCheckpoints(@PathVariable int id) throws IOException {
+        InputStream inputStream = ioPairService.getIOPairsStream(id);
+        byte[] bytes = inputStream.readAllBytes();
+        inputStream.close();
+        return ResponseEntity.ok().header("Content-Disposition",
+                "attachment; filename=\"checkpoints.zip\"").body(bytes);
     }
 
 
@@ -205,6 +229,11 @@ public class ProblemController {
     @Autowired
     public void setSubmissionService(SubmissionService submissionService) {
         this.submissionService = submissionService;
+    }
+
+    @Autowired
+    public void setIoPairService(IOPairService ioPairService) {
+        this.ioPairService = ioPairService;
     }
 
     @Autowired

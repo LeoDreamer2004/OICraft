@@ -1,11 +1,9 @@
 package org.dindier.oicraft.service.impl;
 
+import org.dindier.oicraft.dao.CheckpointDao;
 import org.dindier.oicraft.dao.ProblemDao;
 import org.dindier.oicraft.dao.SubmissionDao;
-import org.dindier.oicraft.model.IOPair;
-import org.dindier.oicraft.model.Problem;
-import org.dindier.oicraft.model.Submission;
-import org.dindier.oicraft.model.User;
+import org.dindier.oicraft.model.*;
 import org.dindier.oicraft.service.ProblemService;
 import org.dindier.oicraft.util.CodeChecker;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +16,14 @@ import java.util.concurrent.Executors;
 public class ProblemServiceImpl implements ProblemService {
     private SubmissionDao submissionDao;
     private ProblemDao problemDao;
+    private CheckpointDao checkpointDao;
     private final ExecutorService executorService = Executors.newCachedThreadPool();
     /**
      * Create the submission model and return its id first,
      * and then use the threading pool to test the code
      */
     @Override
-    public int testCode(Problem problem, String code, String language) {
+    public int testCode(User user, Problem problem, String code, String language) {
         // TODO: Implement this method
         Submission.Language lang = null;
         for (Submission.Language l : Submission.Language.values()) {
@@ -34,14 +33,49 @@ public class ProblemServiceImpl implements ProblemService {
             }
         }
         Submission submission = new Submission(problem, code, lang);
-        submissionDao.createSubmission(submission);
+        submission.setStatus(Submission.Status.WAITING);
+        submission.setUser(user);
+        submission = submissionDao.createSubmission(submission);
         int id = submission.getId();
+        Submission finalSubmission = submission;
         executorService.submit(() -> {
             Iterable<IOPair> ioPairs = problemDao.getTestsById(id);
             CodeChecker codeChecker = new CodeChecker();
+            int score = 0;
+            boolean ifPass = true;
             for(IOPair ioPair : ioPairs) {
-                // codeChecker.setIO()
+                if(ioPair.getType()== IOPair.Type.SAMPLE) continue;
+                try {
+                    codeChecker.setIO(code, language, ioPair.getInput(), ioPair.getOutput(), id)
+                            .setLimit(problem.getTimeLimit(), problem.getMemoryLimit())
+                            .test();
+                }
+                catch(Exception e) {
+                }
+                Checkpoint checkpoint = new Checkpoint(finalSubmission,
+                        ioPair,
+                        Checkpoint.Status.fromString(codeChecker.getStatus()),
+                        codeChecker.getUsedTime(),codeChecker.getUsedMemory(),
+                        codeChecker.getInfo()
+                );
+                checkpoint.setSubmission(finalSubmission);
+                checkpoint.setIoPair(ioPair);
+                checkpointDao.createCheckpoint(checkpoint);
+                if(codeChecker.getStatus().equals("AC")){
+                    score+=ioPair.getScore();
+                }
+                else{
+                    ifPass = false;
+                }
             }
+            finalSubmission.setScore(score);
+            if(ifPass){
+                finalSubmission.setStatus(Submission.Status.PASSED);
+            }
+            else{
+                finalSubmission.setStatus(Submission.Status.FAILED);
+            }
+            submissionDao.updateSubmission(finalSubmission);
         });
         return id;
     }
@@ -70,4 +104,8 @@ public class ProblemServiceImpl implements ProblemService {
         this.problemDao = problemDao;
     }
 
+    @Autowired
+    private void setCheckpointDao(CheckpointDao checkpointDao) {
+        this.checkpointDao = checkpointDao;
+    }
 }

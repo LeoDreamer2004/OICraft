@@ -16,8 +16,13 @@ public class JdbcUserDao implements UserDao {
     }
 
     @Override
-    public void createUser(User user) {
-        userRepository.save(user);
+    public User createUser(User user) {
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User updateUser(User user) {
+        return userRepository.save(user);
     }
 
     @Override

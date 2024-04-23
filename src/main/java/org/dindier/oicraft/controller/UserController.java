@@ -2,11 +2,9 @@ package org.dindier.oicraft.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.dindier.oicraft.dao.UserDao;
-import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.User;
 import org.dindier.oicraft.service.UserService;
 import org.dindier.oicraft.service.impl.ProblemServiceImpl;
-import org.dindier.oicraft.util.IterableUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,7 +45,7 @@ public class UserController {
     public ModelAndView register(@RequestParam("username") String username,
                                  @RequestParam("password") String password) {
         User user = new User(username, password, User.Role.USER, User.Grade.BEGINNER);
-        userDao.createUser(user);
+        user = userDao.createUser(user);
         return new ModelAndView("user/registerSuccess")
                 .addObject("user", user);
     }

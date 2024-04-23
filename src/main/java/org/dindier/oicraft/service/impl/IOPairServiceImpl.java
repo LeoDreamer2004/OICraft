@@ -1,6 +1,5 @@
 package org.dindier.oicraft.service.impl;
 
-import net.lingala.zip4j.ZipFile;
 import org.dindier.oicraft.dao.IOPairDao;
 import org.dindier.oicraft.model.IOPair;
 import org.dindier.oicraft.service.IOPairService;
@@ -8,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,9 +24,17 @@ public class IOPairServiceImpl implements IOPairService {
     }
 
     @Override
-    public void addIOPairByZip(ZipFile file) throws IOException {
+    public void addIOPairByZip(InputStream fileStream, int problemId) throws IOException {
         List<IOPair> ioPairs = new ArrayList<>();
         // TODO
+        ioPairDao.deleteIOPairByProblemId(problemId);
         ioPairDao.addIOPairs(ioPairs);
+        fileStream.close();
+    }
+
+    @Override
+    public InputStream getIOPairsStream(int problemId) throws IOException {
+        // TODO
+        return null;
     }
 }
