@@ -19,6 +19,9 @@ public class Problem {
     @OneToMany(mappedBy = "problem", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<IOPair> ioPairs;
 
+    @OneToMany(mappedBy = "problem", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Submission> submissions;
+
     @Enumerated(EnumType.STRING)
     private Difficulty difficulty;
 
@@ -37,7 +40,6 @@ public class Problem {
     public Problem(int authorId, String title, String description, String inputFormat, String outputFormat,
                    Difficulty difficulty, int timeLimit, int memoryLimit) {
         this.authorId = authorId;
-        this.title = title;
         this.description = description;
         this.inputFormat = inputFormat;
         this.outputFormat = outputFormat;
@@ -168,5 +170,9 @@ public class Problem {
 
     public boolean isHard() {
         return difficulty == Difficulty.HARD;
+    }
+
+    public List<Submission> getSubmissions() {
+        return submissions;
     }
 }

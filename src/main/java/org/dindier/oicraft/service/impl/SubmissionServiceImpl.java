@@ -19,6 +19,6 @@ public class SubmissionServiceImpl implements SubmissionService {
 
     @Override
     public User getUser(Submission submission) {
-        return userDao.getUserById(submission.getUserId());
+        return userDao.getUserById(submission.getUser().getId());
     }
 }

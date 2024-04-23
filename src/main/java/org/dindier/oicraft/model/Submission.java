@@ -2,15 +2,25 @@ package org.dindier.oicraft.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 public class Submission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int problemId;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "problem_id")
+    private Problem problem;
     private String code;
 
-    private int userId;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToMany(mappedBy = "submission", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Checkpoint> checkpoints;
 
     protected Submission() {
     }
@@ -50,8 +60,8 @@ public class Submission {
     private Status status;
     private int score;
 
-    public Submission(int problemId, String code, Language language) {
-        this.problemId = problemId;
+    public Submission(Problem problem, String code, Language language) {
+        this.problem = problem;
         this.code = code;
         this.language = language;
     }
@@ -65,11 +75,7 @@ public class Submission {
     }
 
     public int getProblemId() {
-        return problemId;
-    }
-
-    public void setProblemId(int problemId) {
-        this.problemId = problemId;
+        return problem.getId();
     }
 
     public String getCode() {
@@ -104,11 +110,19 @@ public class Submission {
         this.score = score;
     }
 
-    public int getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUser(User userId) {
+        this.user = userId;
+    }
+
+    public Problem getProblem() {
+        return problem;
+    }
+
+    public List<Checkpoint> getCheckpoints() {
+        return checkpoints;
     }
 }
