@@ -26,7 +26,7 @@ public class Problem {
     private Difficulty difficulty;
 
     public enum Difficulty {
-        EASY, MEDIUM, HARD;
+        EASY, MEDIUM, HARD
     }
 
     private int timeLimit; // ms

@@ -6,6 +6,8 @@ import org.dindier.oicraft.model.Checkpoint;
 import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.Submission;
 import org.dindier.oicraft.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +16,7 @@ import java.util.List;
 @Repository("userDao")
 public class JdbcUserDao implements UserDao {
     private UserRepository userRepository;
+    private final Logger logger = LoggerFactory.getLogger(JdbcUserDao.class);
 
     public static final int INTERMEDIATE_MIN_PASS_NUM = 10;
     public static final int ADVANCED_MIN_PASS_NUM = 20;
@@ -27,7 +30,9 @@ public class JdbcUserDao implements UserDao {
     @Override
     public User createUser(User user) {
         user.setGrade(User.Grade.BEGINNER);
-        return userRepository.save(user);
+        user = userRepository.save(user);
+        logger.info("Create user: {} (id: {})", user.getName(), user.getId());
+        return user;
     }
 
     @Override
@@ -42,7 +47,9 @@ public class JdbcUserDao implements UserDao {
         } else {
             user.setGrade(User.Grade.BEGINNER);
         }
-        return userRepository.save(user);
+        user = userRepository.save(user);
+        logger.info("Update user: {} (id: {})", user.getName(), user.getId());
+        return user;
     }
 
     @Override

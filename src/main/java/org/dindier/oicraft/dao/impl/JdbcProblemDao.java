@@ -2,10 +2,11 @@ package org.dindier.oicraft.dao.impl;
 
 import org.dindier.oicraft.dao.ProblemDao;
 import org.dindier.oicraft.dao.repository.ProblemRepository;
-import org.dindier.oicraft.model.Checkpoint;
 import org.dindier.oicraft.model.IOPair;
 import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.Submission;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +15,7 @@ import java.util.List;
 @Repository("problemDao")
 public class JdbcProblemDao implements ProblemDao {
     private ProblemRepository problemRepository;
+    private final Logger logger = LoggerFactory.getLogger(JdbcProblemDao.class);
 
     @Autowired
     public void setProblemRepository(ProblemRepository problemRepository) {
@@ -22,7 +24,9 @@ public class JdbcProblemDao implements ProblemDao {
 
     @Override
     public Problem createProblem(Problem problem) {
-        return problemRepository.save(problem);
+        problem = problemRepository.save(problem);
+        logger.info("Create problem: {}", problem.getId());
+        return problem;
     }
 
     @Override
@@ -55,12 +59,15 @@ public class JdbcProblemDao implements ProblemDao {
 
     @Override
     public Problem updateProblem(Problem problem) {
-        return this.problemRepository.save(problem);
+        problem = this.problemRepository.save(problem);
+        logger.info("Update problem: {}", problem.getId());
+        return problem;
     }
 
     @Override
     public void deleteProblem(Problem problem) {
         this.problemRepository.delete(problem);
+        logger.info("Delete problem: {}", problem.getId());
     }
 
     @Override
