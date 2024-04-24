@@ -1,12 +1,13 @@
 package org.dindier.oicraft.model;
 
 import jakarta.persistence.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.Data;
 
 /**
  * The input-output pair of a problem (Weak Entity)
  */
 @Entity
+@Data
 public class IOPair {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,49 +36,4 @@ public class IOPair {
         this.type = type;
         this.score = score;
     }
-
-    public int getProblemId() {
-        return problem.getId();
-    }
-
-    public void setProblem(Problem problem){
-        this.problem = problem;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getInput() {
-        return input;
-    }
-
-    public void setInput(String input) {
-        this.input = input;
-    }
-
-    public String getOutput() {
-        return output;
-    }
-
-    public void setOutput(String output) {
-        this.output = output;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
-    }
-
 }

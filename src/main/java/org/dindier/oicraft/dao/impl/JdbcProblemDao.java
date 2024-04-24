@@ -86,7 +86,7 @@ public class JdbcProblemDao implements ProblemDao {
                 .map(submissions -> submissions
                         .stream()
                         .filter(submission -> submission
-                                .getStatusEnum()
+                                .getStatus()
                                 .equals(Submission.Status.PASSED)
                         )
                         .toList()

@@ -2,6 +2,7 @@ package org.dindier.oicraft.model;
 
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @Table(name = "User",
         uniqueConstraints = @UniqueConstraint(columnNames = "username")
 )
+@Data
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,46 +30,6 @@ public class User {
     private List<Submission> submissions;
 
     protected User() {
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public Grade getGrade() {
-        return grade;
-    }
-
-    public void setGrade(Grade grade) {
-        this.grade = grade;
     }
 
     public enum Role {
@@ -91,9 +53,5 @@ public class User {
 
     public String getGradeString() {
         return grade.toString();
-    }
-
-    public List<Submission> getSubmissions() {
-        return submissions;
     }
 }

@@ -21,7 +21,7 @@
     <h2>提交结果</h2>
     <a class="btn btn-secondary mb-3" th:href="@{/problem/{id}(id=${problem.id})}">返回题目</a>
 </div>
-<main role="main" class="container" th:switch="${submission.status}">
+<main role="main" class="container" th:switch="${submission.statusString}">
     <div th:case="'passed'" class="result-box passed-box">
         <span class="iconfont icon-duigou1" style="font-size: 20px"></span>
         <span> 您通过了此题！</span>
@@ -42,7 +42,7 @@
     </pre>
     <h4 class="underlined-title">测试结果</h4>
     <div class="box-container">
-        <div th:each="checkpoint : ${checkpoints}" th:switch="${checkpoint.status}">
+        <div th:each="checkpoint : ${checkpoints}" th:switch="${checkpoint.statusString}">
             <div th:case="'P'" class="checkpoint-box p-box">
                 <p class="text-status">...</p>
             </div>

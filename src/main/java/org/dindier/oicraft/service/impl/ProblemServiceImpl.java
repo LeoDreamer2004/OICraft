@@ -7,13 +7,11 @@ import org.dindier.oicraft.dao.UserDao;
 import org.dindier.oicraft.model.*;
 import org.dindier.oicraft.service.ProblemService;
 import org.dindier.oicraft.util.CodeChecker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -24,6 +22,8 @@ public class ProblemServiceImpl implements ProblemService {
     private CheckpointDao checkpointDao;
     private UserDao userDao;
     private final ExecutorService executorService = Executors.newCachedThreadPool();
+
+    private final Logger logger = LoggerFactory.getLogger(ProblemServiceImpl.class);
 
     /**
      * Create the submission model and return its id first,
@@ -57,7 +57,7 @@ public class ProblemServiceImpl implements ProblemService {
                             .setLimit(problem.getTimeLimit(), problem.getMemoryLimit())
                             .test();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.warn("CodeChecker error: {}", e.getMessage());
                     finalSubmission.setStatus(Submission.Status.FAILED);
                     submissionDao.updateSubmission(finalSubmission);
                     return;
@@ -90,8 +90,9 @@ public class ProblemServiceImpl implements ProblemService {
 
     @Override
     public int hasPassed(User user, Problem problem) {
-        if(!userDao.getTriedProblemsByUserId(user.getId()).contains(problem)) return 0;
-        if(userDao.getPassedProblemsByUserId(user.getId()).contains(problem)) return 1;
+        if (user == null) return 0;
+        if (!userDao.getTriedProblemsByUserId(user.getId()).contains(problem)) return 0;
+        if (userDao.getPassedProblemsByUserId(user.getId()).contains(problem)) return 1;
         return -1;
     }
 
@@ -129,7 +130,7 @@ public class ProblemServiceImpl implements ProblemService {
     private void setCheckpointDao(CheckpointDao checkpointDao) {
         this.checkpointDao = checkpointDao;
     }
-    
+
     @Autowired
     private void setUserDao(UserDao userDao) {
         this.userDao = userDao;

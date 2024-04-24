@@ -1,8 +1,10 @@
 package org.dindier.oicraft.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
+@Data
 public class Checkpoint {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +34,9 @@ public class Checkpoint {
     private Status status;
 
     private int usedTime;
+
     private int usedMemory;
+
     private String info;
 
     protected Checkpoint() {
@@ -47,56 +51,8 @@ public class Checkpoint {
         this.info = info;
     }
 
-    public Submission getSubmission() {
-        return submission;
-    }
-
-    public IOPair getIOPair() {
-        return ioPair;
-    }
-
-    public String getStatus() {
+    public String getStatusString() {
         return status.toString();
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public int getUsedTime() {
-        return usedTime;
-    }
-
-    public void setUsedTime(int usedTime) {
-        this.usedTime = usedTime;
-    }
-
-    public int getUsedMemory() {
-        return usedMemory;
-    }
-
-    public void setUsedMemory(int usedMemory) {
-        this.usedMemory = usedMemory;
-    }
-
-    public String getInfo() {
-        return info;
-    }
-
-    public void setInfo(String info) {
-        this.info = info;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setSubmission(Submission submission) {
-        this.submission = submission;
-    }
-
-    public void setIoPair(IOPair ioPair) {
-        this.ioPair = ioPair;
     }
 
     public boolean isPassed() {
