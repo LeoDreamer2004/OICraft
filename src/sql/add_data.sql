@@ -1,5 +1,6 @@
 insert into User(username, password, role, grade)
-values ('admin', 'admin', 'ADMIN', 'EXPERT');
+values ('admin', 'admin', 'ADMIN', 'EXPERT'),
+       ('user', '111', 'USER', 'BEGINNER');
 
 insert into Problem(title, description, input_format, output_format, difficulty, time_limit, memory_limit, author_id)
 values ('a + b 问题', '把两个数相加', '两个整数 $a$, $b$，以空格隔开',

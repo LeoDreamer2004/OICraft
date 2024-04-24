@@ -30,6 +30,12 @@ public interface UserDao {
      */
     User updateUser(User user);
 
+    /**
+     * Check if a user exists in database
+     *
+     * @param username the username to check
+     * @return {@code true} if the user exists, {@code false} otherwise.
+     */
     boolean existsUser(String username);
 
     /**

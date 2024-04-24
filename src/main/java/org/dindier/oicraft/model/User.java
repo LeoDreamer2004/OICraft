@@ -9,6 +9,9 @@ import java.util.List;
  * FIXME: May use springSecurity for user authentication later
  */
 @Entity
+@Table(name = "User",
+        uniqueConstraints = @UniqueConstraint(columnNames = "username")
+)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
