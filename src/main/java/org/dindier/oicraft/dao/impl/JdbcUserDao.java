@@ -29,7 +29,6 @@ public class JdbcUserDao implements UserDao {
 
     @Override
     public User createUser(User user) {
-        user.setGrade(User.Grade.BEGINNER);
         user = userRepository.save(user);
         logger.info("Create user: {} (id: {})", user.getName(), user.getId());
         return user;
@@ -55,6 +54,12 @@ public class JdbcUserDao implements UserDao {
         user = userRepository.save(user);
         logger.info("Update user: {} (id: {})", user.getName(), user.getId());
         return user;
+    }
+
+    @Override
+    public void deleteUser(User user) {
+        userRepository.delete(user);
+        logger.info("Delete user: {} (id: {})", user.getName(), user.getId());
     }
 
     @Override

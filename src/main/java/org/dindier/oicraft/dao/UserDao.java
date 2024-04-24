@@ -16,6 +16,7 @@ public interface UserDao {
 
     /**
      * Get all users from database
+     *
      * @return An iterable object of {@code User} classes.
      */
     Iterable<User> getAllUsers();
@@ -29,6 +30,13 @@ public interface UserDao {
      * has passed.
      */
     User updateUser(User user);
+
+    /**
+     * Delete a user from database
+     *
+     * @param user the user to delete
+     */
+    void deleteUser(User user);
 
     /**
      * Check if a user exists in database

@@ -45,7 +45,7 @@ public class UserController {
             return new RedirectView("/register?error");
         User user = new User(username, password, User.Role.USER, User.Grade.BEGINNER);
         System.out.println(username + " " + password);
-        user = userDao.createUser(user);
+        user = userService.createUser(user);
         return new RedirectView("/register/success/" + user.getId());
     }
 

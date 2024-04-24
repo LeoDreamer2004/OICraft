@@ -5,38 +5,22 @@ import org.springframework.context.annotation.*;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.*;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity()
 public class WebSecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
 
     @Autowired
     public WebSecurityConfig(AuthenticationConfiguration authenticationConfiguration) {
         this.authenticationConfiguration = authenticationConfiguration;
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        // Ensure the passwords are encoded properly
-        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-
-        // Notice: Create a user temporarily here
-        manager.createUser(User.builder().
-                username("user").password(passwordEncoder().encode("111"))
-                .roles("USER").build());
-        manager.createUser(User.builder().
-                username("admin").password(passwordEncoder().encode("admin"))
-                .roles("ADMIN").build());
-        return manager;
     }
 
     /**
