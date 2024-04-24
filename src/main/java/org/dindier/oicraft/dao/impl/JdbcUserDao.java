@@ -36,6 +36,11 @@ public class JdbcUserDao implements UserDao {
     }
 
     @Override
+    public Iterable<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
     public User updateUser(User user) {
         int passedProblemsNum = getPassedProblemsByUserId(user.getId()).size();
         if (passedProblemsNum >= EXPERT_MIN_PASS_NUM) {
