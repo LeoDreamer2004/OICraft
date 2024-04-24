@@ -170,11 +170,12 @@ public class ProblemController {
 
     @PostMapping("/problem/{id}/delete")
     public RedirectView deleteConfirm(@PathVariable int id) {
+        System.out.println(0);
         Problem problem = problemDao.getProblemById(id);
         if (!canEdit(problem))
             return new RedirectView("error/403");
         problemDao.deleteProblem(problem);
-        return new RedirectView("/problem");
+        return new RedirectView("/problems");
     }
 
     @GetMapping("/problem/{id}/edit/checkpoints")

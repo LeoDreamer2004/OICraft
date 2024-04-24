@@ -26,8 +26,12 @@ public class JdbcUserDao implements UserDao {
 
     @Override
     public User createUser(User user) {
-        user.setGrade(User.Grade.BEGINNER);
         return userRepository.save(user);
+    }
+
+    @Override
+    public Iterable<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
     @Override
