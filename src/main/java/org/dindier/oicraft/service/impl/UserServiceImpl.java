@@ -13,15 +13,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByRequest(HttpServletRequest request) {
-        // TODO: Implement this method
         String username = request.getRemoteUser();
         if (username == null)
             return null;
-
-        // A temporary implementation
-//        User user = new User(username, "password", User.Role.ADMIN, User.Grade.BEGINNER);
-//        user.setId(1);
-//        return user;
         return userDao.getUserByUsername(username);
     }
 

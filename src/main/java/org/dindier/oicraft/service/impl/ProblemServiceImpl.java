@@ -3,6 +3,7 @@ package org.dindier.oicraft.service.impl;
 import org.dindier.oicraft.dao.CheckpointDao;
 import org.dindier.oicraft.dao.ProblemDao;
 import org.dindier.oicraft.dao.SubmissionDao;
+import org.dindier.oicraft.dao.UserDao;
 import org.dindier.oicraft.model.*;
 import org.dindier.oicraft.service.ProblemService;
 import org.dindier.oicraft.util.CodeChecker;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -19,6 +22,7 @@ public class ProblemServiceImpl implements ProblemService {
     private SubmissionDao submissionDao;
     private ProblemDao problemDao;
     private CheckpointDao checkpointDao;
+    private UserDao userDao;
     private final ExecutorService executorService = Executors.newCachedThreadPool();
 
     /**
@@ -53,6 +57,10 @@ public class ProblemServiceImpl implements ProblemService {
                             .setLimit(problem.getTimeLimit(), problem.getMemoryLimit())
                             .test();
                 } catch (Exception e) {
+                    e.printStackTrace();
+                    finalSubmission.setStatus(Submission.Status.FAILED);
+                    submissionDao.updateSubmission(finalSubmission);
+                    return;
                 }
                 Checkpoint checkpoint = new Checkpoint(finalSubmission,
                         ioPair,
@@ -82,16 +90,14 @@ public class ProblemServiceImpl implements ProblemService {
 
     @Override
     public int hasPassed(User user, Problem problem) {
-        // TODO: Implement this method
-
-        return 1;
+        if(!userDao.getTriedProblemsByUserId(user.getId()).contains(problem)) return 0;
+        if(userDao.getPassedProblemsByUserId(user.getId()).contains(problem)) return 1;
+        return -1;
     }
 
     @Override
     public Iterable<Problem> getPassedProblems(User user) {
-        // TODO: Implement this method
-
-        return null;
+        return userDao.getPassedProblemsByUserId(user.getId());
     }
 
     @Override
@@ -122,5 +128,10 @@ public class ProblemServiceImpl implements ProblemService {
     @Autowired
     private void setCheckpointDao(CheckpointDao checkpointDao) {
         this.checkpointDao = checkpointDao;
+    }
+    
+    @Autowired
+    private void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
     }
 }
