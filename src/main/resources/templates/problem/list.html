@@ -28,7 +28,12 @@
             </tr>
 
             <tr th:each="problem, stat : ${problems}">
-                <td th:switch="${hasPassed[stat.index]}">
+                <!--/*@thymesVar id="user" type="org.dindier.oicraft.model.User"*/-->
+                <td th:if="${user eq null}">
+                    <!-- If the user has not logged in, the status is not displayed -->
+                    <span class="iconfont icon-jianhao" style="color: gray"></span>
+                </td>
+                <td th:unless="${user eq null}" th:switch="${hasPassed[stat.index]}">
                     <span th:case="1" class="iconfont icon-duihao" style="color: forestgreen"></span>
                     <span th:case="0" class="iconfont icon-jianhao" style="color: gray"></span>
                     <span th:case="-1" class="iconfont icon-cuowu" style="color: firebrick"></span>

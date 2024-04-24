@@ -28,7 +28,7 @@ public class IOPairServiceImpl implements IOPairService {
 
     // Use me as the dir to save the zip file
     private static final String tempZipDir = ".temp_zip";
-    private static int id=0;
+    private static int id = 0;
 
     @Autowired
     public void setIOPairDao(IOPairDao ioPairDao) {
@@ -40,19 +40,19 @@ public class IOPairServiceImpl implements IOPairService {
         // TODO
         Problem problem = problemDao.getProblemById(problemId);
         List<IOPair> ioPairs = new ArrayList<>();
-        Path tempDir = Files.createTempDirectory(tempZipDir+File.separator+id++);
-        try(ZipInputStream zipInputStream = new ZipInputStream(fileStream)){
+        Path tempDir = Files.createTempDirectory(tempZipDir + File.separator + id++);
+        try (ZipInputStream zipInputStream = new ZipInputStream(fileStream)) {
             ZipEntry entry;
-            while((entry = zipInputStream.getNextEntry()) != null){
-                if(entry.isDirectory()){
+            while ((entry = zipInputStream.getNextEntry()) != null) {
+                if (entry.isDirectory()) {
                     continue;
                 }
-                if(entry.getName().endsWith(".in")){
+                if (entry.getName().endsWith(".in")) {
                     Path filePath = tempDir.resolve(entry.getName());
                     Files.copy(zipInputStream, filePath);
                     String input = new String(Files.readAllBytes(filePath), detectCharset(filePath));
                     String outputFile = entry.getName().replace(".in", ".out");
-                    //may throw exception if the output file is not found
+                    // may throw exception if the output file is not found
                     Path outputFilePath = tempDir.resolve(outputFile);
                     String output = new String(Files.readAllBytes(outputFilePath), detectCharset(outputFilePath));
                     String scoreFile = entry.getName().replace(".in", ".score");
