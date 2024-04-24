@@ -70,3 +70,6 @@ create table if not exists CheckPoint
     foreign key (io_pair_id) references IOPair (id),
     foreign key (submission_id) references Submission (id)
 );
+
+alter table User
+    add constraint unique (username);

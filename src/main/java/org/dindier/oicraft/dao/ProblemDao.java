@@ -2,6 +2,9 @@ package org.dindier.oicraft.dao;
 
 import org.dindier.oicraft.model.IOPair;
 import org.dindier.oicraft.model.Problem;
+import org.dindier.oicraft.model.Submission;
+
+import java.util.List;
 
 public interface ProblemDao {
 
@@ -60,18 +63,38 @@ public interface ProblemDao {
     void deleteProblem(Problem problem);
 
     /**
-     * Get the number of submissions for a problem
+     * Get the list of submissions for a problem
      *
      * @param problemId the id of the problem
-     * @return the number of submissions if the problem exists, otherwise null
+     * @return the list of submissions for the problem,
+     * if the problem not exists, return an empty list
      */
-    Integer getSubmissionCount(int problemId);
+    List<Submission> getAllSubmissions(int problemId);
 
     /**
-     * Get the number of passed submissions for a problem
+     * Get the list of passed submissions for a problem
      *
      * @param problemId the id of the problem
-     * @return the number of passed submissions if the problem exists, otherwise null
+     * @return the list of passed submissions for the problem,
+     * if the problem not exists, return an empty list
      */
-    Integer getPassedSubmissionCount(int problemId);
+    List<Submission> getPassedSubmissions(int problemId);
+
+    /**
+     * Get the count of submissions for a problem
+     *
+     * @param problemId the id of the problem
+     * @return the count of submissions for the problem,
+     * if the problem not exists, return 0
+     */
+    int getSubmissionCount(int problemId);
+
+    /**
+     * Get the count of passed submissions for a problem
+     *
+     * @param problemId the id of the problem
+     * @return the count of passed submissions for the problem,
+     * if the problem not exists, return 0
+     */
+    int getPassedSubmissionCount(int problemId);
 }
