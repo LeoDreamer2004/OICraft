@@ -11,9 +11,14 @@ public interface UserDao {
      *
      * @param user the user to create
      * @return A {@code User} class with the user's ID set.
-     * @implNote The user's grade will be set to {@code User.Grade.BEGINNER}.
      */
     User createUser(User user);
+
+    /**
+     * Get all users from database
+     * @return An iterable object of {@code User} classes.
+     */
+    Iterable<User> getAllUsers();
 
     /**
      * Update user's information in database

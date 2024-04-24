@@ -45,6 +45,7 @@ public class UserController {
     public ModelAndView register(@RequestParam("username") String username,
                                  @RequestParam("password") String password) {
         User user = new User(username, password, User.Role.USER, User.Grade.BEGINNER);
+        System.out.println(username + " " + password);
         user = userDao.createUser(user);
         return new ModelAndView("user/registerSuccess")
                 .addObject("user", user);

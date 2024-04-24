@@ -103,8 +103,10 @@ public class ProblemServiceImpl implements ProblemService {
                 .append("## 输出格式\n\n").append(problem.getOutputFormat()).append("\n\n");
         for (IOPair ioPair : problemDao.getTestsById(problem.getId())) {
             sb.append("## 样例\n\n")
-                    .append("#### 输入\n\n").append(ioPair.getInput()).append("\n\n")
-                    .append("#### 输出\n\n").append(ioPair.getOutput()).append("\n\n");
+                    .append("#### 输入\n\n").append("```\n")
+                    .append(ioPair.getInput()).append(("\n```\n\n"))
+                    .append("#### 输出\n\n").append("```\n")
+                    .append(ioPair.getOutput()).append(("\n```\n\n"));
         }
         return sb.toString().getBytes();
     }
