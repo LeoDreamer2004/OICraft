@@ -6,6 +6,8 @@ import org.dindier.oicraft.dao.repository.ProblemRepository;
 import org.dindier.oicraft.dao.repository.SubmissionRepository;
 import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.Submission;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -16,6 +18,8 @@ public class JdbcSubmissionDao implements SubmissionDao {
     private SubmissionRepository submissionRepository;
     private ProblemRepository problemRepository;
     private ProblemDao problemDao;
+
+    private final Logger logger = LoggerFactory.getLogger(JdbcSubmissionDao.class);
 
     @Autowired
     public void setSubmissionRepository(SubmissionRepository submissionRepository) {
@@ -47,7 +51,10 @@ public class JdbcSubmissionDao implements SubmissionDao {
                     return problem;
                 })
                 .ifPresent(oldProblem -> problemRepository.save(oldProblem));
-        return submissionRepository.save(submission);
+        Submission newSubmission = submissionRepository.save(submission);
+        logger.info("Create submission for problem {} (id: {})", newSubmission.getProblemId(),
+                newSubmission.getId());
+        return newSubmission;
     }
 
     @Override
@@ -86,6 +93,9 @@ public class JdbcSubmissionDao implements SubmissionDao {
                     return problem;
                 })
                 .ifPresent(oldProblem -> problemRepository.save(oldProblem));
-        return submissionRepository.save(submission);
+        Submission newSubmission = submissionRepository.save(submission);
+        logger.info("Update submission for problem {} (id: {})", newSubmission.getProblemId(),
+                newSubmission.getId());
+        return newSubmission;
     }
 }

@@ -5,6 +5,8 @@ import org.dindier.oicraft.dao.repository.IOPairRepository;
 import org.dindier.oicraft.dao.repository.ProblemRepository;
 import org.dindier.oicraft.model.IOPair;
 import org.dindier.oicraft.model.Problem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -15,6 +17,7 @@ import java.util.List;
 public class JdbcIOPairDao implements IOPairDao {
     private IOPairRepository ioPairRepository;
     private ProblemRepository problemRepository;
+    private final Logger logger = LoggerFactory.getLogger(JdbcIOPairDao.class);
 
     @Autowired
     public void setIOPairRepository(IOPairRepository ioPairRepository) {
@@ -28,17 +31,22 @@ public class JdbcIOPairDao implements IOPairDao {
 
     @Override
     public IOPair createIOPair(IOPair ioPair) {
-        return ioPairRepository.save(ioPair);
+        ioPair = ioPairRepository.save(ioPair);
+        logger.info("Create IOPair: {}", ioPair.getId());
+        return ioPair;
     }
 
     @Override
     public IOPair updateIOPair(IOPair ioPair) {
-        return ioPairRepository.save(ioPair);
+        ioPair = ioPairRepository.save(ioPair);
+        logger.info("Update IOPair: {}", ioPair.getId());
+        return ioPair;
     }
 
     @Override
     public void deleteIOPair(IOPair ioPair) {
         ioPairRepository.delete(ioPair);
+        logger.info("Delete IOPair: {}", ioPair.getId());
     }
 
     @Override
@@ -48,6 +56,7 @@ public class JdbcIOPairDao implements IOPairDao {
 
     @Override
     public Iterable<IOPair> addIOPairs(List<IOPair> ioPairs) {
+        logger.info("Add {} IOPairs", ioPairs.size());
         return ioPairRepository.saveAll(ioPairs);
     }
 
@@ -65,5 +74,6 @@ public class JdbcIOPairDao implements IOPairDao {
         for (IOPair ioPair : ioPairs) {
             deleteIOPair(ioPair);
         }
+        logger.info("Delete IOPairs by problem id: {}", problemId);
     }
 }

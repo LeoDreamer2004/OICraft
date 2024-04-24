@@ -29,15 +29,18 @@
             </div>
             <div class="form-group">
                 <label for="description">题目描述</label>
-                <textarea class="form-control" id="description" name="description" rows="5" th:text="${problem.description}" required></textarea>
+                <textarea class="form-control" id="description" name="description" rows="5"
+                          th:text="${problem.description}" required></textarea>
             </div>
             <div class="form-group">
                 <label for="inputFormat">输入格式</label>
-                <textarea class="form-control" id="inputFormat" name="inputFormat" rows="3" th:text="${problem.inputFormat}" required></textarea>
+                <textarea class="form-control" id="inputFormat" name="inputFormat" rows="3"
+                          th:text="${problem.inputFormat}" required></textarea>
             </div>
             <div class="form-group">
                 <label for="outputFormat">输出格式</label>
-                <textarea class="form-control" id="outputFormat" name="outputFormat" rows="3" th:text="${problem.outputFormat}" required></textarea>
+                <textarea class="form-control" id="outputFormat" name="outputFormat" rows="3"
+                          th:text="${problem.outputFormat}" required></textarea>
             </div>
             <div class="form-group">
                 <label for="difficulty">难度</label>
@@ -49,11 +52,13 @@
             </div>
             <div class="form-group">
                 <label for="timeLimit">时间限制（ms）</label>
-                <input type="number" class="form-control" id="timeLimit" name="timeLimit" th:value="${problem.timeLimit}" required>
+                <input type="number" class="form-control" id="timeLimit" name="timeLimit"
+                       th:value="${problem.timeLimit}" required>
             </div>
             <div class="form-group">
                 <label for="memoryLimit">内存限制（MB）</label>
-                <input type="number" class="form-control" id="memoryLimit" name="memoryLimit" th:value="${problem.memoryLimit / 1024}" required>
+                <input type="number" class="form-control" id="memoryLimit" name="memoryLimit"
+                       th:value="${problem.memoryLimit / 1024}" required>
             </div>
             <button type="submit" class="btn btn-primary">确认修改</button>
         </form>
