@@ -18,6 +18,11 @@
                     <h1>注册</h1>
                     <p>欢迎来到OICraft</p>
                 </div>
+                <div class="form-item" th:if="${param.error}" >
+                    <div class="alert alert-danger ml-3 mr-3">
+                        用户名已存在
+                    </div>
+                </div>
                 <div class="form-item">
                     <input name="username" id="username" type="text" placeholder="用户名" required autofocus>
                 </div>

@@ -19,8 +19,9 @@
                     <h1>登录</h1>
                     <p>登录以在OICraft练习</p>
                 </div>
-                <div class="form-item" th:unless="${error eq null}" >
-                    <div class="alert alert-danger ml-3 mr-3" th:text="${error}">
+                <div class="form-item" th:if="${param.error}" >
+                    <div class="alert alert-danger ml-3 mr-3">
+                        用户名或密码错误
                     </div>
                 </div>
                 <div class="form-item">

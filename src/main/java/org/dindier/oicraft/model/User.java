@@ -26,7 +26,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Grade grade;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private List<Submission> submissions;
 
     protected User() {

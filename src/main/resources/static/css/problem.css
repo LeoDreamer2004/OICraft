@@ -1,9 +1,11 @@
 .problem-main {
     width: calc(66.66% - .5em);
+    min-width: 500px;
 }
 
 .problem-brief {
     width: calc(33.33% - .5em);
+    min-width: 250px;
     float: right;
     height: 220px;
 }
