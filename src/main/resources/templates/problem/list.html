@@ -51,11 +51,33 @@
                 <td th:if="${problem.isHard()}">
                     <span class="badge badge-danger my-large-badge">困难</span>
                 </td>
-                <td th:if="${problem.submit == 0}">NaN</td>
-                <td th:unless="${problem.submit == 0}" th:text="${problem.passed / problem.submit}"></td>
+                <td style="vertical-align: middle">
+                    <span class="bar-outer" style="max-width: 200px;">
+                        <span class="bar-inner" th:text="${problem.getPassRateString()}"></span>
+                    </span>
+                </td>
         </table>
     </div>
 </main>
-
+<script>
+    // Set the width of the pass rate bar
+    document.querySelectorAll('.bar-outer').forEach(
+        function (item) {
+            const rate = parseFloat(item.querySelector('.bar-inner').textContent) / 100;
+            item.querySelector('.bar-inner').style.width = rate * 100 + '%';
+            item.querySelector('.bar-inner').textContent = '';
+            let red, green;
+            if (rate < 0.5) {
+                red = 220;
+                green = rate * 2 * 220;
+            } else {
+                red = (1 - rate) * 2 * 220;
+                green = 220;
+            }
+            item.querySelector('.bar-inner').style.backgroundColor =
+                'rgb(' + red + ', ' + green + ', 0)';
+        }
+    );
+</script>
 </body>
 </html>

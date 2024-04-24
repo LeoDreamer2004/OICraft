@@ -70,7 +70,7 @@ public class Problem {
             return String.format("%.2fMB", memoryLimit / 1024.0);
         }
     }
-    
+
     public boolean isEasy() {
         return difficulty == Difficulty.EASY;
     }
@@ -81,5 +81,10 @@ public class Problem {
 
     public boolean isHard() {
         return difficulty == Difficulty.HARD;
+    }
+
+    public String getPassRateString() {
+        if (submit == 0) return "NaN";
+        return String.format("%.2f%%", 100.0 * passed / submit);
     }
 }
