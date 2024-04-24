@@ -44,7 +44,7 @@ public class IOPairServiceImpl implements IOPairService {
     public void addIOPairByZip(InputStream fileStream, int problemId) throws IOException {
         Problem problem = problemDao.getProblemById(problemId);
         List<IOPair> ioPairs = new ArrayList<>();
-        Path tempDir = Files.createTempDirectory(putZipDir + File.separator + id++);
+        Path tempDir = Files.createTempDirectory(putZipDir + id++);
         try (ZipInputStream zipInputStream = new ZipInputStream(fileStream)) {
             ZipEntry entry;
             while ((entry = zipInputStream.getNextEntry()) != null) {
@@ -90,15 +90,18 @@ public class IOPairServiceImpl implements IOPairService {
     @Override
     public InputStream getIOPairsStream(int problemId) throws IOException {
         List<IOPair> ioPairs = ioPairDao.getIOPairByProblemId(problemId);
-        Path tempDir = Files.createTempDirectory(getZipDir + File.separator + id2++);
+        Path tempDir = Files.createTempDirectory(getZipDir + id2++);
         for (IOPair ioPair : ioPairs) {
             String dir = ioPair.getType() == IOPair.Type.SAMPLE ? "sample" : "test";
-            Path inputFilePath = tempDir.resolve(dir + File.separator + ioPair.getId() + ".in");
+            Path dirPath = tempDir.resolve(dir);
+            Files.createDirectories(dirPath);
+            Path inputFilePath = dirPath.resolve(ioPair.getId() + ".in");
             Files.writeString(inputFilePath, ioPair.getInput());
-            Path outputFilePath = tempDir.resolve(dir + File.separator + ioPair.getId() + ".out");
+            Path outputFilePath = dirPath.resolve(ioPair.getId() + ".out");
             Files.writeString(outputFilePath, ioPair.getOutput());
         }
         Path zipDir = Paths.get(tempZipDir + id2);
+        Files.createDirectories(zipDir);
         Path tempZipPath = Files.createTempFile(zipDir, "ioPairs", ".zip");
         File tempZipFile = tempZipPath.toFile();
 
@@ -127,12 +130,17 @@ public class IOPairServiceImpl implements IOPairService {
                         });
             }
 
-            InputStream inputStream = new FileInputStream(tempZipFile);
-
-            Files.deleteIfExists(tempZipPath);
-            Files.deleteIfExists(zipDir);
-
-            return inputStream;
+            return new FileInputStream(tempZipFile) {
+                @Override
+                public void close() throws IOException {
+                    try {
+                        super.close();
+                    } finally {
+                        Files.deleteIfExists(tempZipPath);
+                        Files.deleteIfExists(zipDir);
+                    }
+                }
+            };
         }
     }
 
