@@ -13,16 +13,16 @@ public class Submission {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "problem_id")
     private Problem problem;
     private String code;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "submission", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "submission", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private List<Checkpoint> checkpoints;
 
     protected Submission() {
@@ -36,6 +36,15 @@ public class Submission {
 
         Language(String displayName) {
             this.displayName = displayName;
+        }
+
+        public static Language fromString(String language) {
+            for (Language l : Language.values()) {
+                if (l.getDisplayName().equalsIgnoreCase(language)) {
+                    return l;
+                }
+            }
+            return null;
         }
     }
 
@@ -58,10 +67,12 @@ public class Submission {
     private Status status;
     private int score;
 
-    public Submission(Problem problem, String code, Language language) {
+    public Submission(User user, Problem problem, String code, Language language) {
+        this.user = user;
         this.problem = problem;
         this.code = code;
         this.language = language;
+        this.status = Status.WAITING;
     }
 
     public int getProblemId() {

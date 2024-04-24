@@ -52,7 +52,7 @@
                 <div class="msg-box" th:text="${checkpoint.info}"></div>
                 <div class="checkpoint-num">
                     <span>#</span>
-                    <span th:text="${checkpoint.getIOPair().id}"></span>
+                    <span th:text="${checkpoint.ioPair.id}"></span>
                 </div>
             </div>
             <div th:case="'WA'" class="checkpoint-box wa-box">
@@ -61,7 +61,7 @@
                 <div class="msg-box" th:text="${checkpoint.info}"></div>
                 <div class="checkpoint-num">
                     <span>#</span>
-                    <span th:text="${checkpoint.getIOPair().id}"></span>
+                    <span th:text="${checkpoint.ioPair.id}"></span>
                 </div>
             </div>
             <div th:case="'CE'" class="checkpoint-box ce-box">
@@ -70,7 +70,7 @@
                 <div class="msg-box" th:text="${checkpoint.info}"></div>
                 <div class="checkpoint-num">
                     <span>#</span>
-                    <span th:text="${checkpoint.getIOPair().id}"></span>
+                    <span th:text="${checkpoint.ioPair.id}"></span>
                 </div>
             </div>
             <div th:case="'RE'" class="checkpoint-box re-box">
@@ -79,7 +79,7 @@
                 <div class="msg-box" th:text="${checkpoint.info}"></div>
                 <div class="checkpoint-num">
                     <span>#</span>
-                    <span th:text="${checkpoint.getIOPair().id}"></span>
+                    <span th:text="${checkpoint.ioPair.id}"></span>
                 </div>
             </div>
             <div th:case="'TLE'" class="checkpoint-box tle-box">
@@ -88,7 +88,7 @@
                 <div class="msg-box" th:text="${checkpoint.info}"></div>
                 <div class="checkpoint-num">
                     <span>#</span>
-                    <span th:text="${checkpoint.getIOPair().id}"></span>
+                    <span th:text="${checkpoint.ioPair.id}"></span>
                 </div>
             </div>
             <div th:case="'MLE'" class="checkpoint-box mle-box">

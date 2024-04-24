@@ -29,10 +29,7 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public ModelAndView login(@RequestParam(value = "error", required = false) String error) {
-        if (error != null)
-            return new ModelAndView("user/login").
-                    addObject("error", "用户名或密码错误");
+    public ModelAndView login() {
         return new ModelAndView("user/login");
     }
 
@@ -42,13 +39,20 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ModelAndView register(@RequestParam("username") String username,
+    public RedirectView register(@RequestParam("username") String username,
                                  @RequestParam("password") String password) {
+        if (userDao.existsUser(username))
+            return new RedirectView("/register?error");
         User user = new User(username, password, User.Role.USER, User.Grade.BEGINNER);
         System.out.println(username + " " + password);
         user = userDao.createUser(user);
+        return new RedirectView("/register/success/" + user.getId());
+    }
+
+    @GetMapping("/register/success/{id}")
+    public ModelAndView registerSuccess(@PathVariable int id) {
         return new ModelAndView("user/registerSuccess")
-                .addObject("user", user);
+                .addObject("user", userDao.getUserById(id));
     }
 
     @GetMapping("/logout")
@@ -73,7 +77,7 @@ public class UserController {
         // use 'seeUser' in case of conflict with 'user' in the interceptor
 
         return new ModelAndView("user/profile", "seeUser", user)
-                .addObject("passed",  problemService.getPassedProblems(user));
+                .addObject("passed", problemService.getPassedProblems(user));
     }
 
     @Autowired

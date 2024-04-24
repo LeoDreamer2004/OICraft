@@ -31,3 +31,5 @@ bin/
 /.temp_codes/
 /_temp_codes/
 /.temp_zip/
+/.temp_zip_put/
+/.temp_zip_get/

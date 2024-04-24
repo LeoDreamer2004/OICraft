@@ -32,26 +32,21 @@ public class ProblemServiceImpl implements ProblemService {
     @Override
     public int testCode(User user, Problem problem, String code, String language) {
         // TODO: Implement this method
-        Submission.Language lang = null;
-        for (Submission.Language l : Submission.Language.values()) {
-            if (l.name().equalsIgnoreCase(language)) {
-                lang = l;
-                break;
-            }
-        }
-        Submission submission = new Submission(problem, code, lang);
-        submission.setStatus(Submission.Status.WAITING);
-        submission.setUser(user);
+        Submission submission = new Submission(user, problem, code,
+                Submission.Language.fromString(language));
         submission = submissionDao.createSubmission(submission);
         int id = submission.getId();
+
         Submission finalSubmission = submission;
-        executorService.submit(() -> {
-            Iterable<IOPair> ioPairs = problemDao.getTestsById(id);
+        executorService.execute(() -> {
+            logger.info("Start testing code for submission {}", id);
+
+            Iterable<IOPair> ioPairs = problemDao.getTestsById(problem.getId());
             CodeChecker codeChecker = new CodeChecker();
             int score = 0;
             boolean ifPass = true;
+
             for (IOPair ioPair : ioPairs) {
-                if (ioPair.getType() == IOPair.Type.SAMPLE) continue;
                 try {
                     codeChecker.setIO(code, language, ioPair.getInput(), ioPair.getOutput(), id)
                             .setLimit(problem.getTimeLimit(), problem.getMemoryLimit())
@@ -62,27 +57,25 @@ public class ProblemServiceImpl implements ProblemService {
                     submissionDao.updateSubmission(finalSubmission);
                     return;
                 }
-                Checkpoint checkpoint = new Checkpoint(finalSubmission,
+                Checkpoint checkpoint = new Checkpoint(
+                        finalSubmission,
                         ioPair,
                         Checkpoint.Status.fromString(codeChecker.getStatus()),
                         codeChecker.getUsedTime(), codeChecker.getUsedMemory(),
                         codeChecker.getInfo()
                 );
-                checkpoint.setSubmission(finalSubmission);
-                checkpoint.setIoPair(ioPair);
                 checkpointDao.createCheckpoint(checkpoint);
+
                 if (codeChecker.getStatus().equals("AC")) {
                     score += ioPair.getScore();
                 } else {
                     ifPass = false;
                 }
             }
+
             finalSubmission.setScore(score);
-            if (ifPass) {
-                finalSubmission.setStatus(Submission.Status.PASSED);
-            } else {
-                finalSubmission.setStatus(Submission.Status.FAILED);
-            }
+            finalSubmission.setStatus(ifPass ?
+                    Submission.Status.PASSED : Submission.Status.FAILED);
             submissionDao.updateSubmission(finalSubmission);
         });
         return id;
@@ -91,8 +84,8 @@ public class ProblemServiceImpl implements ProblemService {
     @Override
     public int hasPassed(User user, Problem problem) {
         if (user == null) return 0;
-        if (!userDao.getTriedProblemsByUserId(user.getId()).contains(problem)) return 0;
         if (userDao.getPassedProblemsByUserId(user.getId()).contains(problem)) return 1;
+        if (!userDao.getTriedProblemsByUserId(user.getId()).contains(problem)) return 0;
         return -1;
     }
 

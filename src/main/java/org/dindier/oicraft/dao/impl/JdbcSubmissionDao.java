@@ -77,22 +77,19 @@ public class JdbcSubmissionDao implements SubmissionDao {
 
     @Override
     public Submission updateSubmission(Submission submission) {
-        problemRepository
-                .findById(submission.getProblemId())
-                .map(problem -> {
-                    if (submission.getStatus().equals(Submission.Status.PASSED) &&
-                            // Check if the submission is not in the passed submissions
-                            problemDao
-                                    .getPassedSubmissions(problem.getId())
-                                    .stream()
-                                    .map(Submission::getId)
-                                    .noneMatch(id -> id == submission.getId())
-                    ) {
-                        problem.setPassed(problem.getPassed() + 1);
-                    }
-                    return problem;
-                })
-                .ifPresent(oldProblem -> problemRepository.save(oldProblem));
+        Problem problem = submission.getProblem();
+
+        if (submission.getStatus().equals(Submission.Status.PASSED) &&
+                // Check if the submission is not in passed submissions
+                submissionRepository.findById(submission.getId())
+                        .map(Submission::getStatus)
+                        .orElse(Submission.Status.WAITING) != Submission.Status.PASSED
+        ) {
+            problem.setPassed(problem.getPassed() + 1);
+        }
+        Problem problem1 = problemRepository.save(problem);
+        System.out.println(problem1.getPassed());
+
         Submission newSubmission = submissionRepository.save(submission);
         logger.info("Update submission for problem {} (id: {})", newSubmission.getProblemId(),
                 newSubmission.getId());

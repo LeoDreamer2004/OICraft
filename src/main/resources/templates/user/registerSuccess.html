@@ -11,7 +11,7 @@
     <div th:insert="~{index :: nav}"></div>
     <main role="main" class="card-container">
         <div class="login-card" id="registerForm">
-            <form class="login-form" th:action="@{/login}" method="post">
+            <form class="login-form" th:action="@{/login}" method="get">
                 <div class="login-title">
                     <h1>您已成功注册</h1>
                     <p>欢迎来到OICraft，[[${user.name}]]！</p>
