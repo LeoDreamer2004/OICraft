@@ -54,6 +54,7 @@ public class ProblemController {
         User user = userService.getUserByRequest(request);
         Iterable<Integer> hasPassed = (user == null) ? null :
                 IterableUtil.map(problems, problem -> problemService.hasPassed(user, problem));
+        // FIXME: Optimize the performance of the above code
         return new ModelAndView("problem/list")
                 .addObject("problems", problems)
                 .addObject("hasPassed", hasPassed);
@@ -62,11 +63,14 @@ public class ProblemController {
     @GetMapping("/problem/{id}")
     public ModelAndView problem(@PathVariable int id) {
         Problem problem = problemDao.getProblemById(id);
+        User user = userService.getUserByRequest(request);
         return new ModelAndView("problem/problem")
                 .addObject("problem", problem)
                 .addObject("samples", problemDao.getSamplesById(id))
                 .addObject("author", userDao.getUserById(problem.getAuthorId()))
-                .addObject("canEdit", canEdit(problem));
+                .addObject("canEdit", canEdit(problem))
+                .addObject("historyScore", problemService.getHistoryScore(user, problem))
+                .addObject("canSubmit", !problem.getIoPairs().isEmpty());
     }
 
     @GetMapping("/problem/new")
@@ -99,11 +103,11 @@ public class ProblemController {
     }
 
     @GetMapping("/problem/{id}/download")
-    public ResponseEntity<InputStreamSource> download(@PathVariable int id){
+    public ResponseEntity<InputStreamSource> download(@PathVariable int id) {
         Problem problem = problemDao.getProblemById(id);
         InputStreamSource inputStreamSource = new ByteArrayResource(problemService.getProblemMarkdown(problem));
         return ResponseEntity.ok().header("Content-Disposition",
-                "attachment; filename=\"%s.md\"".formatted(problem.getIdString()))
+                        "attachment; filename=\"%s.md\"".formatted(problem.getIdString()))
                 .body(inputStreamSource);
     }
 

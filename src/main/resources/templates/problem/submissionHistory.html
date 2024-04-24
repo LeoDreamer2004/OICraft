@@ -29,6 +29,7 @@
                 <th>状态</th>
                 <th>提交者</th>
                 <th>语言</th>
+                <th>分数</th>
                 <th>详情</th>
             </tr>
 
@@ -43,7 +44,7 @@
                     <span class="badge badge-danger my-large-badge">未通过</span>
                 </td>
                 <td th:if="${submission.statusString eq 'waiting'}">
-                    <span class="badge badge-warning my-large-badge">测试中</span>
+                    <span class="badge badge-secondary my-large-badge">测试中</span>
                 </td>
                 <td>
                     <a th:href="@{/profile/{id}(id=${submission.user.id})}" th:text="${submission.user.name}"
@@ -51,6 +52,9 @@
                 </td>
                 <td>
                     <span th:text="${submission.languageDisplayName}"></span>
+                </td>
+                <td>
+                    <span th:text="${submission.score}"></span>
                 </td>
                 <td>
                     <a th:href="@{/submission/{id}(id=${submission.id})}">查看</a>
