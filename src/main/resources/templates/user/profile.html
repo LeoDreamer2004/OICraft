@@ -20,21 +20,21 @@
             <span class="badge badge-success mt-2 my-large-badge">简单</span>
             <br/>
             <span th:each="problem : ${passed}">
-                <a th:if="${problem.isEasy()}" th:href="@{'/problems/' + ${problem.id}}"
+                <a th:if="${problem.isEasy()}" th:href="@{'/problem/' + ${problem.id}}"
                    th:text="${problem.getIdString()}"></a>
             </span>
             <br/>
             <span class="badge badge-warning mt-2 my-large-badge">中等</span>
             <br/>
             <span th:each="problem : ${passed}">
-                <a th:if="${problem.isMedium()}" th:href="@{'/problems/' + ${problem.id}}"
+                <a th:if="${problem.isMedium()}" th:href="@{'/problem/' + ${problem.id}}"
                    th:text="${problem.getIdString()}"></a>
             </span>
             <br/>
             <span class="badge badge-danger mt-2 my-large-badge">困难</span>
             <br/>
             <span th:each="problem : ${passed}">
-                <a th:if="${problem.isHard()}" th:href="@{'/problems/' + ${problem.id}}"
+                <a th:if="${problem.isHard()}" th:href="@{'/problem/' + ${problem.id}}"
                    th:text="${problem.getIdString()}"></a>
             </span>
         </div>

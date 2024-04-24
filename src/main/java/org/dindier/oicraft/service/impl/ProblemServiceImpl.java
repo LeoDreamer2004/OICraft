@@ -112,6 +112,13 @@ public class ProblemServiceImpl implements ProblemService {
         return sb.toString().getBytes();
     }
 
+    @Override
+    public int getHistoryScore(User user, Problem problem) {
+        // TODO: Implement this method
+
+        return 0;
+    }
+
     @Autowired
     private void setSubmissionDao(SubmissionDao submissionDao) {
         this.submissionDao = submissionDao;
