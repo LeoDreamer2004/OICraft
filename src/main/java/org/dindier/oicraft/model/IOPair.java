@@ -1,6 +1,7 @@
 package org.dindier.oicraft.model;
 
 import jakarta.persistence.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * The input-output pair of a problem (Weak Entity)
@@ -39,6 +40,10 @@ public class IOPair {
         return problem.getId();
     }
 
+    public void setProblem(Problem problem){
+        this.problem = problem;
+    }
+
     public int getId() {
         return id;
     }
@@ -74,4 +79,5 @@ public class IOPair {
     public void setScore(int score) {
         this.score = score;
     }
+
 }
