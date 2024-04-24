@@ -52,7 +52,8 @@ public class ProblemController {
     public ModelAndView problems() {
         Iterable<Problem> problems = problemDao.getProblemList();
         User user = userService.getUserByRequest(request);
-        Iterable<Integer> hasPassed = IterableUtil.map(problems, problem -> problemService.hasPassed(user, problem));
+        Iterable<Integer> hasPassed = (user == null) ? null :
+                IterableUtil.map(problems, problem -> problemService.hasPassed(user, problem));
         return new ModelAndView("problem/list")
                 .addObject("problems", problems)
                 .addObject("hasPassed", hasPassed);
@@ -170,7 +171,6 @@ public class ProblemController {
 
     @PostMapping("/problem/{id}/delete")
     public RedirectView deleteConfirm(@PathVariable int id) {
-        System.out.println(0);
         Problem problem = problemDao.getProblemById(id);
         if (!canEdit(problem))
             return new RedirectView("error/403");
