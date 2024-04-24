@@ -13,16 +13,16 @@ public class Submission {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "problem_id")
     private Problem problem;
     private String code;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "submission", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "submission", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<Checkpoint> checkpoints;
 
     protected Submission() {

@@ -10,10 +10,10 @@ public class Checkpoint {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private Submission submission;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private IOPair ioPair;
 
     public enum Status {

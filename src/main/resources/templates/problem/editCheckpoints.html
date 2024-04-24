@@ -23,7 +23,7 @@
 <main role="main" class="container">
     <h4 class="underlined-title">上传测试点</h4>
     <div class="card my-card p-3">
-        <form th:action="@{/problem/{id}/edit/checkpoints(id=${problem.id})}" method="post">
+        <form th:action="@{/problem/{id}/edit/checkpoints(id=${problem.id})}" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <p>文件格式：请上传一个zip文件，其中包含两个文件夹sample和test，分别代表样例用/测试用。<br/>
                     其内输入用X.in和X.out表示，当X相同时认为是匹配的一对输入输出对。</p>
