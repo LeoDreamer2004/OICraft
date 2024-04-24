@@ -64,28 +64,42 @@ public class JdbcProblemDao implements ProblemDao {
     }
 
     @Override
-    public Integer getSubmissionCount(int problemId) {
+    public List<Submission> getAllSubmissions(int problemId) {
         return problemRepository
                 .findById(problemId)
                 .map(Problem::getSubmissions)
-                .map(List::size)
-                .orElse(null);
+                .orElse(List.of());
     }
 
     @Override
-    public Integer getPassedSubmissionCount(int problemId) {
+    public List<Submission> getPassedSubmissions(int problemId) {
         return problemRepository
                 .findById(problemId)
                 .map(Problem::getSubmissions)
                 .map(submissions -> submissions
                         .stream()
-                        .map(submission -> submission
-                                .getCheckpoints()
-                                .stream()
-                                .allMatch(Checkpoint::isPassed) ? 1 : 0
+                        .filter(submission -> submission
+                                .getStatusEnum()
+                                .equals(Submission.Status.PASSED)
                         )
-                        .reduce(0, Integer::sum)
+                        .toList()
                 )
-                .orElse(null);
+                .orElse(List.of());
+    }
+
+    @Override
+    public int getSubmissionCount(int problemId) {
+        return problemRepository
+                .findById(problemId)
+                .map(Problem::getSubmit)
+                .orElse(0);
+    }
+
+    @Override
+    public int getPassedSubmissionCount(int problemId) {
+        return problemRepository
+                .findById(problemId)
+                .map(Problem::getPassed)
+                .orElse(0);
     }
 }

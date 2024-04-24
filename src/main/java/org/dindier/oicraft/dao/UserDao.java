@@ -25,6 +25,8 @@ public interface UserDao {
      */
     User updateUser(User user);
 
+    boolean existsUser(String username);
+
     /**
      * Get user by ID from database
      *

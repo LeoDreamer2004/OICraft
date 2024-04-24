@@ -46,19 +46,19 @@ public class JdbcUserDao implements UserDao {
     }
 
     @Override
+    public boolean existsUser(String username) {
+        return !userRepository.findByName(username).isEmpty();
+    }
+
+    @Override
     public User getUserById(int userId) {
         return userRepository.findById(userId).orElse(null);
     }
 
     @Override
     public User getUserByUsername(String username) {
-        Iterable<User> users = userRepository.findAll();
-        for (User user : users) {
-            if (user.getName().equals(username)) {
-                return user;
-            }
-        }
-        return null;
+        List<User> users = userRepository.findByName(username);
+        return users.isEmpty() ? null : users.get(0);
     }
 
     @Override

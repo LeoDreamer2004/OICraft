@@ -26,7 +26,7 @@ public class Submission {
     }
 
     public enum Language {
-        JAVA("java"), PYTHON("python"), C("c");
+        JAVA("java"), PYTHON("python"), C("c"), CPP("cpp");
 
         private final String displayName;
 
@@ -96,6 +96,10 @@ public class Submission {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public Status getStatusEnum() {
+        return status;
     }
 
     public int getScore() {
