@@ -7,9 +7,12 @@ import org.springframework.lang.Nullable;
 public interface UserService {
     /**
      * Get user by request
+     *
      * @param request The request to get user from
      * @return The user from the request. If not authenticated, return null
      */
     @Nullable
     User getUserByRequest(HttpServletRequest request);
+
+    User createUser(User user);
 }
