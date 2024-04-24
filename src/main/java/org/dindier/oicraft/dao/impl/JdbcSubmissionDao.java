@@ -45,7 +45,7 @@ public class JdbcSubmissionDao implements SubmissionDao {
                     return problem;
                 })
                 .map(problem -> {
-                    if (submission.getStatusEnum().equals(Submission.Status.PASSED)) {
+                    if (submission.getStatus().equals(Submission.Status.PASSED)) {
                         problem.setPassed(problem.getPassed() + 1);
                     }
                     return problem;
@@ -80,7 +80,7 @@ public class JdbcSubmissionDao implements SubmissionDao {
         problemRepository
                 .findById(submission.getProblemId())
                 .map(problem -> {
-                    if (submission.getStatusEnum().equals(Submission.Status.PASSED) &&
+                    if (submission.getStatus().equals(Submission.Status.PASSED) &&
                             // Check if the submission is not in the passed submissions
                             problemDao
                                     .getPassedSubmissions(problem.getId())

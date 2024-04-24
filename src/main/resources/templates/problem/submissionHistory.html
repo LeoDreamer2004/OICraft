@@ -36,13 +36,13 @@
                 <td>
                     <span>#[[${submission.id}]]</span>
                 </td>
-                <td th:if="${submission.status eq 'passed'}">
+                <td th:if="${submission.statusString eq 'passed'}">
                     <span class="badge badge-success my-large-badge">通过</span>
                 </td>
-                <td th:if="${submission.status eq 'failed'}">
+                <td th:if="${submission.statusString eq 'failed'}">
                     <span class="badge badge-danger my-large-badge">未通过</span>
                 </td>
-                <td th:if="${submission.status eq 'pending'}">
+                <td th:if="${submission.statusString eq 'pending'}">
                     <span class="badge badge-warning my-large-badge">测试中</span>
                 </td>
                 <td>
@@ -50,7 +50,7 @@
                        th:class="${submission.user.getGradeString()}"></a>
                 </td>
                 <td>
-                    <span th:text="${submission.language}"></span>
+                    <span th:text="${submission.languageDisplayName}"></span>
                 </td>
                 <td>
                     <a th:href="@{/submission/{id}(id=${submission.id})}">查看</a>

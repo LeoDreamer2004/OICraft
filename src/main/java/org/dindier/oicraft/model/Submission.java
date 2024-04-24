@@ -1,10 +1,13 @@
 package org.dindier.oicraft.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.Getter;
 
 import java.util.List;
 
 @Entity
+@Data
 public class Submission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +28,7 @@ public class Submission {
     protected Submission() {
     }
 
+    @Getter
     public enum Language {
         JAVA("java"), PYTHON("python"), C("c"), CPP("cpp");
 
@@ -33,15 +37,12 @@ public class Submission {
         Language(String displayName) {
             this.displayName = displayName;
         }
-
-        public String getDisplayName() {
-            return displayName;
-        }
     }
 
     @Enumerated(EnumType.STRING)
     private Language language;
 
+    @Getter
     public enum Status {
         WAITING("waiting"), PASSED("passed"), FAILED("failed");
 
@@ -51,9 +52,6 @@ public class Submission {
             this.displayName = displayName;
         }
 
-        public String getDisplayName() {
-            return displayName;
-        }
     }
 
     @Enumerated(EnumType.STRING)
@@ -66,63 +64,15 @@ public class Submission {
         this.language = language;
     }
 
-    public int getId() {
-        return id;
-    }
-
     public int getProblemId() {
         return problem.getId();
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getLanguage() {
+    public String getLanguageDisplayName() {
         return language.getDisplayName();
     }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
-
-    public String getStatus() {
+    public String getStatusString() {
         return status.getDisplayName();
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public Status getStatusEnum() {
-        return status;
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User userId) {
-        this.user = userId;
-    }
-
-    public Problem getProblem() {
-        return problem;
-    }
-
-    public List<Checkpoint> getCheckpoints() {
-        return checkpoints;
     }
 }

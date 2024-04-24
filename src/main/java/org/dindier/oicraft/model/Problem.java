@@ -1,10 +1,12 @@
 package org.dindier.oicraft.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.List;
 
 @Entity
+@Data
 public class Problem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,90 +51,6 @@ public class Problem {
         this.memoryLimit = memoryLimit;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getInputFormat() {
-        return inputFormat;
-    }
-
-    public void setInputFormat(String inputFormat) {
-        this.inputFormat = inputFormat;
-    }
-
-    public String getOutputFormat() {
-        return outputFormat;
-    }
-
-    public void setOutputFormat(String outputFormat) {
-        this.outputFormat = outputFormat;
-    }
-
-    public Difficulty getDifficulty() {
-        return difficulty;
-    }
-
-    public void setDifficulty(Difficulty difficulty) {
-        this.difficulty = difficulty;
-    }
-
-    public int getTimeLimit() {
-        return timeLimit;
-    }
-
-    public void setTimeLimit(int timeLimit) {
-        this.timeLimit = timeLimit;
-    }
-
-    public int getMemoryLimit() {
-        return memoryLimit;
-    }
-
-    public void setMemoryLimit(int memoryLimit) {
-        this.memoryLimit = memoryLimit;
-    }
-
-    public int getSubmit() {
-        return submit;
-    }
-
-    public void setSubmit(int submit) {
-        this.submit = submit;
-    }
-
-    public int getPassed() {
-        return passed;
-    }
-
-    public void setPassed(int passed) {
-        this.passed = passed;
-    }
-
-    public int getAuthorId() {
-        return authorId;
-    }
-
-    public void setAuthorId(int authorId) {
-        this.authorId = authorId;
-    }
-
     public String getIdString() {
         return String.format("P%04d", id);
     }
@@ -152,11 +70,7 @@ public class Problem {
             return String.format("%.2fMB", memoryLimit / 1024.0);
         }
     }
-
-    public List<IOPair> getIoPairs() {
-        return ioPairs;
-    }
-
+    
     public boolean isEasy() {
         return difficulty == Difficulty.EASY;
     }
@@ -167,9 +81,5 @@ public class Problem {
 
     public boolean isHard() {
         return difficulty == Difficulty.HARD;
-    }
-
-    public List<Submission> getSubmissions() {
-        return submissions;
     }
 }
