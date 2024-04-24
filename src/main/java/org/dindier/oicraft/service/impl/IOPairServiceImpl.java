@@ -12,12 +12,14 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.Comparator;
+import java.util.zip.ZipOutputStream;
 
 import org.mozilla.universalchardet.UniversalDetector;
 
@@ -27,8 +29,11 @@ public class IOPairServiceImpl implements IOPairService {
     private ProblemDao problemDao;
 
     // Use me as the dir to save the zip file
-    private static final String tempZipDir = ".temp_zip";
+    private static final String putZipDir = ".temp_zip_put";
     private static int id = 0;
+    private static final String getZipDir = ".temp_zip_get";
+    private static int id2 = 0;
+    private static final String tempZipDir = ".temp_zip";
 
     @Autowired
     public void setIOPairDao(IOPairDao ioPairDao) {
@@ -37,10 +42,9 @@ public class IOPairServiceImpl implements IOPairService {
 
     @Override
     public void addIOPairByZip(InputStream fileStream, int problemId) throws IOException {
-        // TODO
         Problem problem = problemDao.getProblemById(problemId);
         List<IOPair> ioPairs = new ArrayList<>();
-        Path tempDir = Files.createTempDirectory(tempZipDir + File.separator + id++);
+        Path tempDir = Files.createTempDirectory(putZipDir + File.separator + id++);
         try (ZipInputStream zipInputStream = new ZipInputStream(fileStream)) {
             ZipEntry entry;
             while ((entry = zipInputStream.getNextEntry()) != null) {
@@ -59,9 +63,11 @@ public class IOPairServiceImpl implements IOPairService {
                     Path scoreFilePath = tempDir.resolve(scoreFile);
                     String score = new String(Files.readAllBytes(scoreFilePath), detectCharset(scoreFilePath));
                     int scoreInt = Integer.parseInt(score);
-                    IOPair.Type type = entry.getName().startsWith("sample/") ? IOPair.Type.SAMPLE :
+                    IOPair.Type type = entry.getName().toLowerCase().startsWith("sample/") ?
+                            IOPair.Type.SAMPLE :
                             IOPair.Type.TEST;
                     IOPair ioPair = new IOPair(input, output, type, scoreInt);
+                    ioPair.setProblem(problem);
                     ioPairs.add(ioPair);
                 }
             }
@@ -83,8 +89,51 @@ public class IOPairServiceImpl implements IOPairService {
 
     @Override
     public InputStream getIOPairsStream(int problemId) throws IOException {
-        // TODO
-        return null;
+        List<IOPair> ioPairs = ioPairDao.getIOPairByProblemId(problemId);
+        Path tempDir = Files.createTempDirectory(getZipDir + File.separator + id2++);
+        for (IOPair ioPair : ioPairs) {
+            String dir = ioPair.getType() == IOPair.Type.SAMPLE ? "sample" : "test";
+            Path inputFilePath = tempDir.resolve(dir + File.separator + ioPair.getId() + ".in");
+            Files.writeString(inputFilePath, ioPair.getInput());
+            Path outputFilePath = tempDir.resolve(dir + File.separator + ioPair.getId() + ".out");
+            Files.writeString(outputFilePath, ioPair.getOutput());
+        }
+        Path zipDir = Paths.get(tempZipDir + id2);
+        Path tempZipPath = Files.createTempFile(zipDir, "ioPairs", ".zip");
+        File tempZipFile = tempZipPath.toFile();
+
+        try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(tempZipFile))) {
+            try (Stream<Path> paths = Files.walk(tempDir)) {
+                paths.filter(path -> !Files.isDirectory(path))
+                        .forEach(path -> {
+                            ZipEntry zipEntry = new ZipEntry(tempDir.relativize(path).toString());
+                            try {
+                                zos.putNextEntry(zipEntry);
+                                Files.copy(path, zos);
+                                zos.closeEntry();
+                            } catch (IOException e) {
+                                throw new UncheckedIOException(e);
+                            }
+                        });
+            }
+            try (Stream<Path> paths = Files.walk(tempDir)) {
+                paths.sorted(Comparator.reverseOrder())
+                        .map(Path::toFile)
+                        .forEach(file -> {
+                            if (!file.delete()) {
+                                throw new UncheckedIOException("Failed to delete file: " + file,
+                                        new IOException());
+                            }
+                        });
+            }
+
+            InputStream inputStream = new FileInputStream(tempZipFile);
+
+            Files.deleteIfExists(tempZipPath);
+            Files.deleteIfExists(zipDir);
+
+            return inputStream;
+        }
     }
 
     private String detectCharset(Path filePath) throws IOException {
