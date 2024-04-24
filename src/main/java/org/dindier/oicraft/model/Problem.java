@@ -18,10 +18,10 @@ public class Problem {
 
     private int authorId;
 
-    @OneToMany(mappedBy = "problem", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "problem", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<IOPair> ioPairs;
 
-    @OneToMany(mappedBy = "problem", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "problem", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<Submission> submissions;
 
     @Enumerated(EnumType.STRING)

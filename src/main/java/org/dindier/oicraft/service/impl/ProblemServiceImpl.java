@@ -37,11 +37,12 @@ public class ProblemServiceImpl implements ProblemService {
         submission = submissionDao.createSubmission(submission);
         int id = submission.getId();
 
-        Submission finalSubmission = submission;
+        final Submission finalSubmission = submission;
+        final Iterable<IOPair> ioPairs = problemDao.getTestsById(problem.getId());
+
         executorService.execute(() -> {
             logger.info("Start testing code for submission {}", id);
 
-            Iterable<IOPair> ioPairs = problemDao.getTestsById(problem.getId());
             CodeChecker codeChecker = new CodeChecker();
             int score = 0;
             boolean ifPass = true;

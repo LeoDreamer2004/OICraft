@@ -27,11 +27,11 @@
     <div class="problem-status-box">
         <div class="problem-status-item">
             <p>提交</p>
-            <p>0</p>
+            <p th:text="${problem.submit}"></p>
         </div>
         <div class="problem-status-item">
             <p>通过</p>
-            <p>0</p>
+            <p th:text="${problem.passed}"></p>
         </div>
         <div class="problem-status-item">
             <p>时间限制</p>
