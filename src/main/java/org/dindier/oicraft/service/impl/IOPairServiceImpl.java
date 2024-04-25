@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -38,7 +39,8 @@ public class IOPairServiceImpl implements IOPairService {
     }
 
     @Override
-    public void addIOPairByZip(InputStream fileStream, int problemId) throws IOException {
+    public int addIOPairByZip(InputStream fileStream, int problemId) throws IOException {
+        int[] flag = {0};
         Problem problem = problemDao.getProblemById(problemId);
         List<IOPair> ioPairs = new ArrayList<>();
         Path tempDir = Paths.get(putZipDir + id++);
@@ -73,6 +75,7 @@ public class IOPairServiceImpl implements IOPairService {
                         ioPair.setProblem(problem);
                         ioPairs.add(ioPair);
                     } catch (IOException e) {
+                        flag[0] = -1;
                         throw new UncheckedIOException(e);
                     }
                 }
@@ -91,6 +94,7 @@ public class IOPairServiceImpl implements IOPairService {
                         }
                     });
         }
+        return flag[0];
     }
 
     @Override
