@@ -10,9 +10,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/*
- * FIXME: May use springSecurity for user authentication later
- */
 @Entity
 @Table(name = "User",
         uniqueConstraints = @UniqueConstraint(columnNames = "username")
@@ -96,5 +93,10 @@ public class User implements UserDetails {
 
     public String getGradeString() {
         return grade.toString();
+    }
+
+    @SuppressWarnings("unused")
+    public void load() {
+        List<Submission> _temp = this.submissions;
     }
 }
