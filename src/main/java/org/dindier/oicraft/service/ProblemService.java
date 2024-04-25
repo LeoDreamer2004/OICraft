@@ -23,14 +23,6 @@ public interface ProblemService {
     int hasPassed(User user, Problem problem);
 
     /**
-     * Return the problems that the user has passed
-     *
-     * @param user The user to get the problems from
-     * @return The problems that the user has passed
-     */
-    Iterable<Problem> getPassedProblems(User user);
-
-    /**
      * Return a byte array of the markdown file of the problem
      *
      * @param problem The problem to get the markdown from

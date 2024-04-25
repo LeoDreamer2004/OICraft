@@ -112,6 +112,8 @@ public class JpaUserDao implements UserDao {
 
     @Override
     public List<Problem> getNotPassedProblemsByUserId(int userId) {
+        // FIXME: This method is not implemented correctly?
+
         return userRepository
                 .findById(userId)
                 .map(User::getSubmissions)
@@ -126,6 +128,13 @@ public class JpaUserDao implements UserDao {
                 )
                 .map(problems -> problems.stream().distinct().toList())
                 .orElse(List.of());
+    }
+
+    @Override
+    public List<Problem> getToSolveProblemsByUserId(int userId) {
+        // TODO: Implement this method
+
+        return List.of();
     }
 
     @Override

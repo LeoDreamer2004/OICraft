@@ -90,6 +90,14 @@ public interface UserDao {
     List<Problem> getNotPassedProblemsByUserId(int userId);
 
     /**
+     * Get all problems that a user has tried and failed
+     *
+     * @param userId the user's ID
+     * @return A list of {@code Problem} classes that the user has tried and failed.
+     */
+    List<Problem> getToSolveProblemsByUserId(int userId);
+
+    /**
      * Add experience to a user
      *
      * @param user       the user to add experience

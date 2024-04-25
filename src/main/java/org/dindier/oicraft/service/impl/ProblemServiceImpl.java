@@ -97,11 +97,6 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
-    public Iterable<Problem> getPassedProblems(User user) {
-        return userDao.getPassedProblemsByUserId(user.getId());
-    }
-
-    @Override
     public byte[] getProblemMarkdown(Problem problem) {
         StringBuilder sb = new StringBuilder();
         sb.append("# ").append(problem.getTitle()).append("\n\n")

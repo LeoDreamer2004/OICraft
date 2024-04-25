@@ -20,6 +20,16 @@
     </div>
 </div>
 <main role="main" class="container">
+    <!-- DO NOT show this card when the user has no problems waiting to solve -->
+    <div class="card mb-4" th:if="${toSolve.size() != 0}">
+        <h5 class="card-header">尝试的题目</h5>
+        <span th:each="problem : ${toSolve}">
+                <a th:href="@{'/problem/' + ${problem.id}}"
+                   th:text="${problem.getIdString()}"></a>
+            </span>
+        <div class="card-body">
+        </div>
+    </div>
     <div class="card">
         <h5 class="card-header">通过题目</h5>
         <div class="card-body">
