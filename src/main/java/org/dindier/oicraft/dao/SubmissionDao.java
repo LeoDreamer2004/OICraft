@@ -8,7 +8,8 @@ public interface SubmissionDao {
      *
      * @param submission the submission to create
      * @return A {@code Submission} class with the submission's ID set.
-     * @implNote This method should also update the corresponding problem's submit count and passed count.
+     * @implNote This method should also update the corresponding problem's submit count and passed
+     * count and add 10 points to the user's experience if the submission is passed.
      */
     Submission createSubmission(Submission submission);
 
@@ -17,7 +18,8 @@ public interface SubmissionDao {
      *
      * @param submission the submission to update
      * @return A {@code Submission} class with updated information.
-     * @implNote This method should also update the corresponding problem's passed count.
+     * @implNote This method should also update the corresponding problem's passed count
+     * and add 10 points to the user's experience if the submission is passed.
      */
     Submission updateSubmission(Submission submission);
 

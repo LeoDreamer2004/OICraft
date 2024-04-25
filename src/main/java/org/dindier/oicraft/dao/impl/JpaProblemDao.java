@@ -13,9 +13,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository("problemDao")
-public class JdbcProblemDao implements ProblemDao {
+public class JpaProblemDao implements ProblemDao {
     private ProblemRepository problemRepository;
-    private final Logger logger = LoggerFactory.getLogger(JdbcProblemDao.class);
+    private final Logger logger = LoggerFactory.getLogger(JpaProblemDao.class);
 
     @Autowired
     public void setProblemRepository(ProblemRepository problemRepository) {

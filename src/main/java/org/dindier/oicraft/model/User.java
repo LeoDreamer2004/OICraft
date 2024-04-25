@@ -27,6 +27,8 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Grade grade;
 
+    private int experience = 0;
+
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<Submission> submissions;
 
