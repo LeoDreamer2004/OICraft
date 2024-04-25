@@ -1,11 +1,12 @@
 package org.dindier.oicraft.dao.impl;
 
-import org.dindier.oicraft.dao.ProblemDao;
 import org.dindier.oicraft.dao.SubmissionDao;
 import org.dindier.oicraft.dao.repository.ProblemRepository;
 import org.dindier.oicraft.dao.repository.SubmissionRepository;
+import org.dindier.oicraft.dao.repository.UserRepository;
 import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.Submission;
+import org.dindier.oicraft.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,12 @@ public class JpaSubmissionDao implements SubmissionDao {
     private JpaUserDao userDao;
 
     private final Logger logger = LoggerFactory.getLogger(JpaSubmissionDao.class);
+    private UserRepository userRepository;
+
+    @Autowired
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Autowired
     public void setSubmissionRepository(SubmissionRepository submissionRepository) {
@@ -98,7 +105,8 @@ public class JpaSubmissionDao implements SubmissionDao {
 
     @Override
     public Iterable<Submission> getSubmissionsByUserId(int userId) {
-        //TODO
-        return null;
+        return userRepository.findById(userId)
+                .map(User::getSubmissions)
+                .orElse(List.of());
     }
 }

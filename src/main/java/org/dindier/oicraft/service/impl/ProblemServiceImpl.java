@@ -108,11 +108,15 @@ public class ProblemServiceImpl implements ProblemService {
                 .append("## 题目描述\n\n").append(problem.getDescription()).append("\n\n")
                 .append("## 输入格式\n\n").append(problem.getInputFormat()).append("\n\n")
                 .append("## 输出格式\n\n").append(problem.getOutputFormat()).append("\n\n");
-        for (IOPair ioPair : problemDao.getTestsById(problem.getId())) {
-            sb.append("## 样例\n\n")
-                    .append("#### 输入\n\n").append("```\n")
+        int sampleCount = 0;
+        for (IOPair ioPair : problemDao.getSamplesById(problem.getId())) {
+            if (sampleCount++ == 0) {
+                sb.append("## 样例\n\n");
+            }
+            sb.append("#### 样例").append(sampleCount).append("\n\n")
+                    .append("##### 输入\n\n").append("```\n")
                     .append(ioPair.getInput()).append(("\n```\n\n"))
-                    .append("#### 输出\n\n").append("```\n")
+                    .append("##### 输出\n\n").append("```\n")
                     .append(ioPair.getOutput()).append(("\n```\n\n"));
         }
         return sb.toString().getBytes();
@@ -121,10 +125,10 @@ public class ProblemServiceImpl implements ProblemService {
     @Override
     public int getHistoryScore(User user, Problem problem) {
         int score = -1;
+        if (user == null) return 0;
         Iterable<Submission> submissions = submissionDao.getSubmissionsByUserId(user.getId());
-        if(submissions == null) return 0;
-        for(Submission submission : submissions){
-            if(submission.getUser().getId() == user.getId()){
+        for (Submission submission : submissions) {
+            if (submission.getProblemId() == problem.getId()) {
                 score = Math.max(score, submission.getScore());
             }
         }
