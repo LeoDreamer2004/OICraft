@@ -30,6 +30,7 @@ public class UserServiceImpl implements UserService {
     public User createUser(User user) {
         if (!user.isAdmin()) {
             user.setGrade(User.Grade.BEGINNER);
+            user.setExperience(0);
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userDao.createUser(user);
