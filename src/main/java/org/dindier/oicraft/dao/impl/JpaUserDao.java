@@ -14,13 +14,17 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository("userDao")
-public class JdbcUserDao implements UserDao {
+public class JpaUserDao implements UserDao {
     private UserRepository userRepository;
-    private final Logger logger = LoggerFactory.getLogger(JdbcUserDao.class);
+    private final Logger logger = LoggerFactory.getLogger(JpaUserDao.class);
 
     public static final int INTERMEDIATE_MIN_PASS_NUM = 10;
     public static final int ADVANCED_MIN_PASS_NUM = 20;
     public static final int EXPERT_MIN_PASS_NUM = 30;
+
+    private static final int INTERMEDIATE_MIN_EXP = 100;
+    private static final int ADVANCED_MIN_EXP = 200;
+    private static final int EXPERT_MIN_EXP = 300;
 
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
@@ -41,12 +45,12 @@ public class JdbcUserDao implements UserDao {
 
     @Override
     public User updateUser(User user) {
-        int passedProblemsNum = getPassedProblemsByUserId(user.getId()).size();
-        if (passedProblemsNum >= EXPERT_MIN_PASS_NUM) {
+        int experience = user.getExperience();
+        if (experience > EXPERT_MIN_EXP) {
             user.setGrade(User.Grade.EXPERT);
-        } else if (passedProblemsNum >= ADVANCED_MIN_PASS_NUM) {
+        } else if (experience > ADVANCED_MIN_EXP) {
             user.setGrade(User.Grade.ADVANCED);
-        } else if (passedProblemsNum >= INTERMEDIATE_MIN_PASS_NUM) {
+        } else if (experience > INTERMEDIATE_MIN_EXP) {
             user.setGrade(User.Grade.INTERMEDIATE);
         } else {
             user.setGrade(User.Grade.BEGINNER);
@@ -126,5 +130,24 @@ public class JdbcUserDao implements UserDao {
                 )
                 .map(problems -> problems.stream().distinct().toList())
                 .orElse(List.of());
+    }
+
+    @Override
+    public User addExperience(User user, int experience) {
+        user.setExperience(user.getExperience() + experience);
+        int newExperience = user.getExperience();
+        if (newExperience > EXPERT_MIN_EXP) {
+            logger.info("User {} (id: {}) has reached expert level", user.getName(), user.getId());
+            user.setGrade(User.Grade.EXPERT);
+        } else if (newExperience > ADVANCED_MIN_EXP) {
+            logger.info("User {} (id: {}) has reached advanced level", user.getName(), user.getId());
+            user.setGrade(User.Grade.ADVANCED);
+        } else if (newExperience > INTERMEDIATE_MIN_EXP) {
+            logger.info("User {} (id: {}) has reached intermediate level", user.getName(), user.getId());
+            user.setGrade(User.Grade.INTERMEDIATE);
+        } else {
+            user.setGrade(User.Grade.BEGINNER);
+        }
+        return userRepository.save(user);
     }
 }

@@ -14,10 +14,10 @@ import java.util.List;
 
 
 @Repository("IOPairDao")
-public class JdbcIOPairDao implements IOPairDao {
+public class JpaIOPairDao implements IOPairDao {
     private IOPairRepository ioPairRepository;
     private ProblemRepository problemRepository;
-    private final Logger logger = LoggerFactory.getLogger(JdbcIOPairDao.class);
+    private final Logger logger = LoggerFactory.getLogger(JpaIOPairDao.class);
 
     @Autowired
     public void setIOPairRepository(IOPairRepository ioPairRepository) {
