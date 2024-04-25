@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.dindier.oicraft.dao.UserDao;
 
+import java.util.Date;
 import java.util.logging.Logger;
 
 @Service("userService")
@@ -47,14 +48,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public void checkIn(User user) {
         logger.info("User " + user.getUsername() + " checked in today");
-        // TODO: Implement this method
-
+        Date lastCheckin = user.getLast_checkin();
+        Date today = new Date();
+        if (lastCheckin == null || lastCheckin.before(today)) {
+            userDao.addExperience(user, 1);
+            user.setLast_checkin(today);
+        }
     }
 
     @Override
     public boolean hasCheckedInToday(User user) {
-        // TODO: Implement this method
-
-        return false;
+        Date lastCheckin = user.getLast_checkin();
+        Date today = new Date();
+        return lastCheckin != null && !lastCheckin.before(today);
     }
 }

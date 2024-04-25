@@ -47,4 +47,6 @@ public interface SubmissionDao {
      * If there is no submission, an empty list will be returned.
      */
     Iterable<Submission> getAllSubmissions();
+
+    Iterable<Submission> getSubmissionsByUserId(int userId);
 }

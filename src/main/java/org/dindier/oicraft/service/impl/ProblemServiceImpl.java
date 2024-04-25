@@ -34,7 +34,6 @@ public class ProblemServiceImpl implements ProblemService {
      */
     @Override
     public int testCode(User user, Problem problem, String code, String language) {
-        // TODO: Implement this method
         Submission submission = new Submission(user, problem, code,
                 Submission.Language.fromString(language));
         submission = submissionDao.createSubmission(submission);
@@ -121,9 +120,15 @@ public class ProblemServiceImpl implements ProblemService {
 
     @Override
     public int getHistoryScore(User user, Problem problem) {
-        // TODO: Implement this method
-
-        return 0;
+        int score = -1;
+        Iterable<Submission> submissions = submissionDao.getSubmissionsByUserId(user.getId());
+        if(submissions == null) return 0;
+        for(Submission submission : submissions){
+            if(submission.getUser().getId() == user.getId()){
+                score = Math.max(score, submission.getScore());
+            }
+        }
+        return score;
     }
 
     @Autowired

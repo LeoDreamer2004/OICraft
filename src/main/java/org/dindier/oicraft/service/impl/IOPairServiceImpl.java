@@ -14,7 +14,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -99,7 +98,6 @@ public class IOPairServiceImpl implements IOPairService {
 
     @Override
     public InputStream getIOPairsStream(int problemId) throws IOException {
-        // FIXME: Add score file in zhe zip
         List<IOPair> ioPairs = ioPairDao.getIOPairByProblemId(problemId);
         String folderPath = getZipDir + File.separator + getId++;
         Path tempDir = Files.createDirectories(Paths.get(folderPath));
@@ -111,6 +109,8 @@ public class IOPairServiceImpl implements IOPairService {
             Files.writeString(inputFilePath, ioPair.getInput());
             Path outputFilePath = dirPath.resolve(ioPair.getId() + ".out");
             Files.writeString(outputFilePath, ioPair.getOutput());
+            Path scoreFilePath = dirPath.resolve(ioPair.getId() + ".score");
+            Files.writeString(scoreFilePath, String.valueOf(ioPair.getScore()));
         }
         Path zipDir = Paths.get(tempZipDir + File.separator + getId);
         Files.createDirectories(zipDir);
