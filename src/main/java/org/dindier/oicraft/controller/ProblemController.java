@@ -114,7 +114,7 @@ public class ProblemController {
     @GetMapping("/problem/{id}/history")
     public ModelAndView history(@PathVariable int id) {
         Iterable<Submission> submissions = submissionDao.getSubmissionsByProblemId(id);
-        return new ModelAndView("problem/submissionHistory")
+        return new ModelAndView("submission/history")
                 .addObject("problem", problemDao.getProblemById(id))
                 .addObject("submissions", submissions);
     }

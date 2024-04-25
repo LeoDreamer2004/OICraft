@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,12 +29,19 @@ public class WebSecurityConfig {
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http.authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/submission/**").authenticated()
-                        .requestMatchers("/problem/*/submit").authenticated()
-                        .requestMatchers("/problem/new").authenticated()
+                        .requestMatchers(
+                                "/submission/**",
+                                "/problem/*/submit",
+                                "/problem/new"
+                        ).authenticated()
                         .anyRequest().permitAll()
-                ) // Permit all requests to any endpoint temporarily
+                ) // set the authorization rules
+                .csrf(csrf -> csrf.ignoringRequestMatchers(
+                        "/checkin"
+                )) // ignore the CSRF token for some endpoints
+
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .loginProcessingUrl("/login")

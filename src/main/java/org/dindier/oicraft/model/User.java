@@ -99,4 +99,8 @@ public class User implements UserDetails {
     public void load() {
         List<Submission> _temp = this.submissions;
     }
+
+    public boolean equals(User other) {
+        return this.id == other.id;
+    }
 }

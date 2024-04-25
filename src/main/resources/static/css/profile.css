@@ -20,6 +20,20 @@
     position: absolute;
 }
 
+.profile-header .buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    position: absolute;
+    right: 50px;
+    bottom: 20px;
+}
+
+.profile-header .buttons button {
+    margin-right: 20px;
+    width: 100px;
+}
+
 .profile-header h2 {
     bottom: 40px;
 }

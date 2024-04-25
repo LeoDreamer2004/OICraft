@@ -6,6 +6,7 @@ import org.dindier.oicraft.model.User;
 import org.dindier.oicraft.service.UserService;
 import org.dindier.oicraft.service.impl.ProblemServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -75,9 +76,15 @@ public class UserController {
         if (user == null)
             return new ModelAndView("error/404");
         // use 'seeUser' in case of conflict with 'user' in the interceptor
-
         return new ModelAndView("user/profile", "seeUser", user)
-                .addObject("passed", problemService.getPassedProblems(user));
+                .addObject("passed", problemService.getPassedProblems(user))
+                .addObject("hasCheckedIn", userService.hasCheckedInToday(user));
+    }
+
+    @PostMapping("/checkin")
+    public ResponseEntity<String> checkin() {
+        userService.checkIn(userService.getUserByRequest(request));
+        return ResponseEntity.ok("Checkin");
     }
 
     @Autowired

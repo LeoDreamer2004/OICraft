@@ -12,6 +12,12 @@
     <div th:insert="~{index :: nav}"></div>
     <h2 th:text="${seeUser.name}" th:class="${seeUser.getGradeString()}"></h2>
     <p>这个人很懒，什么都没有留下</p>
+
+    <!--/*@thymesVar id="user" type="org.dindier.oicraft.model.User"*/-->
+    <div class="buttons" th:if="${user != null}">
+        <button class="btn btn-primary" th:if="${user.equals(seeUser) && !hasCheckedIn}" id="checkInBtn">签到</button>
+        <button class="btn btn-secondary" th:if="${user.equals(seeUser) && hasCheckedIn}" disabled>今日已签到</button>
+    </div>
 </div>
 <main role="main" class="container">
     <div class="card">
@@ -40,5 +46,22 @@
         </div>
     </div>
 </main>
+
+<script>
+    let checkInBtn = document.getElementById('checkInBtn')
+    checkInBtn.addEventListener('click', function () {
+        fetch('/checkin', {method: 'POST'})
+            .then(response => {
+                if (response.ok) {
+                    checkInBtn.disabled = true;
+                    checkInBtn.innerText = "已签到";
+                    checkInBtn.classList.remove("btn-primary");
+                    checkInBtn.classList.add("btn-secondary");
+                } else {
+                    alert("签到失败！" + response.text());
+                }
+            })
+    });
+</script>
 </body>
 </html>
