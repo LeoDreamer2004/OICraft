@@ -16,6 +16,7 @@
         <span>></span>
         <span>提交记录</span>
     </p>
+    <div th:replace="~{problem/list :: nav}"></div>
     <h2>提交记录</h2>
     <a class="btn btn-secondary mb-3" th:href="@{/problem/{id}(id=${problem.id})}">返回题目</a>
 </div>

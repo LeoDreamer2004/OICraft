@@ -17,6 +17,7 @@
         <span>></span>
         <span th:text="${problem.title}"></span>
     </p>
+    <div th:replace="~{problem/list :: nav}"></div>
     <h2>[[${problem.getIdString}]] &nbsp;&nbsp; [[${problem.title}]]</h2>
     <!--/*@thymesVar id="user" type="org.dindier.oicraft.model.User"*/-->
     <a th:unless="${user eq null || !canSubmit}" class="btn btn-primary mb-3"

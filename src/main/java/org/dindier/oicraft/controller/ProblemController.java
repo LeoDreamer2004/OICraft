@@ -9,9 +9,7 @@ import org.dindier.oicraft.model.Submission;
 import org.dindier.oicraft.model.User;
 import org.dindier.oicraft.service.IOPairService;
 import org.dindier.oicraft.service.ProblemService;
-import org.dindier.oicraft.service.SubmissionService;
 import org.dindier.oicraft.service.UserService;
-import org.dindier.oicraft.util.IterableUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamSource;
@@ -38,7 +36,6 @@ public class ProblemController {
     private SubmissionDao submissionDao;
     private UserService userService;
     private ProblemService problemService;
-    private SubmissionService submissionService;
     private IOPairService ioPairService;
     private HttpServletRequest request;
 
@@ -190,13 +187,23 @@ public class ProblemController {
 
     @PostMapping("/problem/{id}/edit/checkpoints")
     public RedirectView editCheckpointsConfirm(@PathVariable int id,
-                                               @RequestParam("file") MultipartFile file) throws IOException {
+                                               @RequestParam("file") MultipartFile file) {
         Problem problem = problemDao.getProblemById(id);
         if (!canEdit(problem))
             return new RedirectView("error/403");
-        InputStream inputStream = file.getInputStream();
-        ioPairService.addIOPairByZip(inputStream, problem.getId());
-        return new RedirectView("/problems");
+        System.out.println("here");
+        String errorMsg = null;
+        try {
+            InputStream inputStream = file.getInputStream();
+            if (ioPairService.addIOPairByZip(inputStream, problem.getId()) == -1)
+                errorMsg = "创建失败！请检查文件格式！";
+        } catch (IOException e) {
+            errorMsg = "服务器内部文件流异常！\n" + e.getMessage();
+        }
+
+        if (errorMsg == null)
+            return new RedirectView("/problems");
+        return new RedirectView("/problem/" + id + "/edit/checkpoints?error=" + errorMsg);
     }
 
     @GetMapping("/problem/{id}/checkpoints/download")
@@ -237,11 +244,6 @@ public class ProblemController {
     @Autowired
     public void setProblemService(ProblemService problemService) {
         this.problemService = problemService;
-    }
-
-    @Autowired
-    public void setSubmissionService(SubmissionService submissionService) {
-        this.submissionService = submissionService;
     }
 
     @Autowired
