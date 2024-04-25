@@ -73,3 +73,6 @@ create table if not exists CheckPoint
 
 alter table User
     add constraint unique (username);
+
+alter table User
+    add column experience int default 0;

@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -26,11 +27,11 @@ public class IOPairServiceImpl implements IOPairService {
     private ProblemDao problemDao;
 
     // Use me as the dir to save the zip file
-    private static final String putZipDir = ".temp_zip_put";
-    private static int id = 0;
-    private static final String getZipDir = ".temp_zip_get";
-    private static int id2 = 0;
-    private static final String tempZipDir = ".temp_zip";
+    private static final String putZipDir = "temp" + File.separator + ".temp_zip_put";
+    private static int setId = 0;
+    private static final String getZipDir = "temp" + File.separator + ".temp_zip_get";
+    private static int getId = 0;
+    private static final String tempZipDir = "temp" + File.separator + ".temp_zip";
 
     @Autowired
     public void setIOPairDao(IOPairDao ioPairDao) {
@@ -38,10 +39,11 @@ public class IOPairServiceImpl implements IOPairService {
     }
 
     @Override
-    public void addIOPairByZip(InputStream fileStream, int problemId) throws IOException {
+    public int addIOPairByZip(InputStream fileStream, int problemId) throws IOException {
+        int[] flag = {0};
         Problem problem = problemDao.getProblemById(problemId);
         List<IOPair> ioPairs = new ArrayList<>();
-        Path tempDir = Paths.get(putZipDir + id++);
+        Path tempDir = Paths.get(putZipDir + File.separator + setId++);
         try (ZipInputStream zipInputStream = new ZipInputStream(fileStream)) {
             ZipEntry entry;
             while ((entry = zipInputStream.getNextEntry()) != null) {
@@ -58,13 +60,13 @@ public class IOPairServiceImpl implements IOPairService {
                 String fileName = path.getFileName().toString();
                 if (fileName.endsWith(".in")) {
                     try {
-                        String input = Files.readString(path);
+                        String input = Files.readString(path).stripTrailing();
                         String outputFileName = fileName.replace(".in", ".out");
                         Path outputFilePath = path.resolveSibling(outputFileName);
-                        String output = Files.readString(outputFilePath);
+                        String output = Files.readString(outputFilePath).stripTrailing();
                         String scoreFileName = fileName.replace(".in", ".score");
                         Path scoreFilePath = path.resolveSibling(scoreFileName);
-                        String score = Files.readString(scoreFilePath);
+                        String score = Files.readString(scoreFilePath).trim();
                         int scoreInt = Integer.parseInt(score);
                         IOPair.Type type = path.getParent().getFileName().toString().equals("sample") ?
                                 IOPair.Type.SAMPLE :
@@ -73,6 +75,7 @@ public class IOPairServiceImpl implements IOPairService {
                         ioPair.setProblem(problem);
                         ioPairs.add(ioPair);
                     } catch (IOException e) {
+                        flag[0] = -1;
                         throw new UncheckedIOException(e);
                     }
                 }
@@ -91,12 +94,15 @@ public class IOPairServiceImpl implements IOPairService {
                         }
                     });
         }
+        return flag[0];
     }
 
     @Override
     public InputStream getIOPairsStream(int problemId) throws IOException {
+        // FIXME: Add score file in zhe zip
         List<IOPair> ioPairs = ioPairDao.getIOPairByProblemId(problemId);
-        Path tempDir = Files.createTempDirectory(getZipDir + id2++);
+        String folderPath = getZipDir + File.separator + getId++;
+        Path tempDir = Files.createDirectories(Paths.get(folderPath));
         for (IOPair ioPair : ioPairs) {
             String dir = ioPair.getType() == IOPair.Type.SAMPLE ? "sample" : "test";
             Path dirPath = tempDir.resolve(dir);
@@ -106,7 +112,7 @@ public class IOPairServiceImpl implements IOPairService {
             Path outputFilePath = dirPath.resolve(ioPair.getId() + ".out");
             Files.writeString(outputFilePath, ioPair.getOutput());
         }
-        Path zipDir = Paths.get(tempZipDir + id2);
+        Path zipDir = Paths.get(tempZipDir + File.separator + getId);
         Files.createDirectories(zipDir);
         Path tempZipPath = Files.createTempFile(zipDir, "ioPairs", ".zip");
         File tempZipFile = tempZipPath.toFile();

@@ -26,8 +26,7 @@ public interface UserDao {
      *
      * @param user the user to update
      * @return A {@code User} class with updated information.
-     * @implNote The user's grade will be updated according to the number of problems that the user
-     * has passed.
+     * @implNote The user's grade will be updated according to the user's experience.
      */
     User updateUser(User user);
 
@@ -88,4 +87,14 @@ public interface UserDao {
      * If the user has passed all problems, an empty list will be returned.
      */
     List<Problem> getNotPassedProblemsByUserId(int userId);
+
+    /**
+     * Add experience to a user
+     *
+     * @param user       the user to add experience
+     * @param experience the experience to add
+     * @return A {@code User} class with updated experience.
+     * @implNote The user's grade will be updated according to the user's experience.
+     */
+    User addExperience(User user, int experience);
 }
