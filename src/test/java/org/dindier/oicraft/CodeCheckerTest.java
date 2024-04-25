@@ -100,4 +100,15 @@ public class CodeCheckerTest {
         System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedMemory() + "ms/" + codeChecker.getUsedMemory() + "KB");
         assert codeChecker.getStatus().equals("WA");
     }
+
+    @Test
+    void testCPass() throws IOException, InterruptedException {
+        CodeChecker codeChecker = new CodeChecker();
+        String code = getCode(CodeChecker.class.getClassLoader().getResource("test_codes/pass.c"));
+        codeChecker.setIO(code, "C", "1 2", "3", 8)
+                .setLimit(1000, 128 * 1024)
+                .test();
+        System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedTime() + "ms/" + codeChecker.getUsedMemory() + "KB");
+        assert codeChecker.getStatus().equals("AC");
+    }
 }

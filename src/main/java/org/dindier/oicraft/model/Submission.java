@@ -16,6 +16,7 @@ public class Submission {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "problem_id")
     private Problem problem;
+
     private String code;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
@@ -30,7 +31,7 @@ public class Submission {
 
     @Getter
     public enum Language {
-        JAVA("java"), PYTHON("python"), C("c"), CPP("cpp");
+        JAVA("java"), PYTHON("python"), C("c"), CPP("c++");
 
         private final String displayName;
 
@@ -39,7 +40,6 @@ public class Submission {
         }
 
         public static Language fromString(String language) {
-            if (language.equalsIgnoreCase("C++")) return CPP;
             for (Language l : Language.values()) {
                 if (l.getDisplayName().equalsIgnoreCase(language)) {
                     return l;
@@ -86,5 +86,12 @@ public class Submission {
 
     public String getStatusString() {
         return status.getDisplayName();
+    }
+
+    @SuppressWarnings("unused")
+    public void load() {
+        Problem _temp = this.problem;
+        User _temp2 = this.user;
+        List<Checkpoint> _temp3 = this.checkpoints;
     }
 }

@@ -1,6 +1,8 @@
 package org.dindier.oicraft.util;
 
 
+import lombok.Getter;
+
 import java.io.*;
 import java.net.URL;
 import java.util.Map;
@@ -25,9 +27,13 @@ public class CodeChecker {
             "C++", "cpp",
             "Python", "py"
     );
+    @Getter
     private int usedTime = 0;
+    @Getter
     private int usedMemory = 0;
+    @Getter
     private String status = "P";
+    @Getter
     private String info = "";
 
     private long startTime;
@@ -102,22 +108,6 @@ public class CodeChecker {
         return this;
     }
 
-    public int getUsedTime() {
-        return usedTime;
-    }
-
-    public int getUsedMemory() {
-        return usedMemory;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public String getInfo() {
-        return info;
-    }
-
     /**
      * Run the code and check the result
      * Use getter to get the status, info etc
@@ -131,23 +121,32 @@ public class CodeChecker {
             }
         };
         Timer timer = new Timer();
-        timer.schedule(timerTask, 0, 50);
 
         if (pb == null) {
             clearFiles();
             return;
         }
-        startTime = System.currentTimeMillis();
         process = pb.start();
 
-        OutputStream outputStream = process.getOutputStream();
-        BufferedWriter outputStreamWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
-        outputStreamWriter.write(inputData);
-        outputStreamWriter.flush();
-        outputStreamWriter.close();
-
+        if (inputData.isEmpty()) {
+            startTime = System.currentTimeMillis();
+            timer.schedule(timerTask, 0, 20);
+        } else {
+            OutputStream outputStream = process.getOutputStream();
+            BufferedWriter outputStreamWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+            startTime = System.currentTimeMillis();
+            timer.schedule(timerTask, 0, 20);
+            outputStreamWriter.write(inputData);
+            outputStreamWriter.flush();
+            outputStreamWriter.close();
+        }
+        
         process.waitFor();
         timer.cancel();
+        if (status.equals("TLE") || status.equals("MLE")) {
+            clearFiles();
+            return;
+        }
 
         checkAnswer();
         clearFiles();
@@ -261,13 +260,16 @@ public class CodeChecker {
             int minLen = Math.min(expectedLines[i].length(), actualLines[i].length());
             for (int j = 0; j < minLen; j++) {
                 if (expectedLines[i].charAt(j) != actualLines[i].charAt(j)) {
-                    return "Line " + (i + 1) + ", Column " + (j + 1) + ": expected '" + expectedLines[i].charAt(j) + "', but got '" + actualLines[i].charAt(j) + "'";
+                    return "Line " + (i + 1) + ", Column " + (j + 1) + ": expected '" +
+                            expectedLines[i].charAt(j) + "', but got '" + actualLines[i].charAt(j) + "'";
                 }
             }
             if (expectedLines[i].length() < actualLines[i].length()) {
-                return "Line " + (i + 1) + ", Column " + (minLen + 1) + ": expected nothing, but got '" + actualLines[i].charAt(minLen) + "'";
+                return "Line " + (i + 1) + ", Column " + (minLen + 1) + ": expected nothing, but got '"
+                        + actualLines[i].charAt(minLen) + "'";
             } else {
-                return "Line " + (i + 1) + ", Column " + (minLen + 1) + ": expected '" + expectedLines[i].charAt(minLen) + "', but got nothing";
+                return "Line " + (i + 1) + ", Column " + (minLen + 1) + ": expected '" +
+                        expectedLines[i].charAt(minLen) + "', but got nothing";
             }
         }
         if (expectedLines.length < actualLines.length) {
@@ -280,21 +282,29 @@ public class CodeChecker {
 
     private void clearFiles() {
         if (workingDirectory.exists()) {
-            // FIXME
-            // delete the folder after 5 seconds because on Windows,
-            // if a process encounters runtime error, it may not exit immediately
-            // It's not a good idea, but I don't have a better solution
-            Timer timer = new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    try {
-                        deleteFolder(workingDirectory);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+            String osName = System.getProperty("os.name");
+            if (osName.contains("Windows")) {
+                // delete the folder after 5 seconds because on Windows,
+                // if a process encounters runtime error, it may not exit immediately
+                // It's not a good idea, but I don't have a better solution
+                Timer timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        try {
+                            deleteFolder(workingDirectory);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
+                }, 5000);
+            } else {
+                try {
+                    deleteFolder(workingDirectory);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
-            }, 5000);
+            }
         }
     }
 

@@ -36,4 +36,9 @@ public class IOPair {
         this.type = type;
         this.score = score;
     }
+
+    @SuppressWarnings("unused")
+    public void load() {
+        Problem _temp = this.problem;
+    }
 }
