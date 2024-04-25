@@ -1,7 +1,6 @@
 package org.dindier.oicraft.dao;
 
 import org.dindier.oicraft.model.Problem;
-import org.dindier.oicraft.model.Submission;
 import org.dindier.oicraft.model.User;
 
 import java.util.List;

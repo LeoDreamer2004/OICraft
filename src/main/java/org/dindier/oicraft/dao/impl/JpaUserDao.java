@@ -2,7 +2,6 @@ package org.dindier.oicraft.dao.impl;
 
 import org.dindier.oicraft.dao.UserDao;
 import org.dindier.oicraft.dao.repository.UserRepository;
-import org.dindier.oicraft.model.Checkpoint;
 import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.Submission;
 import org.dindier.oicraft.model.User;

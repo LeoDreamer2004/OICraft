@@ -21,7 +21,6 @@ public class UserController {
     private UserDao userDao;
     private UserService userService;
     private HttpServletRequest request;
-    private ProblemService problemService;
 
     @GetMapping("/")
     public ModelAndView index() {
@@ -96,11 +95,6 @@ public class UserController {
     @Autowired
     public void setUserService(UserService userService) {
         this.userService = userService;
-    }
-
-    @Autowired
-    public void setProblemService(ProblemService problemService) {
-        this.problemService = problemService;
     }
 
     @Autowired
