@@ -33,4 +33,12 @@ public interface ProblemService {
      * @return The byte array of the markdown file
      */
     byte[] getProblemMarkdown(Problem problem);
+
+    /**
+     * Return the highest score of the user's history submission
+     * @param user The user to get the history score from
+     * @param problem The problem to get the history score from
+     * @return The highest score of the user's history submission
+     */
+    int getHistoryScore(User user, Problem problem);
 }

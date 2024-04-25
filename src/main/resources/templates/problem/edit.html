@@ -18,6 +18,7 @@
     </p>
     <h2>编辑题目：[[${problem.title}]]</h2>
     <!--/*@thymesVar id="user" type="org.dindier.oicraft.model.User"*/-->
+    <a class="btn btn-primary mb-3" th:href="@{/problem/{id}(id=${problem.id})}">返回原题</a>
     <a class="btn btn-secondary mb-3" th:href="@{/problems}">返回题单</a>
 </div>
 <main role="main" class="container">

@@ -93,6 +93,8 @@ public class JdbcUserDao implements UserDao {
 
     @Override
     public List<Problem> getPassedProblemsByUserId(int userId) {
+        // FIXME: Give the **distinct** problems
+
         return userRepository
                 .findById(userId)
                 .map(User::getSubmissions)
