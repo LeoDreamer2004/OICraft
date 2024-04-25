@@ -3,7 +3,6 @@ package org.dindier.oicraft.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import org.dindier.oicraft.dao.UserDao;
 import org.dindier.oicraft.model.User;
-import org.dindier.oicraft.service.ProblemService;
 import org.dindier.oicraft.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -116,7 +116,7 @@ public class CodeChecker {
      * Run the code and check the result
      * Use getter to get the status, info etc
      */
-    public void test() throws IOException, InterruptedException {
+    public void test(boolean clearFile) throws IOException, InterruptedException {
         ProcessBuilder pb = getProcessBuilder();
         TimerTask timerTask = new TimerTask() {
             @Override
@@ -153,12 +153,16 @@ public class CodeChecker {
         usedTime = (int) (System.currentTimeMillis() - startTime);
         timer.cancel();
         if (status.equals("TLE") || status.equals("MLE")) {
-            clearFiles();
+            if (clearFile) {
+                clearFiles();
+            }
             return;
         }
 
         checkAnswer();
-        clearFiles();
+        if (clearFile) {
+            clearFiles();
+        }
     }
 
     /* Get the ProcessBuilder for the code to be checked */
