@@ -85,7 +85,7 @@ public class ProblemController {
         if (user == null)
             return new RedirectView("/login");
         Problem problem = new Problem(user.getId(), title, description, inputFormat, outputFormat,
-                difficultyMap.get(difficulty), timeLimit * 1024, memoryLimit);
+                difficultyMap.get(difficulty), timeLimit , memoryLimit * 1024);
         problem = problemDao.createProblem(problem);
         return new RedirectView("/problem/" + problem.getId());
     }
@@ -118,7 +118,6 @@ public class ProblemController {
                                @RequestParam("code") String code,
                                @RequestParam("language") String language,
                                Model model) {
-        System.out.println("Language: " + language + "\nGet the code: " + code);
         Problem problem = problemDao.getProblemById(id);
         model.addAttribute("problem", problem);
 
@@ -186,11 +185,11 @@ public class ProblemController {
     }
 
     @PostMapping("/problem/{id}/edit/checkpoints")
-    public RedirectView editCheckpointsConfirm(@PathVariable int id,
+    public ModelAndView editCheckpointsConfirm(@PathVariable int id,
                                                @RequestParam("file") MultipartFile file) {
         Problem problem = problemDao.getProblemById(id);
         if (!canEdit(problem))
-            return new RedirectView("error/403");
+            return new ModelAndView("error/403");
         System.out.println("here");
         String errorMsg = null;
         try {
@@ -202,8 +201,10 @@ public class ProblemController {
         }
 
         if (errorMsg == null)
-            return new RedirectView("/problems");
-        return new RedirectView("/problem/" + id + "/edit/checkpoints?error=" + errorMsg);
+            return new ModelAndView("problem/list");
+        return new ModelAndView("problem/editCheckpoints")
+                .addObject("problem", problem)
+                .addObject("errorMsg", errorMsg);
     }
 
     @GetMapping("/problem/{id}/checkpoints/download")

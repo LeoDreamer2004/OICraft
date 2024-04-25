@@ -119,7 +119,7 @@ public class ProblemServiceImpl implements ProblemService {
 
     @Override
     public int getHistoryScore(User user, Problem problem) {
-        int score = -1;
+        int score = 0;
         if (user == null) return 0;
         Iterable<Submission> submissions = submissionDao.getSubmissionsByUserId(user.getId());
         for (Submission submission : submissions) {
