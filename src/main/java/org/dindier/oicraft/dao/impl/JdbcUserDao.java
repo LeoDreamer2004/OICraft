@@ -88,13 +88,12 @@ public class JdbcUserDao implements UserDao {
                         .map(Submission::getProblem)
                         .toList()
                 )
+                .map(problems -> problems.stream().distinct().toList())
                 .orElse(List.of());
     }
 
     @Override
     public List<Problem> getPassedProblemsByUserId(int userId) {
-        // FIXME: Give the **distinct** problems
-
         return userRepository
                 .findById(userId)
                 .map(User::getSubmissions)
@@ -107,6 +106,7 @@ public class JdbcUserDao implements UserDao {
                         .map(Submission::getProblem)
                         .toList()
                 )
+                .map(problems -> problems.stream().distinct().toList())
                 .orElse(List.of());
     }
 
@@ -124,6 +124,7 @@ public class JdbcUserDao implements UserDao {
                         .map(Submission::getProblem)
                         .toList()
                 )
+                .map(problems -> problems.stream().distinct().toList())
                 .orElse(List.of());
     }
 }

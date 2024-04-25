@@ -87,4 +87,10 @@ public class Problem {
         if (submit == 0) return "NaN";
         return String.format("%.2f%%", 100.0 * passed / submit);
     }
+
+    @SuppressWarnings("unused")
+    public void load() {
+        List<IOPair> _temp1 = this.ioPairs;
+        List<Submission> _temp2 = this.submissions;
+    }
 }
