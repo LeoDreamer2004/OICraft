@@ -76,3 +76,9 @@ alter table User
 
 alter table User
     add column experience int default 0;
+
+alter table User
+    drop column last_checkin;
+
+alter table User
+    add column last_checkin date default null;

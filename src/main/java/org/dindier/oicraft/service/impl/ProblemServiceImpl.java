@@ -12,6 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -141,5 +144,31 @@ public class ProblemServiceImpl implements ProblemService {
     @Autowired
     private void setUserDao(UserDao userDao) {
         this.userDao = userDao;
+    }
+
+    @Override
+    public Map<Problem, Integer> getAllProblemWithPassInfo(User user) {
+        if (user == null) {
+            TreeMap<Problem, Integer> map = new TreeMap<>();
+            for (Problem problem : problemDao.getProblemList()) {
+                map.put(problem, 0);
+            }
+            return map;
+        }
+
+        List<Problem> passedProblems = userDao.getPassedProblemsByUserId(user.getId());
+        List<Problem> failedProblems = userDao.getNotPassedProblemsByUserId(user.getId());
+        Iterable<Problem> problems = problemDao.getProblemList();
+        Map<Problem, Integer> map = new TreeMap<>();
+        for (Problem problem : problems) {
+            if (passedProblems.contains(problem)) {
+                map.put(problem, 1);
+            } else if (failedProblems.contains(problem)) {
+                map.put(problem, -1);
+            } else {
+                map.put(problem, 0);
+            }
+        }
+        return map;
     }
 }
