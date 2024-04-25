@@ -144,9 +144,15 @@ public class CodeChecker {
             usedMemory = (int) (getProcessMemoryUsage(process.pid()) / 1024);
             startTime = System.currentTimeMillis();
             timer.schedule(timerTask, 0, 20);
-            outputStreamWriter.write(inputData);
-            outputStreamWriter.flush();
-            outputStreamWriter.close();
+            try {
+                outputStreamWriter.write(inputData);
+                outputStreamWriter.flush();
+                outputStreamWriter.close();
+            } catch (IOException e) {
+                status = "WA";
+                info = "Input Error";
+                terminateProcess();
+            }
         }
 
         process.waitFor();
