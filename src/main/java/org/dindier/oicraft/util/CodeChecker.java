@@ -116,6 +116,15 @@ public class CodeChecker {
      * Run the code and check the result
      * Use getter to get the status, info etc
      */
+    public void test() throws IOException, InterruptedException {
+        test(true);
+    }
+
+    /**
+     * Run the code and check the result
+     * Use getter to get the status, info etc
+     * @param clearFile Whether to clear the files after the test
+     */
     public void test(boolean clearFile) throws IOException, InterruptedException {
         ProcessBuilder pb = getProcessBuilder();
         TimerTask timerTask = new TimerTask() {
@@ -131,37 +140,34 @@ public class CodeChecker {
             return;
         }
 
-        if (inputData.isEmpty()) {
-            // no input data, just run the code
-            process = pb.start();
-            usedMemory = (int) (getProcessMemoryUsage(process.pid()) / 1024);
-            startTime = System.currentTimeMillis();
-            timer.schedule(timerTask, 0, 20);
-        } else {
-            process = pb.start();
+        process = pb.start();
+        // read the memory at first in case of the process terminated too quickly
+        usedMemory = (int) (getProcessMemoryUsage(process.pid()) / 1024);
+        startTime = System.currentTimeMillis();
+        timer.schedule(timerTask, 0, 20);
+
+        if (!inputData.isEmpty()) {
+            // If the code needs input, write the input to the process
             OutputStream outputStream = process.getOutputStream();
             BufferedWriter outputStreamWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
-            usedMemory = (int) (getProcessMemoryUsage(process.pid()) / 1024);
-            startTime = System.currentTimeMillis();
-            timer.schedule(timerTask, 0, 20);
+
             try {
                 outputStreamWriter.write(inputData);
                 outputStreamWriter.flush();
                 outputStreamWriter.close();
             } catch (IOException e) {
-                status = "WA";
-                info = "Input Error";
-                terminateProcess();
+                // Exception often occurs when the code does not accept any input
+                // It seems weird, but we still test the code as usual
             }
         }
 
         process.waitFor();
         usedTime = (int) (System.currentTimeMillis() - startTime);
         timer.cancel();
+
         if (status.equals("TLE") || status.equals("MLE")) {
-            if (clearFile) {
+            if (clearFile)
                 clearFiles();
-            }
             return;
         }
 

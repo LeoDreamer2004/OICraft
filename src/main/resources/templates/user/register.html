@@ -9,35 +9,33 @@
 </head>
 
 <body class="colored-background">
-<div class="full-screen">
-    <div th:insert="~{index :: nav}"></div>
-    <main role="main" class="card-container">
-        <div class="login-card" id="registerForm">
-            <form class="login-form" th:action="@{/register}" method="post">
-                <div class="login-title">
-                    <h1>注册</h1>
-                    <p>欢迎来到OICraft</p>
+<div th:insert="~{index :: nav}"></div>
+<main role="main" class="card-container">
+    <div class="login-card" id="registerForm">
+        <form class="login-form" th:action="@{/register}" method="post">
+            <div class="login-title">
+                <h1>注册</h1>
+                <p>欢迎来到OICraft</p>
+            </div>
+            <div class="form-item" th:if="${param.error}">
+                <div class="alert alert-danger ml-3 mr-3">
+                    用户名已存在
                 </div>
-                <div class="form-item" th:if="${param.error}" >
-                    <div class="alert alert-danger ml-3 mr-3">
-                        用户名已存在
-                    </div>
-                </div>
-                <div class="form-item">
-                    <input name="username" id="username" type="text" placeholder="用户名" required autofocus>
-                </div>
-                <div class="form-item">
-                    <input name="password" id="password" type="password" placeholder="密码" required>
-                </div>
-                <button type="submit">注册</button>
-                <div class="login-footer">
-                    已有账户，<a th:href="@{/login}">点击登录</a>
-                </div>
-            </form>
-        </div>
-    </main>
-    <footer th:replace="~{index :: footer}"></footer>
-</div>
+            </div>
+            <div class="form-item">
+                <input name="username" id="username" type="text" placeholder="用户名" required autofocus>
+            </div>
+            <div class="form-item">
+                <input name="password" id="password" type="password" placeholder="密码" required>
+            </div>
+            <button type="submit">注册</button>
+            <div class="login-footer">
+                已有账户，<a th:href="@{/login}">点击登录</a>
+            </div>
+        </form>
+    </div>
+</main>
+<footer th:replace="~{index :: footer}"></footer>
 </body>
 
 </html>

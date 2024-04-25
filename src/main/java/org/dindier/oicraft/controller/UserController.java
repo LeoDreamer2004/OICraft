@@ -80,11 +80,21 @@ public class UserController {
                 .addObject("hasCheckedIn", userService.hasCheckedInToday(user));
     }
 
+    @GetMapping("/admin")
+    public ModelAndView admin() {
+        User user = userService.getUserByRequest(request);
+        if (user == null || !user.isAdmin())
+            return new ModelAndView("error/403");
+        return new ModelAndView("user/admin")
+                .addObject("users", userDao.getAllUsers());
+    }
+
     @PostMapping("/checkin")
     public ResponseEntity<String> checkin() {
         userService.checkIn(userService.getUserByRequest(request));
         return ResponseEntity.ok("Checkin");
     }
+
 
     @Autowired
     public void setUserDao(UserDao userDao) {

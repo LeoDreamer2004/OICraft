@@ -7,20 +7,18 @@
     <th:block th:replace="~{base :: baseStyle}"></th:block>
 </head>
 <body class="colored-background">
-<div class="full-screen">
-    <div th:insert="~{index :: nav}"></div>
-    <main role="main" class="card-container">
-        <div class="login-card" id="registerForm">
-            <form class="login-form" th:action="@{/login}" method="get">
-                <div class="login-title">
-                    <h1>您已成功注册</h1>
-                    <p>欢迎来到OICraft，[[${user.name}]]！</p>
-                </div>
-                <button type="submit">立即登录</button>
-            </form>
-        </div>
-    </main>
-    <footer th:replace="~{index :: footer}"></footer>
-</div>
+<div th:insert="~{index :: nav}"></div>
+<main role="main" class="card-container">
+    <div class="login-card" id="registerForm">
+        <form class="login-form" th:action="@{/login}" method="get">
+            <div class="login-title">
+                <h1>您已成功注册</h1>
+                <p>欢迎来到OICraft，[[${user.name}]]！</p>
+            </div>
+            <button type="submit">立即登录</button>
+        </form>
+    </div>
+</main>
+<footer th:replace="~{index :: footer}"></footer>
 </body>
 </html>
