@@ -95,4 +95,10 @@ public class JpaSubmissionDao implements SubmissionDao {
                 newSubmission.getId());
         return newSubmission;
     }
+
+    @Override
+    public Iterable<Submission> getSubmissionsByUserId(int userId) {
+        //TODO
+        return null;
+    }
 }
