@@ -86,9 +86,8 @@ public class JpaUserDao implements UserDao {
                 .map(submissions -> submissions
                         .stream()
                         .map(Submission::getProblem)
-                        .toList()
                 )
-                .map(problems -> problems.stream().distinct().toList())
+                .map(problems -> problems.distinct().toList())
                 .orElse(List.of());
     }
 
@@ -99,42 +98,28 @@ public class JpaUserDao implements UserDao {
                 .map(User::getSubmissions)
                 .map(submissions -> submissions
                         .stream()
-                        .filter(submission -> submission
-                                .getCheckpoints()
-                                .stream()
-                                .allMatch(Checkpoint::isPassed))
+                        .filter(submission -> submission.getStatus() == Submission.Status.PASSED)
                         .map(Submission::getProblem)
-                        .toList()
                 )
-                .map(problems -> problems.stream().distinct().toList())
+                .map(problems -> problems.distinct().toList())
                 .orElse(List.of());
     }
 
     @Override
     public List<Problem> getNotPassedProblemsByUserId(int userId) {
-        // FIXME: This method is not implemented correctly?
+        List<Problem> passedProblems = getPassedProblemsByUserId(userId);
 
         return userRepository
                 .findById(userId)
                 .map(User::getSubmissions)
                 .map(submissions -> submissions
                         .stream()
-                        .filter(submission -> submission
-                                .getCheckpoints()
-                                .stream()
-                                .anyMatch(checkpoint -> !checkpoint.isPassed()))
+                        .filter(submission -> submission.getStatus() != Submission.Status.PASSED)
                         .map(Submission::getProblem)
-                        .toList()
+                        .filter(problem -> !passedProblems.contains(problem))
                 )
-                .map(problems -> problems.stream().distinct().toList())
+                .map(problems -> problems.distinct().toList())
                 .orElse(List.of());
-    }
-
-    @Override
-    public List<Problem> getToSolveProblemsByUserId(int userId) {
-        // TODO: Implement this method
-
-        return List.of();
     }
 
     @Override
