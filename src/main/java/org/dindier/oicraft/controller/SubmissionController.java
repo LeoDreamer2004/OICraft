@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.dindier.oicraft.dao.CheckpointDao;
 import org.dindier.oicraft.dao.ProblemDao;
 import org.dindier.oicraft.dao.SubmissionDao;
-import org.dindier.oicraft.dao.UserDao;
 import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.Submission;
 import org.dindier.oicraft.model.User;
@@ -18,8 +17,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class SubmissionController {
-
-    private UserDao userDao;
     private ProblemDao problemDao;
     private SubmissionDao submissionDao;
     private CheckpointDao checkpointDao;
@@ -45,11 +42,6 @@ public class SubmissionController {
                 .addObject("submission", submission)
                 .addObject("problem", problemDao.getProblemById(submission.getProblemId()))
                 .addObject("checkpoints", checkpointDao.getCheckpointsBySubmissionId(id));
-    }
-
-    @Autowired
-    public void setUserDao(UserDao userDao) {
-        this.userDao = userDao;
     }
 
     @Autowired

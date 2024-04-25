@@ -48,5 +48,12 @@ public interface SubmissionDao {
      */
     Iterable<Submission> getAllSubmissions();
 
+    /**
+     * Get all submissions corresponding to a user
+     *
+     * @param userId id of the user
+     * @return A list of {@code Submission} classes that correspond to the user.
+     * If the user has no submission or the user does not exist, an empty list will be returned.
+     */
     Iterable<Submission> getSubmissionsByUserId(int userId);
 }

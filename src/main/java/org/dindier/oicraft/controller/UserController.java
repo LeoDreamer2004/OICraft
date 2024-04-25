@@ -3,8 +3,8 @@ package org.dindier.oicraft.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import org.dindier.oicraft.dao.UserDao;
 import org.dindier.oicraft.model.User;
+import org.dindier.oicraft.service.ProblemService;
 import org.dindier.oicraft.service.UserService;
-import org.dindier.oicraft.service.impl.ProblemServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,7 +21,7 @@ public class UserController {
     private UserDao userDao;
     private UserService userService;
     private HttpServletRequest request;
-    private ProblemServiceImpl problemService;
+    private ProblemService problemService;
 
     @GetMapping("/")
     public ModelAndView index() {
@@ -98,7 +98,7 @@ public class UserController {
     }
 
     @Autowired
-    public void setProblemService(ProblemServiceImpl problemService) {
+    public void setProblemService(ProblemService problemService) {
         this.problemService = problemService;
     }
 
