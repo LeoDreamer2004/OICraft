@@ -19,6 +19,7 @@
     position: absolute;
     background-color: #222222;
     font-family: consolas, monospace;
+    max-width: 100px;
     top: 5px;
     left: 50%;
     transform: translate(-50%, 0);

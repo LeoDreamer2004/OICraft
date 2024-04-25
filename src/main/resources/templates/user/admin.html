@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>站点管理</title>
+    <link th:replace="~{index :: indexStyle}"/>
+    <th:block th:replace="~{base :: baseStyle}"></th:block>
+    <link rel="stylesheet" href="/css/profile.css">
+</head>
+<body>
+<!--/*@thymesVar id="user" type="org.dindier.oicraft.model.User"*/-->
+<div class="profile-header">
+    <div th:insert="~{index :: nav}"></div>
+    <h2>站点管理</h2>
+</div>
+
+<main role="main" class="container">
+    <div class="card my-card p-3">
+        <table class="table">
+            <tr>
+                <th>用户名</th>
+                <th>ID号</th>
+                <th>经验</th>
+                <th>权限</th>
+                <th>操作</th>
+            </tr>
+
+            <tr th:each="user_, stat : ${users}">
+                <!--/*@thymesVar id="user" type="org.dindier.oicraft.model.User"*/-->
+                <td th:text="${user_.name}" th:class="${user_.getGradeString()}"></td>
+                <td th:text="${user_.id}"></td>
+                <td th:text="${user_.experience}"></td>
+                <td th:if="${user_.isAdmin()}">管理员</td>
+                <td th:unless="${user_.isAdmin()}">用户</td>
+                <td></td>
+        </table>
+    </div>
+</main>
+
+<script>
+</script>
+</body>
+</html>

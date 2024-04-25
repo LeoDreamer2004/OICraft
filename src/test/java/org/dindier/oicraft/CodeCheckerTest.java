@@ -30,7 +30,7 @@ public class CodeCheckerTest {
     void testPythonTLE() throws IOException, InterruptedException {
         CodeChecker codeChecker = new CodeChecker();
         codeChecker.setIO("while True: pass", "Python", "1 2", "3", 1)
-                .setLimit(1000, 128 * 1024).test(true);
+                .setLimit(1000, 128 * 1024).test();
         System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedTime() + "ms/" + codeChecker.getUsedMemory() + "KB");
         assert codeChecker.getStatus().equals("TLE");
     }
@@ -41,7 +41,7 @@ public class CodeCheckerTest {
         String code = getCode(CodeChecker.class.getClassLoader().getResource("test_codes/pass.cpp"));
         codeChecker.setIO(code, "C++", "1 2", "3", 2)
                 .setLimit(1000, 128 * 1024)
-                .test(true);
+                .test();
         System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedTime() + "ms/" + codeChecker.getUsedMemory() + "KB");
         assert codeChecker.getStatus().equals("AC");
     }
@@ -52,7 +52,7 @@ public class CodeCheckerTest {
         String code = getCode(CodeChecker.class.getClassLoader().getResource("test_codes/wrong_answer.cpp"));
         codeChecker.setIO(code, "C++", "1 2", "3", 3)
                 .setLimit(1000, 128 * 1024)
-                .test(true);
+                .test();
         System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedTime() + "ms/" + codeChecker.getUsedMemory() + "KB");
         assert codeChecker.getStatus().equals("WA");
     }
@@ -63,7 +63,7 @@ public class CodeCheckerTest {
         String code = getCode(CodeChecker.class.getClassLoader().getResource("test_codes/runtime_error.cpp"));
         codeChecker.setIO(code, "C++", "1 2", "3", 4)
                 .setLimit(5000, 128 * 1024)
-                .test(true);
+                .test();
         System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedTime() + "ms/" + codeChecker.getUsedMemory() + "KB");
         assert codeChecker.getStatus().equals("RE");
     }
@@ -74,7 +74,7 @@ public class CodeCheckerTest {
         String code = getCode(CodeChecker.class.getClassLoader().getResource("test_codes/compile_error.cpp"));
         codeChecker.setIO(code, "C++", "1 2", "3", 5)
                 .setLimit(1000, 128 * 1024)
-                .test(true);
+                .test();
         System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedTime() + "ms/" + codeChecker.getUsedMemory() + "KB");
         assert codeChecker.getStatus().equals("CE");
     }
@@ -85,7 +85,7 @@ public class CodeCheckerTest {
         String code = getCode(CodeChecker.class.getClassLoader().getResource("test_codes/pass.java"));
         codeChecker.setIO(code, "Java", "1 2", "3", 6)
                 .setLimit(1000, 128 * 1024)
-                .test(true);
+                .test();
         System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedTime() + "ms/" + codeChecker.getUsedMemory() + "KB");
         assert codeChecker.getStatus().equals("AC");
     }
@@ -96,7 +96,7 @@ public class CodeCheckerTest {
         String code = getCode(CodeChecker.class.getClassLoader().getResource("test_codes/wrong_answer.java"));
         codeChecker.setIO(code, "Java", "1 2", "3", 7)
                 .setLimit(1000, 128 * 1024)
-                .test(true);
+                .test();
         System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedMemory() + "ms/" + codeChecker.getUsedMemory() + "KB");
         assert codeChecker.getStatus().equals("WA");
     }
@@ -107,7 +107,7 @@ public class CodeCheckerTest {
         String code = getCode(CodeChecker.class.getClassLoader().getResource("test_codes/pass.c"));
         codeChecker.setIO(code, "C", "1 2", "3", 8)
                 .setLimit(1000, 128 * 1024)
-                .test(true);
+                .test();
         System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedTime() + "ms/" + codeChecker.getUsedMemory() + "KB");
         assert codeChecker.getStatus().equals("AC");
     }

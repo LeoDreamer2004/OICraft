@@ -10,20 +10,18 @@
 
 <body class="colored-background">
 
-<div class="full-screen">
-    <div th:insert="~{index :: nav}"></div>
-    <main role="main" class="card-container">
-        <div class="login-card" id="logoutForm">
-            <form class="login-form" th:action="@{/logout}" method="post">
-                <div class="login-title">
-                    <h3>确定要登出吗？</h3>
-                </div>
-                <button type="submit">登出</button>
-            </form>
-        </div>
-    </main>
-    <footer th:replace="~{index :: footer}"></footer>
-</div>
+<div th:insert="~{index :: nav}"></div>
+<main role="main" class="card-container">
+    <div class="login-card" id="logoutForm">
+        <form class="login-form" th:action="@{/logout}" method="post">
+            <div class="login-title">
+                <h3>确定要登出吗？</h3>
+            </div>
+            <button type="submit">登出</button>
+        </form>
+    </div>
+</main>
+<footer th:replace="~{index :: footer}"></footer>
 </body>
 
 </html>
