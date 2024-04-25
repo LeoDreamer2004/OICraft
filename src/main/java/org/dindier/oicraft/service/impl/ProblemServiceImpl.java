@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -53,26 +54,31 @@ public class ProblemServiceImpl implements ProblemService {
             int score = 0;
             boolean ifPass = true;
 
-            for (IOPair ioPair : ioPairs) {
+            Iterator<IOPair> iterator = ioPairs.iterator();
+            while (iterator.hasNext()) {
+                IOPair ioPair = iterator.next();
+                Checkpoint checkpoint = new Checkpoint(
+                        finalSubmission,
+                        ioPair,
+                        Checkpoint.Status.P,
+                        0, 0, "Waiting for testing..."
+                );
+                checkpoint = checkpointDao.createCheckpoint(checkpoint);
                 try {
                     codeChecker.setIO(code, language, ioPair.getInput(), ioPair.getOutput(), id)
                             .setLimit(problem.getTimeLimit(), problem.getMemoryLimit())
-                            .test();
+                            .test(!iterator.hasNext());
                 } catch (Exception e) {
                     logger.warn("CodeChecker error: {}", e.getMessage());
                     finalSubmission.setStatus(Submission.Status.FAILED);
                     submissionDao.updateSubmission(finalSubmission);
                     return;
                 }
-                Checkpoint checkpoint = new Checkpoint(
-                        finalSubmission,
-                        ioPair,
-                        Checkpoint.Status.fromString(codeChecker.getStatus()),
-                        codeChecker.getUsedTime(), codeChecker.getUsedMemory(),
-                        codeChecker.getInfo()
-                );
-                checkpointDao.createCheckpoint(checkpoint);
-
+                checkpoint.setStatus(Checkpoint.Status.fromString(codeChecker.getStatus()));
+                checkpoint.setUsedTime(codeChecker.getUsedTime());
+                checkpoint.setUsedMemory(codeChecker.getUsedMemory());
+                checkpoint.setInfo(codeChecker.getInfo());
+                checkpointDao.updateCheckpoint(checkpoint);
                 if (codeChecker.getStatus().equals("AC")) {
                     score += ioPair.getScore();
                 } else {

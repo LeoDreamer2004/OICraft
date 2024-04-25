@@ -17,6 +17,7 @@ public interface CheckpointDao {
      * @param checkpoint the checkpoint to update
      * @return A {@code Checkpoint} class with updated information.
      */
+    @SuppressWarnings("UnusedReturnValue")
     Checkpoint updateCheckpoint(Checkpoint checkpoint);
 
     /**
