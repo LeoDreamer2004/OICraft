@@ -50,10 +50,16 @@ public class UserServiceImpl implements UserService {
     public void checkIn(User user) {
         logger.info("User " + user.getUsername() + " checked in today");
         Date lastCheckin = user.getLast_checkin();
-        Date today = new Date(Calendar.getInstance().getTimeInMillis());
-        if (lastCheckin == null || lastCheckin.before(today)) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.add(Calendar.DATE, 1); // Add one day to get the start of tomorrow
+        Date tomorrow = new Date(calendar.getTimeInMillis());
+        if (lastCheckin == null || lastCheckin.before(tomorrow)) {
             userDao.addExperience(user, 1);
-            user.setLast_checkin(today);
+            user.setLast_checkin(tomorrow);
             userDao.updateUser(user);
         }
     }
@@ -61,7 +67,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean hasCheckedInToday(User user) {
         Date lastCheckin = user.getLast_checkin();
-        Date today = new Date(Calendar.getInstance().getTimeInMillis());
-        return lastCheckin != null && !lastCheckin.before(today);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.add(Calendar.DATE, 1); // Add one day to get the start of tomorrow
+        Date tomorrow = new Date(calendar.getTimeInMillis());
+        return lastCheckin != null && !lastCheckin.before(tomorrow);
     }
 }
