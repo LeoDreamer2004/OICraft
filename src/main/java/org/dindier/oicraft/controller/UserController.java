@@ -77,7 +77,8 @@ public class UserController {
             return new ModelAndView("error/404");
         // use 'seeUser' in case of conflict with 'user' in the interceptor
         return new ModelAndView("user/profile", "seeUser", user)
-                .addObject("passed", problemService.getPassedProblems(user))
+                .addObject("passed", userDao.getPassedProblemsByUserId(user.getId()))
+                .addObject("toSolve", userDao.getToSolveProblemsByUserId(user.getId()))
                 .addObject("hasCheckedIn", userService.hasCheckedInToday(user));
     }
 
