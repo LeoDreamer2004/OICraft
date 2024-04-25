@@ -2,6 +2,8 @@ package org.dindier.oicraft.util;
 
 
 import lombok.Getter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URL;
@@ -20,6 +22,8 @@ public class CodeChecker {
     private int memoryLimit = 0;
     // The working directory for the submission
     private File workingDirectory;
+
+    private static final Logger logger = LoggerFactory.getLogger(CodeChecker.class);
 
     private static final Map<String, String> extensionsMap = Map.of(
             "Java", "java",
@@ -126,22 +130,27 @@ public class CodeChecker {
             clearFiles();
             return;
         }
-        process = pb.start();
 
         if (inputData.isEmpty()) {
+            // no input data, just run the code
+            process = pb.start();
+            usedMemory = (int) (getProcessMemoryUsage(process.pid()) / 1024);
             startTime = System.currentTimeMillis();
             timer.schedule(timerTask, 0, 20);
         } else {
+            process = pb.start();
             OutputStream outputStream = process.getOutputStream();
             BufferedWriter outputStreamWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+            usedMemory = (int) (getProcessMemoryUsage(process.pid()) / 1024);
             startTime = System.currentTimeMillis();
             timer.schedule(timerTask, 0, 20);
             outputStreamWriter.write(inputData);
             outputStreamWriter.flush();
             outputStreamWriter.close();
         }
-        
+
         process.waitFor();
+        usedTime = (int) (System.currentTimeMillis() - startTime);
         timer.cancel();
         if (status.equals("TLE") || status.equals("MLE")) {
             clearFiles();
@@ -291,24 +300,16 @@ public class CodeChecker {
                 timer.schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        try {
-                            deleteFolder(workingDirectory);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
+                        deleteFolder(workingDirectory);
                     }
                 }, 5000);
             } else {
-                try {
-                    deleteFolder(workingDirectory);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                deleteFolder(workingDirectory);
             }
         }
     }
 
-    private static void deleteFolder(File folder) throws IOException {
+    private static void deleteFolder(File folder) {
         if (folder.isDirectory()) {
             File[] files = folder.listFiles();
             if (files != null) {
@@ -318,7 +319,8 @@ public class CodeChecker {
             }
         }
         if (!folder.delete()) {
-            throw new IOException("Failed to clear files");
+            logger.warn("Failed to delete folder {}, you may need to delete it by yourself",
+                    folder);
         }
     }
 }

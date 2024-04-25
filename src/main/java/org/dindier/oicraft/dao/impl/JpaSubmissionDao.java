@@ -14,12 +14,12 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository("submissionDao")
-public class JdbcSubmissionDao implements SubmissionDao {
+public class JpaSubmissionDao implements SubmissionDao {
     private SubmissionRepository submissionRepository;
     private ProblemRepository problemRepository;
-    private ProblemDao problemDao;
+    private JpaUserDao userDao;
 
-    private final Logger logger = LoggerFactory.getLogger(JdbcSubmissionDao.class);
+    private final Logger logger = LoggerFactory.getLogger(JpaSubmissionDao.class);
 
     @Autowired
     public void setSubmissionRepository(SubmissionRepository submissionRepository) {
@@ -32,8 +32,8 @@ public class JdbcSubmissionDao implements SubmissionDao {
     }
 
     @Autowired
-    public void setProblemDao(ProblemDao problemDao) {
-        this.problemDao = problemDao;
+    public void setUserDao(JpaUserDao userDao) {
+        this.userDao = userDao;
     }
 
     @Override
@@ -47,10 +47,10 @@ public class JdbcSubmissionDao implements SubmissionDao {
                 .map(problem -> {
                     if (submission.getStatus().equals(Submission.Status.PASSED)) {
                         problem.setPassed(problem.getPassed() + 1);
+                        userDao.addExperience(submission.getUser(), 10);
                     }
                     return problem;
-                })
-                .ifPresent(oldProblem -> problemRepository.save(oldProblem));
+                }).ifPresent(problem -> problemRepository.save(problem));
         Submission newSubmission = submissionRepository.save(submission);
         logger.info("Create submission for problem {} (id: {})", newSubmission.getProblemId(),
                 newSubmission.getId());
@@ -86,9 +86,9 @@ public class JdbcSubmissionDao implements SubmissionDao {
                         .orElse(Submission.Status.WAITING) != Submission.Status.PASSED
         ) {
             problem.setPassed(problem.getPassed() + 1);
+            userDao.addExperience(submission.getUser(), 10);
         }
-        Problem problem1 = problemRepository.save(problem);
-        System.out.println(problem1.getPassed());
+        problemRepository.save(problem);
 
         Submission newSubmission = submissionRepository.save(submission);
         logger.info("Update submission for problem {} (id: {})", newSubmission.getProblemId(),

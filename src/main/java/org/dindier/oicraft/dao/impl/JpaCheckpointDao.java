@@ -13,10 +13,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository("checkpointDao")
-public class JdbcCheckpointDao implements CheckpointDao {
+public class JpaCheckpointDao implements CheckpointDao {
     private CheckpointRepository checkpointRepository;
     private SubmissionRepository submissionRepository;
-    private final Logger logger = LoggerFactory.getLogger(JdbcCheckpointDao.class);
+    private final Logger logger = LoggerFactory.getLogger(JpaCheckpointDao.class);
 
     @Autowired
     public void setCheckpointRepository(CheckpointRepository checkpointRepository) {
