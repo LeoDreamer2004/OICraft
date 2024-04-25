@@ -9,11 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.DirectoryStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -21,8 +19,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.Comparator;
 import java.util.zip.ZipOutputStream;
-
-import org.mozilla.universalchardet.UniversalDetector;
 
 @Service("IOPairService")
 public class IOPairServiceImpl implements IOPairService {
@@ -77,7 +73,6 @@ public class IOPairServiceImpl implements IOPairService {
                         ioPair.setProblem(problem);
                         ioPairs.add(ioPair);
                     } catch (IOException e) {
-                        e.printStackTrace();
                         throw new UncheckedIOException(e);
                     }
                 }
@@ -153,21 +148,6 @@ public class IOPairServiceImpl implements IOPairService {
                 }
             };
         }
-    }
-
-    private String detectCharset(Path filePath) throws IOException {
-        byte[] buf = new byte[4096];
-        FileInputStream fis = new FileInputStream(filePath.toFile());
-        UniversalDetector detector = new UniversalDetector(null);
-        int nread;
-        while ((nread = fis.read(buf)) > 0 && !detector.isDone()) {
-            detector.handleData(buf, 0, nread);
-        }
-        detector.dataEnd();
-        String encoding = detector.getDetectedCharset();
-        detector.reset();
-        fis.close();
-        return encoding != null ? encoding : StandardCharsets.UTF_8.name();
     }
 
     @Autowired
