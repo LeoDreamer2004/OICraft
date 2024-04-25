@@ -15,7 +15,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.DirectoryStream;
 import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.List;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
@@ -46,7 +45,7 @@ public class IOPairServiceImpl implements IOPairService {
     public void addIOPairByZip(InputStream fileStream, int problemId) throws IOException {
         Problem problem = problemDao.getProblemById(problemId);
         List<IOPair> ioPairs = new ArrayList<>();
-        Path tempDir = Files.createTempDirectory(putZipDir + id++);
+        Path tempDir = Paths.get(putZipDir + id++);
         try (ZipInputStream zipInputStream = new ZipInputStream(fileStream)) {
             ZipEntry entry;
             while ((entry = zipInputStream.getNextEntry()) != null) {
@@ -58,56 +57,32 @@ public class IOPairServiceImpl implements IOPairService {
                 Files.copy(zipInputStream, filePath);
             }
         }
-        try(DirectoryStream<Path> directoryStream = Files.newDirectoryStream(tempDir)) {
-            for (Path path : directoryStream) {
+        try (Stream<Path> paths = Files.walk(tempDir)) {
+            paths.filter(Files::isRegularFile).forEach(path -> {
                 String fileName = path.getFileName().toString();
                 if (fileName.endsWith(".in")) {
-                    String input = Files.readString(path);
-                    String outputFileName = fileName.replace(".in", ".out");
-                    Path outputFilePath = path.resolveSibling(outputFileName);
-                    String output = Files.readString(outputFilePath);
-                    String scoreFileName = fileName.replace(".in", ".score");
-                    Path scoreFilePath = path.resolveSibling(scoreFileName);
-                    String score = Files.readString(scoreFilePath);
-                    int scoreInt = Integer.parseInt(score);
-                    IOPair.Type type = path.getParent().getFileName().toString().equals("sample") ?
-                            IOPair.Type.SAMPLE :
-                            IOPair.Type.TEST;
-                    IOPair ioPair = new IOPair(input, output, type, scoreInt);
-                    ioPair.setProblem(problem);
-                    ioPairs.add(ioPair);
+                    try {
+                        String input = Files.readString(path);
+                        String outputFileName = fileName.replace(".in", ".out");
+                        Path outputFilePath = path.resolveSibling(outputFileName);
+                        String output = Files.readString(outputFilePath);
+                        String scoreFileName = fileName.replace(".in", ".score");
+                        Path scoreFilePath = path.resolveSibling(scoreFileName);
+                        String score = Files.readString(scoreFilePath);
+                        int scoreInt = Integer.parseInt(score);
+                        IOPair.Type type = path.getParent().getFileName().toString().equals("sample") ?
+                                IOPair.Type.SAMPLE :
+                                IOPair.Type.TEST;
+                        IOPair ioPair = new IOPair(input, output, type, scoreInt);
+                        ioPair.setProblem(problem);
+                        ioPairs.add(ioPair);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        throw new UncheckedIOException(e);
+                    }
                 }
-            }
-
+            });
         }
-
-//                if (entry.getName().endsWith(".in")) {
-//                    Path filePath = tempDir.resolve(entry.getName());
-//                    Files.createDirectories(filePath.getParent());
-//                    Files.copy(zipInputStream, filePath);
-//                    String input = new String(Files.readAllBytes(filePath), detectCharset(filePath));
-//                    String outputFile = entry.getName().replace(".in", ".out");
-//                    // may throw exception if the output file is not found
-//                    Path outputFilePath = tempDir.resolve(outputFile);
-//                    Files.createDirectories(filePath.getParent());
-//                    Files.copy(zipInputStream, outputFilePath);
-//                    System.out.println(entry.getName());
-//                    System.out.println(input);
-//                    System.out.println(outputFilePath);
-//                    System.out.println(filePath);
-//                    String output = new String(Files.readAllBytes(outputFilePath), detectCharset(outputFilePath));
-//                    String scoreFile = entry.getName().replace(".in", ".score");
-//                    Path scoreFilePath = tempDir.resolve(scoreFile);
-//                    String score = new String(Files.readAllBytes(scoreFilePath), detectCharset(scoreFilePath));
-//                    int scoreInt = Integer.parseInt(score);
-//                    IOPair.Type type = entry.getName().toLowerCase().startsWith("sample/") ?
-//                            IOPair.Type.SAMPLE :
-//                            IOPair.Type.TEST;
-//                    IOPair ioPair = new IOPair(input, output, type, scoreInt);
-//                    ioPair.setProblem(problem);
-//                    ioPairs.add(ioPair);
-//                }
-
         ioPairDao.deleteIOPairByProblemId(problemId);
         ioPairDao.addIOPairs(ioPairs);
         fileStream.close();
