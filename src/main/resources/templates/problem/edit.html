@@ -16,6 +16,7 @@
         <span>></span>
         <span>编辑题目</span>
     </p>
+    <div th:replace="~{problem/list :: nav}"></div>
     <h2>编辑题目：[[${problem.title}]]</h2>
     <!--/*@thymesVar id="user" type="org.dindier.oicraft.model.User"*/-->
     <a class="btn btn-primary mb-3" th:href="@{/problem/{id}(id=${problem.id})}">返回原题</a>

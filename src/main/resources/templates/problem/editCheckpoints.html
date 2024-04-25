@@ -16,6 +16,7 @@
         <span>></span>
         <span>编辑测试点</span>
     </p>
+    <div th:replace="~{problem/list :: nav}"></div>
     <h2>编辑测试点：[[${problem.title}]]</h2>
     <!--/*@thymesVar id="user" type="org.dindier.oicraft.model.User"*/-->
     <a class="btn btn-primary mb-3" th:href="@{/problem/{id}(id=${problem.id})}">返回原题</a>
@@ -31,6 +32,7 @@
                 <b>请注意：每次上传之后会覆盖掉原有的测试点，如果需要请下载之前的测试点！</b>
                 <input type="file" id="file" name="file" accept="application/zip" required>
             </div>
+            <div th:unless="${param.error eq null}" th:text="${param.error}"></div>
             <a th:href="@{/problem/{id}/checkpoints/download(id=${problem.id})}" class="btn btn-primary">下载测试点</a>
             <button type="submit" class="btn btn-danger">确认修改</button>
         </form>

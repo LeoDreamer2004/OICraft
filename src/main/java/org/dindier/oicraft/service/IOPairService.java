@@ -6,15 +6,15 @@ import java.io.InputStream;
 public interface IOPairService {
 
     /**
-     * add IOPair from zip file uploaded by user
+     * Add IOPair from zip file uploaded by user
      *
-     * @param fileStream the file stream uploaded
+     * @param fileStream The file stream uploaded
      * @return 0 if success, -1 if the file is invalid
      */
     int addIOPairByZip(InputStream fileStream, int problemId) throws IOException;
 
     /**
-     * get IOPairs in zip file as a stream
+     * Get IOPairs in zip file as a stream
      *
      * @param problemId the problem id
      * @return the stream of the zip file
