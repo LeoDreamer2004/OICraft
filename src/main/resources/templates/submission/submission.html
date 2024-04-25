@@ -42,7 +42,7 @@
     </pre>
     <h4 class="underlined-title">测试结果</h4>
     <div class="box-container">
-        <div th:each="checkpoint : ${checkpoints}" th:switch="${checkpoint.statusString}">
+        <div th:each="checkpoint, stat : ${checkpoints}" th:switch="${checkpoint.statusString}">
             <div th:case="'P'" class="checkpoint-box p-box">
                 <p class="text-status">...</p>
             </div>
@@ -50,52 +50,37 @@
                 <p class="text-status">AC</p>
                 <p class="text-cost" th:text="${checkpoint.formatUsageString()}"></p>
                 <div class="msg-box" th:text="${checkpoint.info}"></div>
-                <div class="checkpoint-num">
-                    <span>#</span>
-                    <span th:text="${checkpoint.ioPair.id}"></span>
-                </div>
+                <div class="checkpoint-num">#[[${stat.index + 1}]]</div>
             </div>
             <div th:case="'WA'" class="checkpoint-box wa-box">
                 <p class="text-status">WA</p>
                 <p class="text-cost" th:text="${checkpoint.formatUsageString()}"></p>
                 <div class="msg-box" th:text="${checkpoint.info}"></div>
-                <div class="checkpoint-num">
-                    <span>#</span>
-                    <span th:text="${checkpoint.ioPair.id}"></span>
-                </div>
+                <div class="checkpoint-num">#[[${stat.index + 1}]]</div>
             </div>
             <div th:case="'CE'" class="checkpoint-box ce-box">
                 <p class="text-status">CE</p>
                 <p class="text-cost" th:text="${checkpoint.formatUsageString()}"></p>
                 <div class="msg-box" th:text="${checkpoint.info}"></div>
-                <div class="checkpoint-num">
-                    <span>#</span>
-                    <span th:text="${checkpoint.ioPair.id}"></span>
-                </div>
+                <div class="checkpoint-num">#[[${stat.index + 1}]]</div>
             </div>
             <div th:case="'RE'" class="checkpoint-box re-box">
                 <p class="text-status">RE</p>
                 <p class="text-cost" th:text="${checkpoint.formatUsageString()}"></p>
                 <div class="msg-box" th:text="${checkpoint.info}"></div>
-                <div class="checkpoint-num">
-                    <span>#</span>
-                    <span th:text="${checkpoint.ioPair.id}"></span>
-                </div>
+                <div class="checkpoint-num">#[[${stat.index + 1}]]</div>
             </div>
             <div th:case="'TLE'" class="checkpoint-box tle-box">
                 <p class="text-status">TLE</p>
                 <p class="text-cost" th:text="${checkpoint.formatUsageString()}"></p>
                 <div class="msg-box" th:text="${checkpoint.info}"></div>
-                <div class="checkpoint-num">
-                    <span>#</span>
-                    <span th:text="${checkpoint.ioPair.id}"></span>
-                </div>
+                <div class="checkpoint-num">#[[${stat.index + 1}]]</div>
             </div>
             <div th:case="'MLE'" class="checkpoint-box mle-box">
                 <p class="text-status">MLE</p>
                 <p class="text-cost" th:text="${checkpoint.formatUsageString()}"></p>
                 <div class="msg-box" th:text="${checkpoint.info}"></div>
-                <div class="checkpoint-num">#[[${checkpoint.ioPairId}]]</div>
+                <div class="checkpoint-num">#[[${stat.index + 1}]]</div>
             </div>
         </div>
     </div>
