@@ -39,6 +39,7 @@ public class Submission {
         }
 
         public static Language fromString(String language) {
+            if (language.equalsIgnoreCase("C++")) return CPP;
             for (Language l : Language.values()) {
                 if (l.getDisplayName().equalsIgnoreCase(language)) {
                     return l;
