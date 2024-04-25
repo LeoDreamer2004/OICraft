@@ -50,14 +50,11 @@ public class ProblemController {
 
     @GetMapping("/problems")
     public ModelAndView problems() {
-        Iterable<Problem> problems = problemDao.getProblemList();
         User user = userService.getUserByRequest(request);
-        Iterable<Integer> hasPassed = (user == null) ? null :
-                IterableUtil.map(problems, problem -> problemService.hasPassed(user, problem));
-        // FIXME: Optimize the performance of the above code
+        Map<Problem, Integer> problemMap = problemService.getAllProblemWithPassInfo(user);
         return new ModelAndView("problem/list")
-                .addObject("problems", problems)
-                .addObject("hasPassed", hasPassed);
+                .addObject("problems", problemMap.keySet())
+                .addObject("hasPassed", problemMap.values());
     }
 
     @GetMapping("/problem/{id}")

@@ -13,5 +13,11 @@ public interface IOPairService {
      */
     int addIOPairByZip(InputStream fileStream, int problemId) throws IOException;
 
+    /**
+     * get IOPairs in zip file as a stream
+     *
+     * @param problemId the problem id
+     * @return the stream of the zip file
+     */
     InputStream getIOPairsStream(int problemId) throws IOException;
 }

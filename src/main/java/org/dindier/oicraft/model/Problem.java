@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Data
-public class Problem {
+public class Problem implements Comparable<Problem> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -92,5 +92,10 @@ public class Problem {
     public void load() {
         List<IOPair> _temp1 = this.ioPairs;
         List<Submission> _temp2 = this.submissions;
+    }
+
+    @Override
+    public int compareTo(Problem o) {
+        return Integer.compare(this.id, o.id);
     }
 }

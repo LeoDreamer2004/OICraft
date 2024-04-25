@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -28,6 +29,9 @@ public class User implements UserDetails {
     private Grade grade;
 
     private int experience = 0;
+
+    @Temporal(TemporalType.DATE)
+    private Date last_checkin;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<Submission> submissions;

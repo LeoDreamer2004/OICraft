@@ -18,10 +18,6 @@ public class JpaUserDao implements UserDao {
     private UserRepository userRepository;
     private final Logger logger = LoggerFactory.getLogger(JpaUserDao.class);
 
-    public static final int INTERMEDIATE_MIN_PASS_NUM = 10;
-    public static final int ADVANCED_MIN_PASS_NUM = 20;
-    public static final int EXPERT_MIN_PASS_NUM = 30;
-
     private static final int INTERMEDIATE_MIN_EXP = 100;
     private static final int ADVANCED_MIN_EXP = 200;
     private static final int EXPERT_MIN_EXP = 300;
