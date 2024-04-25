@@ -8,8 +8,9 @@ public interface IOPairService {
     /**
      * add IOPair from zip file uploaded by user
      * @param fileStream the file stream uploaded
+     * @return  0 if success, -1 if the file is invalid
      */
-    void addIOPairByZip(InputStream fileStream, int problemId) throws IOException;
+    int addIOPairByZip(InputStream fileStream, int problemId) throws IOException;
 
     InputStream getIOPairsStream(int problemId) throws IOException;
 }
