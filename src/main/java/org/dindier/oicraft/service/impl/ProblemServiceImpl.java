@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -68,11 +69,20 @@ public class ProblemServiceImpl implements ProblemService {
                     codeChecker.setIO(code, language, ioPair.getInput(), ioPair.getOutput(), id)
                             .setLimit(problem.getTimeLimit(), problem.getMemoryLimit())
                             .test(!iterator.hasNext());
-                } catch (Exception e) {
-                    logger.warn("CodeChecker error: {}", e.getMessage());
+                } catch (IOException e) {
+                    logger.warn("CodeChecker encounter IOException: {}", e.getMessage());
+                    if (!iterator.hasNext()) {
+                        logger.warn("Temp file not deleted, submission {} failed", id);
+                    }
                     finalSubmission.setStatus(Submission.Status.FAILED);
                     submissionDao.updateSubmission(finalSubmission);
-                    return;
+                } catch (InterruptedException e) {
+                    logger.warn("CodeChecker encounter InterruptedException: {}", e.getMessage());
+                    finalSubmission.setStatus(Submission.Status.FAILED);
+                    if (!iterator.hasNext()) {
+                        logger.warn("Temp file not deleted, submission {} failed", id);
+                    }
+                    submissionDao.updateSubmission(finalSubmission);
                 }
                 checkpoint.setStatus(Checkpoint.Status.fromString(codeChecker.getStatus()));
                 checkpoint.setUsedTime(codeChecker.getUsedTime());
