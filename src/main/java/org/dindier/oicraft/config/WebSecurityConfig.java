@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -37,12 +36,14 @@ public class WebSecurityConfig {
                         .requestMatchers(
                                 "/submission/**",
                                 "/problem/*/submit",
-                                "/problem/new"
+                                "/problem/new/**",
+                                "/email/**"
                         ).authenticated()
                         .anyRequest().permitAll()
                 ) // set the authorization rules
                 .csrf(csrf -> csrf.ignoringRequestMatchers(
-                        "/checkin"
+                        "/checkin",
+                        "/email/get"
                 )) // ignore the CSRF token for some endpoints
 
                 .formLogin(formLogin -> formLogin

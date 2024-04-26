@@ -5,6 +5,10 @@
     height: 100%;
 }
 
+.disabled {
+    background-color: gray !important;
+}
+
 .card-container {
     font-family: sans-serif;
     display: flex;

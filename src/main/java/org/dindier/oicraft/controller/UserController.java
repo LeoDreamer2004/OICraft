@@ -1,6 +1,7 @@
 package org.dindier.oicraft.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.websocket.server.PathParam;
 import org.dindier.oicraft.dao.UserDao;
 import org.dindier.oicraft.model.User;
 import org.dindier.oicraft.service.UserService;
@@ -53,6 +54,29 @@ public class UserController {
         return new ModelAndView("user/registerSuccess")
                 .addObject("user", userDao.getUserById(id));
     }
+
+    @GetMapping("/email")
+    public ModelAndView email() {
+        return new ModelAndView("user/email");
+    }
+
+    @GetMapping("/email/verification")
+    public ResponseEntity<String> getVerification(@PathParam("email") String email) {
+        User user = userService.getUserByRequest(request);
+        if (user == null)
+            return ResponseEntity.badRequest().body("Not logged in");
+        userService.sendVerificationCode(request, email);
+        return ResponseEntity.ok("Get verification");
+    }
+
+    @PostMapping("/email")
+    public Object setEmail(@RequestParam("email") String email,
+                                 @RequestParam("code") String code) {
+        if (userService.verifyEmail(request, email, code))
+            return new ModelAndView("user/emailSuccess");
+        return new RedirectView("/email?error");
+    }
+
 
     @GetMapping("/logout")
     public ModelAndView logout() {

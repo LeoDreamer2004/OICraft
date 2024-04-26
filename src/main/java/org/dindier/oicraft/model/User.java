@@ -23,19 +23,17 @@ public class User implements UserDetails {
     @Column(name = "username")
     private String name;
     private String password;
+    // TODO: Add this field to SQL schema
+    private String email;
     @Enumerated(EnumType.STRING)
     private Role role;
     @Enumerated(EnumType.STRING)
     private Grade grade;
-
     private int experience = 0;
-
     @Temporal(TemporalType.DATE)
     private Date last_checkin;
-
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private List<Submission> submissions;
-
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<Problem> problems;
 

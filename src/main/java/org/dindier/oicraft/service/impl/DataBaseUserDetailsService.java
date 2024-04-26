@@ -1,4 +1,4 @@
-package org.dindier.oicraft.util;
+package org.dindier.oicraft.service.impl;
 
 import org.dindier.oicraft.dao.UserDao;
 import org.dindier.oicraft.model.User;

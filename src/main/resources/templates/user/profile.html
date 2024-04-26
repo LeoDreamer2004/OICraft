@@ -71,6 +71,13 @@
                         <p>经验</p>
                         <p th:text="${seeUser.experience}"></p>
                     </div>
+                    <!--/*@thymesVar id="user" type="org.dindier.oicraft.model.User"*/-->
+                    <div class="info-line" th:if="${seeUser.equals(user)}">
+                        <p>邮箱</p>
+                        <p th:unless="${seeUser.email eq null}">已绑定</p>
+                        <a th:if="${seeUser.email eq null}" th:href="@{/email}">
+                            去绑定</a>
+                    </div>
                     <div class="info-line">
                         <p>等级</p>
                         <p th:text="${seeUser.getGradeString()}"></p>
