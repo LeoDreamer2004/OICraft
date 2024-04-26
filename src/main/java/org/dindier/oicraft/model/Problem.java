@@ -16,7 +16,8 @@ public class Problem implements Comparable<Problem> {
     private String inputFormat;
     private String outputFormat;
 
-    private int authorId;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    private User author;
 
     @OneToMany(mappedBy = "problem", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<IOPair> ioPairs;
@@ -39,9 +40,10 @@ public class Problem implements Comparable<Problem> {
     protected Problem() {
     }
 
-    public Problem(int authorId, String title, String description, String inputFormat, String outputFormat,
+    public Problem(User author, String title, String description, String inputFormat,
+                   String outputFormat,
                    Difficulty difficulty, int timeLimit, int memoryLimit) {
-        this.authorId = authorId;
+        this.author = author;
         this.title = title;
         this.description = description;
         this.inputFormat = inputFormat;
@@ -92,6 +94,7 @@ public class Problem implements Comparable<Problem> {
     public void load() {
         List<IOPair> _temp1 = this.ioPairs;
         List<Submission> _temp2 = this.submissions;
+        User _temp3 = this.author;
     }
 
     @Override
