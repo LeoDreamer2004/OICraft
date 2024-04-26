@@ -97,6 +97,10 @@
     padding: 0;
 }
 
+.DELETED {
+    color: rgb(90, 90, 90) !important;
+}
+
 .BEGINNER {
     color: rgb(70, 161, 222) !important;
     text-decoration: none !important;

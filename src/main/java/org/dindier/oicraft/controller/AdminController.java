@@ -44,7 +44,7 @@ public class AdminController {
             return new ModelAndView("admin/error")
                     .addObject("error", error);
         userDao.deleteUser(user);
-        return new RedirectView("admin");
+        return new RedirectView("/admin");
     }
 
     @GetMapping("admin/upgrade/{id}")

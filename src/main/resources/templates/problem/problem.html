@@ -88,8 +88,11 @@
             <div class="card my-card">
                 <div class="info-line">
                     <p>出题人</p>
-                    <a th:text="${author.name}" th:href="@{/profile/{id}(id=${author.id})}"
-                       th:class="${author.getGradeString()}"></a>
+                    <a th:unless="${author eq null}" th:text="${author.name}"
+                       th:href="@{/profile/{id}(id=${author.id})}"
+                       th:class="${author.getGradeString()}">
+                    </a>
+                    <span th:if="${author eq null}" class="DELETED">账户已注销</span>
                 </div>
                 <div class="info-line">
                     <p>题目难度</p>
