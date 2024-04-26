@@ -3,7 +3,6 @@ package org.dindier.oicraft.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import org.dindier.oicraft.dao.ProblemDao;
 import org.dindier.oicraft.dao.SubmissionDao;
-import org.dindier.oicraft.dao.UserDao;
 import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.Submission;
 import org.dindier.oicraft.model.User;
@@ -31,7 +30,6 @@ import java.util.Map;
 
 @Controller
 public class ProblemController {
-    private UserDao userDao;
     private ProblemDao problemDao;
     private SubmissionDao submissionDao;
     private UserService userService;
@@ -220,11 +218,6 @@ public class ProblemController {
     private boolean canEdit(Problem problem) {
         User user = userService.getUserByRequest(request);
         return (user != null) && ((user.isAdmin()) || (user.getId() == problem.getAuthor().getId()));
-    }
-
-    @Autowired
-    private void setUserDao(UserDao userDao) {
-        this.userDao = userDao;
     }
 
     @Autowired
