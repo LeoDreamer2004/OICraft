@@ -26,13 +26,19 @@
             </tr>
 
             <tr th:each="user_, stat : ${users}">
-                <!--/*@thymesVar id="user" type="org.dindier.oicraft.model.User"*/-->
-                <td th:text="${user_.name}" th:class="${user_.getGradeString()}"></td>
+                <td>
+                    <a th:text="${user_.name}" th:class="${user_.getGradeString()}"
+                       th:href="@{/profile/{id}(id=${user_.id})}"></a>
+                </td>
                 <td th:text="${user_.id}"></td>
                 <td th:text="${user_.experience}"></td>
                 <td th:if="${user_.isAdmin()}">管理员</td>
                 <td th:unless="${user_.isAdmin()}">用户</td>
-                <td></td>
+                <td>
+                    <a th:if="${!user_.isAdmin()}" th:href="@{/admin/upgrade/{id}(id=${user_.id})}" class="btn btn-primary">设为管理</a>
+                    <a th:if="${user_.isAdmin()}" th:href="@{/admin/downgrade/{id}(id=${user_.id})}" class="btn btn-primary">取消管理</a>
+                    <a th:href="@{/admin/delete/{id}(id=${user_.id})}" class="btn btn-danger">删除</a>
+                </td>
         </table>
     </div>
 </main>
