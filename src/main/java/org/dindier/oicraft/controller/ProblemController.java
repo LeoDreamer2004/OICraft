@@ -61,7 +61,7 @@ public class ProblemController {
         return new ModelAndView("problem/problem")
                 .addObject("problem", problem)
                 .addObject("samples", problemDao.getSamplesById(id))
-                .addObject("author", userDao.getUserById(problem.getAuthor().getId()))
+                .addObject("author", problem.getAuthor())
                 .addObject("canEdit", canEdit(problem))
                 .addObject("historyScore", problemService.getHistoryScore(user, problem))
                 .addObject("canSubmit", !problem.getIoPairs().isEmpty());
