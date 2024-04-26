@@ -37,14 +37,14 @@ public class AdminController {
     }
 
     @PostMapping("/admin/delete/{id}")
-    public ModelAndView deleteUserConfirm(@PathVariable int id) {
+    public Object deleteUserConfirm(@PathVariable int id) {
         User user = userDao.getUserById(id);
         String error = canEditUser(user);
         if (error != null)
             return new ModelAndView("admin/error")
                     .addObject("error", error);
         userDao.deleteUser(user);
-        return new ModelAndView("admin/admin");
+        return new RedirectView("admin");
     }
 
     @GetMapping("admin/upgrade/{id}")
