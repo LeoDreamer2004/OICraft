@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Repository("userDao")
@@ -110,7 +111,8 @@ public class JpaUserDao implements UserDao {
                         .stream()
                         .map(Submission::getProblem)
                 )
-                .map(problems -> problems.distinct().toList())
+                .map(problems -> problems.distinct()
+                        .sorted(Comparator.comparingInt(Problem::getId)).toList())
                 .orElse(List.of());
     }
 
@@ -124,7 +126,8 @@ public class JpaUserDao implements UserDao {
                         .filter(submission -> submission.getStatus() == Submission.Status.PASSED)
                         .map(Submission::getProblem)
                 )
-                .map(problems -> problems.distinct().toList())
+                .map(problems -> problems.distinct()
+                        .sorted(Comparator.comparingInt(Problem::getId)).toList())
                 .orElse(List.of());
     }
 
@@ -141,7 +144,8 @@ public class JpaUserDao implements UserDao {
                         .map(Submission::getProblem)
                         .filter(problem -> !passedProblems.contains(problem))
                 )
-                .map(problems -> problems.distinct().toList())
+                .map(problems -> problems.distinct()
+                        .sorted(Comparator.comparingInt(Problem::getId)).toList())
                 .orElse(List.of());
     }
 

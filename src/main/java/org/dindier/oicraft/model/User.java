@@ -33,7 +33,7 @@ public class User implements UserDetails {
     @Temporal(TemporalType.DATE)
     private Date last_checkin;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private List<Submission> submissions;
 
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
@@ -94,11 +94,6 @@ public class User implements UserDetails {
 
     public String getGradeString() {
         return grade.toString();
-    }
-
-    @SuppressWarnings("unused")
-    public void load() {
-        List<Submission> _temp = this.submissions;
     }
 
     public boolean equals(User other) {

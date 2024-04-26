@@ -88,10 +88,4 @@ public class Submission {
         return status.getDisplayName();
     }
 
-    @SuppressWarnings("unused")
-    public void load() {
-        Problem _temp = this.problem;
-        User _temp2 = this.user;
-        List<Checkpoint> _temp3 = this.checkpoints;
-    }
 }

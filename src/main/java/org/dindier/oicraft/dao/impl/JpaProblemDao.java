@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Repository("problemDao")
@@ -97,6 +98,10 @@ public class JpaProblemDao implements ProblemDao {
         return problemRepository
                 .findById(problemId)
                 .map(Problem::getSubmissions)
+                .map(submissions -> {
+                    submissions.sort(Comparator.comparingInt(Submission::getId));
+                    return submissions;
+                })
                 .orElse(List.of());
     }
 
@@ -111,6 +116,7 @@ public class JpaProblemDao implements ProblemDao {
                                 .getStatus()
                                 .equals(Submission.Status.PASSED)
                         )
+                        .sorted(Comparator.comparingInt(Submission::getId))
                         .toList()
                 )
                 .orElse(List.of());
