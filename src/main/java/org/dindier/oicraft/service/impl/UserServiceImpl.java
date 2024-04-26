@@ -110,8 +110,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void sendVerificationCode(HttpServletRequest request, String email) {
-        String username = request.getRemoteUser();
+    public void sendVerificationCode(User user, String email) {
+        String username = user.getUsername();
         String verificationCode = UUID.randomUUID().toString();
         Pair<String,String> key = new Pair<>(username, email);
         verificationCodes.put(key, new VerificationCode(verificationCode));
@@ -140,10 +140,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean verifyEmail(HttpServletRequest request, String email, String code) {
-        User user = getUserByRequest(request);
-        if (user == null)
-            return false;
+    public boolean verifyEmail(User user, String email, String code) {
         String username = user.getUsername();
         Pair<String,String> key = new Pair<>(username, email);
         if (!verificationCodes.containsKey(key))

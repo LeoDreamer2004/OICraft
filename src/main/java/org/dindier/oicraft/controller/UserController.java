@@ -64,7 +64,7 @@ public class UserController {
         User user = userService.getUserByRequest(request);
         if (user == null)
             return ResponseEntity.badRequest().body("Not logged in");
-        userService.sendVerificationCode(request, email);
+        userService.sendVerificationCode(user, email);
         return ResponseEntity.ok("Get verification");
     }
 
@@ -73,14 +73,14 @@ public class UserController {
         User user = userDao.getUserByUsername(username);
         if (user == null)
             return ResponseEntity.badRequest().body("User not found");
-        userService.sendVerificationCode(request, user.getEmail());
+        userService.sendVerificationCode(user, user.getEmail());
         return ResponseEntity.ok("Get verification");
     }
 
     @PostMapping("/email")
     public Object setEmail(@RequestParam("email") String email,
                            @RequestParam("code") String code) {
-        if (userService.verifyEmail(request, email, code))
+        if (userService.verifyEmail(userService.getUserByRequest(request), email, code))
             return new ModelAndView("user/emailSuccess");
         return new RedirectView("/email?error");
     }
@@ -95,7 +95,7 @@ public class UserController {
             @RequestParam("username") String username,
             @RequestParam("code") String code) {
         User user = userDao.getUserByUsername(username);
-        if (user == null || !userService.verifyEmail(request, user.getEmail(), code)) {
+        if (user == null || !userService.verifyEmail(user, user.getEmail(), code)) {
             return new RedirectView("/password/forget?error");
         }
         // password for security
