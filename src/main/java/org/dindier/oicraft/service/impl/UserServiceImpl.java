@@ -46,18 +46,22 @@ public class UserServiceImpl implements UserService {
         return userDao.getUserByUsername(username);
     }
 
-    @Override
-    public void checkIn(User user) {
-        logger.info("User " + user.getUsername() + " checked in today");
-        Date lastCheckin = user.getLast_checkin();
+    private Date getTomorrow() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         calendar.add(Calendar.DATE, 1); // Add one day to get the start of tomorrow
-        Date tomorrow = new Date(calendar.getTimeInMillis());
+        return new Date(calendar.getTimeInMillis());
+    }
+
+    @Override
+    public void checkIn(User user) {
+        Date lastCheckin = user.getLast_checkin();
+        Date tomorrow = getTomorrow();
         if (lastCheckin == null || lastCheckin.before(tomorrow)) {
+            logger.info("User " + user.getUsername() + " checked in today");
             userDao.addExperience(user, 1);
             user.setLast_checkin(tomorrow);
             userDao.updateUser(user);
@@ -67,13 +71,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean hasCheckedInToday(User user) {
         Date lastCheckin = user.getLast_checkin();
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        calendar.add(Calendar.DATE, 1); // Add one day to get the start of tomorrow
-        Date tomorrow = new Date(calendar.getTimeInMillis());
+        Date tomorrow = getTomorrow();
         return lastCheckin != null && !lastCheckin.before(tomorrow);
+    }
+
+    @Override
+    public void sendVerificationCode(HttpServletRequest request, String email) {
+        // TODO: Implement this method
+        logger.info("Verification code sent to " + email);
+    }
+
+    @Override
+    public boolean verifyEmail(HttpServletRequest request, String email, String code) {
+        // TODO: Implement this method
+        User user = getUserByRequest(request);
+        if (user == null)
+            return false;
+        logger.info("Binding email " + email + " for user " + user.getUsername());
+        return true;
     }
 }

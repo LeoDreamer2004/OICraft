@@ -8,6 +8,7 @@ public interface UserService {
 
     /**
      * Create a new user, with password encoded
+     *
      * @param user The user to create
      * @return The created user object
      */
@@ -32,8 +33,27 @@ public interface UserService {
 
     /**
      * Check if the user has checked in today
+     *
      * @param user The user to check
      * @return Whether the user has checked in today
      */
     boolean hasCheckedInToday(User user);
+
+    /**
+     * Send a verification code to the email
+     *
+     * @param request The request to get the IP address
+     * @param email The email to send the code to
+     */
+    void sendVerificationCode(HttpServletRequest request, String email);
+
+    /**
+     * Verify the email with the code. If true, record the email into the database
+     *
+     * @param request The request to get the IP address
+     * @param email The email to verify
+     * @param code The verification code sent from the client
+     * @return Whether the email is verified
+     */
+    boolean verifyEmail(HttpServletRequest request, String email, String code);
 }

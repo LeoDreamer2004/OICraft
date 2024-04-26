@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>邮箱认证</title>
+    <link th:replace="~{index :: indexStyle}"/>
+    <th:block th:replace="~{base :: baseStyle}"></th:block>
+</head>
+
+<body class="colored-background">
+
+<div th:insert="~{index :: nav}"></div>
+<main role="main" class="card-container">
+    <div class="login-card" id="loginForm">
+        <form class="login-form" th:action="@{/email}" method="post">
+            <div class="login-title">
+                <h1>邮箱认证</h1>
+                <p>绑定您的邮箱，不再担心忘记密码</p>
+            </div>
+            <div class="form-item" th:if="${param.error}">
+                <div class="alert alert-danger ml-3 mr-3 mb-0">
+                    验证码不正确
+                </div>
+            </div>
+            <div class="form-item">
+                <div id="errorMsg" class="alert alert-danger ml-3 mr-3 mb-0" style="display: none;">
+                </div>
+            </div>
+            <div class="form-item">
+                <input type="text" name="email" id="email" placeholder="邮箱" required autofocus>
+            </div>
+            <div class="form-item">
+                <input type="text" name="code" id="code" placeholder="验证码" required>
+            </div>
+            <div class="form-item-other">
+                <button style="width: 37%; margin-left: 30px" type="button"
+                        id="verificationBtn" onclick="sendVerification()">
+                    获取验证码
+                </button>
+                <button style="width: 37%; margin-right: 30px" type="submit">确定</button>
+            </div>
+        </form>
+    </div>
+</main>
+<footer th:replace="~{index :: footer}"></footer>
+<script>
+    function sendVerification() {
+        const email = document.getElementById('email').value;
+        const msg = document.getElementById('errorMsg');
+        const btn = document.getElementById('verificationBtn');
+        if (email === '') {
+            msg.style.display = 'block';
+            msg.innerText = '邮箱不能为空';
+            return;
+        }
+        let count = 10;
+        btn.disabled = true;
+        btn.classList.add("disabled")
+        btn.innerText = count + 's后重试';
+        const timer = setInterval(() => {
+            count--;
+            btn.innerText = count + 's后重试';
+            if (count === 0) {
+                clearInterval(timer);
+                btn.innerText = '获取验证码';
+                btn.disabled = false;
+                btn.classList.remove("disabled")
+            }
+        }, 1000);
+        fetch('/email/verification?email=' + email, {
+            method: 'GET',
+        })
+            .then(response => {
+                if (!response.ok) {
+                    msg.style.display = 'block';
+                    msg.innerText = '发送失败，请稍后重试';
+                }
+            })
+    }
+</script>
+</body>
+</html>
