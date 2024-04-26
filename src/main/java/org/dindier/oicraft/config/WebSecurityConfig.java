@@ -37,13 +37,14 @@ public class WebSecurityConfig {
                                 "/submission/**",
                                 "/problem/*/submit",
                                 "/problem/new/**",
-                                "/email/**"
+                                "/email/verification/new"
                         ).authenticated()
                         .anyRequest().permitAll()
                 ) // set the authorization rules
                 .csrf(csrf -> csrf.ignoringRequestMatchers(
                         "/checkin",
-                        "/email/get"
+                        "/email/get",
+                        "/password/reset"
                 )) // ignore the CSRF token for some endpoints
 
                 .formLogin(formLogin -> formLogin

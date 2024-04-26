@@ -24,7 +24,6 @@ public class UserController {
 
     @GetMapping("/")
     public ModelAndView index() {
-        System.out.println(request.getRemoteUser());
         return new ModelAndView("/index");
     }
 
@@ -43,8 +42,8 @@ public class UserController {
                                  @RequestParam("password") String password) {
         if (userDao.existsUser(username))
             return new RedirectView("/register?error");
-        User user = new User(username, password, User.Role.USER, User.Grade.BEGINNER);
-        System.out.println(username + " " + password);
+        User user = new User(username, userService.encodePassword(password),
+                User.Role.USER, User.Grade.BEGINNER);
         user = userService.createUser(user);
         return new RedirectView("/register/success/" + user.getId());
     }
@@ -60,8 +59,8 @@ public class UserController {
         return new ModelAndView("user/email");
     }
 
-    @GetMapping("/email/verification")
-    public ResponseEntity<String> getVerification(@PathParam("email") String email) {
+    @GetMapping("/email/verification/new")
+    public ResponseEntity<String> getVerificationForNew(@PathParam("email") String email) {
         User user = userService.getUserByRequest(request);
         if (user == null)
             return ResponseEntity.badRequest().body("Not logged in");
@@ -69,14 +68,62 @@ public class UserController {
         return ResponseEntity.ok("Get verification");
     }
 
+    @GetMapping("/email/verification")
+    public Object getVerificationForReset(@PathParam("username") String username) {
+        User user = userDao.getUserByUsername(username);
+        if (user == null)
+            return ResponseEntity.badRequest().body("User not found");
+        userService.sendVerificationCode(request, user.getEmail());
+        return ResponseEntity.ok("Get verification");
+    }
+
     @PostMapping("/email")
     public Object setEmail(@RequestParam("email") String email,
-                                 @RequestParam("code") String code) {
+                           @RequestParam("code") String code) {
         if (userService.verifyEmail(request, email, code))
             return new ModelAndView("user/emailSuccess");
         return new RedirectView("/email?error");
     }
 
+    @GetMapping("/password/forget")
+    public ModelAndView forgetPassword() {
+        return new ModelAndView("user/forgetPassword");
+    }
+
+    @PostMapping("/password/forget")
+    public Object forgetPassword(
+            @RequestParam("username") String username,
+            @RequestParam("code") String code) {
+        User user = userDao.getUserByUsername(username);
+        if (user == null || !userService.verifyEmail(request, user.getEmail(), code)) {
+            return new RedirectView("/password/forget?error");
+        }
+        // password for security
+        return new ModelAndView("user/resetPassword").
+                addObject("username", username).
+                addObject("originalPassword", user.getPassword());
+    }
+
+    @GetMapping("/password/reset")
+    public ResponseEntity<String> resetPassword(
+            @PathParam("username") String username,
+            @PathParam("password") String password,
+            @PathParam("originalPassword") String originalPassword) {
+        // The original password parameter is from forget page, which served as a key
+        User user = userDao.getUserByUsername(username);
+        System.out.println(username + password + originalPassword);
+        if (user == null || !user.getPassword().equals(originalPassword))
+            // illegal access
+            return ResponseEntity.badRequest().body("Illegal access");
+        user.setPassword(userService.encodePassword(password));
+        userDao.updateUser(user);
+        return ResponseEntity.ok().body("Password reset");
+    }
+
+    @GetMapping("/password/reset/success")
+    public ModelAndView resetPasswordSuccess() {
+        return new ModelAndView("user/resetSuccess");
+    }
 
     @GetMapping("/logout")
     public ModelAndView logout() {
@@ -109,7 +156,6 @@ public class UserController {
         userService.checkIn(userService.getUserByRequest(request));
         return ResponseEntity.ok("Checkin");
     }
-
 
     @Autowired
     public void setUserDao(UserDao userDao) {

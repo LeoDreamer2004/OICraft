@@ -123,6 +123,7 @@ public class CodeChecker {
     /**
      * Run the code and check the result
      * Use getter to get the status, info etc
+     *
      * @param clearFile Whether to clear the files after the test
      */
     public void test(boolean clearFile) throws IOException, InterruptedException {
@@ -136,7 +137,8 @@ public class CodeChecker {
         Timer timer = new Timer();
 
         if (pb == null) {
-            clearFiles();
+            if (clearFile)
+                clearFiles();
             return;
         }
 

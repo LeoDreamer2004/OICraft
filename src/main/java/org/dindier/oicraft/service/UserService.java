@@ -24,6 +24,14 @@ public interface UserService {
     User getUserByRequest(HttpServletRequest request);
 
     /**
+     * Encode the password
+     *
+     * @param password The password to encode
+     * @return The encoded password
+     */
+    String encodePassword(String password);
+
+    /**
      * Record the check-in of a user & add EXP etc.
      *
      * @param user The user to check in
