@@ -140,6 +140,8 @@ public class UserServiceImpl implements UserService {
             return false;
         String username = user.getUsername();
         Pair<String,String> key = new Pair<>(username, email);
+        if (!verificationCodes.containsKey(key))
+            return false;
         String correctCode = verificationCodes.get(key).getCode();
         if (correctCode == null || !correctCode.equals(code))
             return false;
