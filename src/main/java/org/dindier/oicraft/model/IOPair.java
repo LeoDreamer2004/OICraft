@@ -30,7 +30,8 @@ public class IOPair {
     protected IOPair() {
     }
 
-    public IOPair(String input, String output, Type type, int score) {
+    public IOPair(Problem problem ,String input, String output, Type type, int score) {
+        this.problem = problem;
         this.input = input;
         this.output = output;
         this.type = type;

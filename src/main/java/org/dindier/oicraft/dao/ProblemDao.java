@@ -36,7 +36,7 @@ public interface ProblemDao {
      * @return a list of all sample I/O pairs of the problem
      * If there is no sample I/O pair, an empty list will be returned.
      */
-    Iterable<IOPair> getSamplesById(int id);
+    List<IOPair> getSamplesById(int id);
 
     /**
      * Get all test I/O pairs of a problem
@@ -45,7 +45,7 @@ public interface ProblemDao {
      * @return a list of all test I/O pairs of the problem
      * If there is no test I/O pair, an empty list will be returned.
      */
-    Iterable<IOPair> getTestsById(int id);
+    List<IOPair> getTestsById(int id);
 
     /**
      * Update a problem in the database

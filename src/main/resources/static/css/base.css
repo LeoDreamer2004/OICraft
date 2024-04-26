@@ -8,6 +8,7 @@
     background-color: #333;
     color: white;
     padding: 20px 150px 20px 150px;
+    min-width: 1000px;
 }
 
 .header .user-details {
@@ -73,8 +74,11 @@
     color: lightgray;
 }
 
-.hide {
-    display: none;
+.info-line {
+    display: flex;
+    justify-content: space-between;
+    padding: 0;
+    font-size: 18px;
 }
 
 .my-card {

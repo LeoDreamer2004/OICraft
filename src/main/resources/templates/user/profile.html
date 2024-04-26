@@ -20,39 +20,68 @@
     </div>
 </div>
 <main role="main" class="container">
-    <!-- DO NOT show this card when the user has no problems waiting to solve -->
-    <div class="card mb-4" th:if="${toSolve.size() != 0}">
-        <h5 class="card-header">尝试的题目</h5>
-        <div class="card-body">
+    <div class="lr-container">
+        <div class="profile-main">
+            <!-- DO NOT show this card when the user has no problems waiting to solve -->
+            <div class="card mb-4" th:if="${toSolve.size() != 0}">
+                <h5 class="card-header">尝试的题目</h5>
+                <div class="card-body">
             <span th:each="problem : ${toSolve}">
                 <a th:href="@{'/problem/' + ${problem.id}}"
                    th:text="${problem.getIdString()}"></a>
             </span>
-        </div>
-    </div>
-    <div class="card">
-        <h5 class="card-header">通过题目</h5>
-        <div class="card-body">
-            <span class="badge badge-success mt-2 my-large-badge">简单</span>
-            <br/>
-            <span th:each="problem : ${passed}">
+                </div>
+            </div>
+            <div class="card">
+                <h5 class="card-header">通过题目</h5>
+                <div class="card-body">
+                    <span class="badge badge-success mt-2 my-large-badge">简单</span>
+                    <br/>
+                    <span th:each="problem : ${passed}">
                 <a th:if="${problem.isEasy()}" th:href="@{'/problem/' + ${problem.id}}"
                    th:text="${problem.getIdString()}"></a>
             </span>
-            <br/>
-            <span class="badge badge-warning mt-2 my-large-badge">中等</span>
-            <br/>
-            <span th:each="problem : ${passed}">
+                    <br/>
+                    <span class="badge badge-warning mt-2 my-large-badge">中等</span>
+                    <br/>
+                    <span th:each="problem : ${passed}">
                 <a th:if="${problem.isMedium()}" th:href="@{'/problem/' + ${problem.id}}"
                    th:text="${problem.getIdString()}"></a>
             </span>
-            <br/>
-            <span class="badge badge-danger mt-2 my-large-badge">困难</span>
-            <br/>
-            <span th:each="problem : ${passed}">
+                    <br/>
+                    <span class="badge badge-danger mt-2 my-large-badge">困难</span>
+                    <br/>
+                    <span th:each="problem : ${passed}">
                 <a th:if="${problem.isHard()}" th:href="@{'/problem/' + ${problem.id}}"
                    th:text="${problem.getIdString()}"></a>
             </span>
+                </div>
+            </div>
+        </div>
+        <div class="profile-info">
+            <!-- DO NOT show this card when the user has no problems waiting to solve -->
+            <div class="card mb-4" th:if="${toSolve.size() != 0}">
+                <h5 class="card-header">个人信息</h5>
+                <div class="card-body">
+                    <div class="info-line">
+                        <p>用户名</p>
+                        <p th:text="${seeUser.name}"></p>
+                    </div>
+                    <div class="info-line">
+                        <p>经验</p>
+                        <p th:text="${seeUser.experience}"></p>
+                    </div>
+                    <div class="info-line">
+                        <p>等级</p>
+                        <p th:text="${seeUser.getGradeString()}"></p>
+                    </div>
+                    <div class="info-line">
+                        <p>用户组</p>
+                        <p th:if="${seeUser.isAdmin()}">管理员</p>
+                        <p th:unless="${seeUser.isAdmin()}">用户</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </main>

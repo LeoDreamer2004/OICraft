@@ -1,8 +1,10 @@
 package org.dindier.oicraft.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.dindier.oicraft.dao.IOPairDao;
 import org.dindier.oicraft.dao.ProblemDao;
 import org.dindier.oicraft.dao.SubmissionDao;
+import org.dindier.oicraft.model.IOPair;
 import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.Submission;
 import org.dindier.oicraft.model.User;
@@ -32,6 +34,7 @@ import java.util.Map;
 public class ProblemController {
     private ProblemDao problemDao;
     private SubmissionDao submissionDao;
+    private IOPairDao ioPairDao;
     private UserService userService;
     private ProblemService problemService;
     private IOPairService ioPairService;
@@ -62,7 +65,7 @@ public class ProblemController {
                 .addObject("author", problem.getAuthor())
                 .addObject("canEdit", canEdit(problem))
                 .addObject("historyScore", problemService.getHistoryScore(user, problem))
-                .addObject("canSubmit", !problem.getIoPairs().isEmpty());
+                .addObject("canSubmit", !problemDao.getTestsById(id).isEmpty());
     }
 
     @GetMapping("/problem/new")
@@ -182,13 +185,12 @@ public class ProblemController {
                 .addObject("problem", problem);
     }
 
-    @PostMapping("/problem/{id}/edit/checkpoints")
+    @PostMapping("/problem/{id}/edit/checkpoints/file")
     public ModelAndView editCheckpointsConfirm(@PathVariable int id,
                                                @RequestParam("file") MultipartFile file) {
         Problem problem = problemDao.getProblemById(id);
         if (!canEdit(problem))
             return new ModelAndView("error/403");
-        System.out.println("here");
         String errorMsg = null;
         try {
             InputStream inputStream = file.getInputStream();
@@ -204,6 +206,25 @@ public class ProblemController {
                 .addObject("problem", problem)
                 .addObject("errorMsg", errorMsg);
     }
+
+    @PostMapping("/problem/{id}/edit/checkpoints/text")
+    public RedirectView editCheckpointsConfirm(@PathVariable int id,
+                                               @RequestParam("input") String input,
+                                               @RequestParam("output") String output,
+                                               @RequestParam("type") String type,
+                                               @RequestParam("score") int score) {
+        Problem problem = problemDao.getProblemById(id);
+        if (!canEdit(problem))
+            return new RedirectView("error/403");
+        Map<String, IOPair.Type> typeMap = Map.of(
+                "sample", IOPair.Type.SAMPLE,
+                "test", IOPair.Type.TEST
+        );
+        IOPair ioPair = new IOPair(problem, input, output, typeMap.get(type), score);
+        ioPairDao.createIOPair(ioPair);
+        return new RedirectView("/problem/" + id);
+    }
+
 
     @GetMapping("/problem/{id}/checkpoints/download")
     public ResponseEntity<byte[]> downloadCheckpoints(@PathVariable int id) throws IOException {
@@ -228,6 +249,11 @@ public class ProblemController {
     @Autowired
     public void setSubmissionDao(SubmissionDao submissionDao) {
         this.submissionDao = submissionDao;
+    }
+
+    @Autowired
+    public void setIOPairDao(IOPairDao ioPairDao) {
+        this.ioPairDao = ioPairDao;
     }
 
     @Autowired
