@@ -61,7 +61,7 @@ public class ProblemController {
         return new ModelAndView("problem/problem")
                 .addObject("problem", problem)
                 .addObject("samples", problemDao.getSamplesById(id))
-                .addObject("author", userDao.getUserById(problem.getAuthorId()))
+                .addObject("author", userDao.getUserById(problem.getAuthor().getId()))
                 .addObject("canEdit", canEdit(problem))
                 .addObject("historyScore", problemService.getHistoryScore(user, problem))
                 .addObject("canSubmit", !problem.getIoPairs().isEmpty());
@@ -84,8 +84,8 @@ public class ProblemController {
         User user = userService.getUserByRequest(request);
         if (user == null)
             return new RedirectView("/login");
-        Problem problem = new Problem(user.getId(), title, description, inputFormat, outputFormat,
-                difficultyMap.get(difficulty), timeLimit , memoryLimit * 1024);
+        Problem problem = new Problem(user, title, description, inputFormat, outputFormat,
+                difficultyMap.get(difficulty), timeLimit, memoryLimit * 1024);
         problem = problemDao.createProblem(problem);
         return new RedirectView("/problem/" + problem.getId());
     }
@@ -219,7 +219,7 @@ public class ProblemController {
 
     private boolean canEdit(Problem problem) {
         User user = userService.getUserByRequest(request);
-        return (user != null) && ((user.isAdmin()) || (user.getId() == problem.getAuthorId()));
+        return (user != null) && ((user.isAdmin()) || (user.getId() == problem.getAuthor().getId()));
     }
 
     @Autowired

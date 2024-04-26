@@ -1,7 +1,11 @@
 package org.dindier.oicraft.dao.impl;
 
 import org.dindier.oicraft.dao.ProblemDao;
+import org.dindier.oicraft.dao.repository.CheckpointRepository;
+import org.dindier.oicraft.dao.repository.IOPairRepository;
 import org.dindier.oicraft.dao.repository.ProblemRepository;
+import org.dindier.oicraft.dao.repository.SubmissionRepository;
+import org.dindier.oicraft.model.Checkpoint;
 import org.dindier.oicraft.model.IOPair;
 import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.Submission;
@@ -15,11 +19,19 @@ import java.util.List;
 @Repository("problemDao")
 public class JpaProblemDao implements ProblemDao {
     private ProblemRepository problemRepository;
+    private IOPairRepository ioPairRepository;
     private final Logger logger = LoggerFactory.getLogger(JpaProblemDao.class);
+    private SubmissionRepository submissionRepository;
+    private CheckpointRepository checkpointRepository;
 
     @Autowired
     public void setProblemRepository(ProblemRepository problemRepository) {
         this.problemRepository = problemRepository;
+    }
+
+    @Autowired
+    public void setIOPairRepository(IOPairRepository ioPairRepository) {
+        this.ioPairRepository = ioPairRepository;
     }
 
     @Override
@@ -66,6 +78,16 @@ public class JpaProblemDao implements ProblemDao {
 
     @Override
     public void deleteProblem(Problem problem) {
+        // Delete related ioPairs, submissions and checkpoints
+        List<Submission> submissions = problem.getSubmissions();
+        List<Checkpoint> checkpoints = submissions
+                .stream()
+                .map(Submission::getCheckpoints)
+                .flatMap(List::stream)
+                .toList();
+        checkpointRepository.deleteAll(checkpoints);
+        submissionRepository.deleteAll(submissions);
+        ioPairRepository.deleteAll(problem.getIoPairs());
         this.problemRepository.delete(problem);
         logger.info("Delete problem: {}", problem.getId());
     }
@@ -108,5 +130,15 @@ public class JpaProblemDao implements ProblemDao {
                 .findById(problemId)
                 .map(Problem::getPassed)
                 .orElse(0);
+    }
+
+    @Autowired
+    public void setSubmissionRepository(SubmissionRepository submissionRepository) {
+        this.submissionRepository = submissionRepository;
+    }
+
+    @Autowired
+    public void setCheckpointRepository(CheckpointRepository checkpointRepository) {
+        this.checkpointRepository = checkpointRepository;
     }
 }
