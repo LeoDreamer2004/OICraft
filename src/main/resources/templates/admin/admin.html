@@ -5,7 +5,7 @@
     <title>站点管理</title>
     <link th:replace="~{index :: indexStyle}"/>
     <th:block th:replace="~{base :: baseStyle}"></th:block>
-    <link rel="stylesheet" href="/css/profile.css">
+    <link th:replace="~{user/profile :: profileStyle}"/>
 </head>
 <body>
 <!--/*@thymesVar id="user" type="org.dindier.oicraft.model.User"*/-->
@@ -35,9 +35,13 @@
                 <td th:if="${user_.isAdmin()}">管理员</td>
                 <td th:unless="${user_.isAdmin()}">用户</td>
                 <td>
-                    <a th:if="${!user_.isAdmin()}" th:href="@{/admin/upgrade/{id}(id=${user_.id})}" class="btn btn-primary">设为管理</a>
-                    <a th:if="${user_.isAdmin()}" th:href="@{/admin/downgrade/{id}(id=${user_.id})}" class="btn btn-primary">取消管理</a>
-                    <a th:href="@{/admin/delete/{id}(id=${user_.id})}" class="btn btn-danger">删除</a>
+                    <div th:unless="${user_.equals(user)}">
+                        <a th:if="${!user_.isAdmin()}" th:href="@{/admin/upgrade/{id}(id=${user_.id})}"
+                           class="btn btn-primary">设为管理</a>
+                        <a th:if="${user_.isAdmin()}" th:href="@{/admin/downgrade/{id}(id=${user_.id})}"
+                           class="btn btn-primary">取消管理</a>
+                        <a th:href="@{/admin/delete/{id}(id=${user_.id})}" class="btn btn-danger">删除</a>
+                    </div>
                 </td>
         </table>
     </div>

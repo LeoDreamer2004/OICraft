@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>站点管理</title>
+    <link th:replace="~{index :: indexStyle}"/>
+    <th:block th:replace="~{base :: baseStyle}"></th:block>
+    <link th:replace="~{user/profile :: profileStyle}"/>
+</head>
+<body>
+<div class="profile-header">
+    <div th:insert="~{index :: nav}"></div>
+    <h2>删除用户</h2>
+</div>
+
+<main role="main" class="container">
+    <div class="card my-card p-3">
+        <form th:action="@{/admin/delete/{id}(id=${deleteUser.id})}" method="post">
+            <h2 style="text-align: center; padding-bottom: 10px">您确定要删除用户 [[${deleteUser.name}]] 吗？</h2>
+            <div class="lr-container">
+                <button type="submit" class="btn btn-danger ml-auto mr-4" style="min-width: 100px">确认</button>
+                <a th:href="@{/admin}" class="btn btn-primary mr-auto ml-4" style="min-width: 100px">返回</a>
+            </div>
+        </form>
+    </div>
+</main>
+
+<script>
+</script>
+</body>
+</html>
