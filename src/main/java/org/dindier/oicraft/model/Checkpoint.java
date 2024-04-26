@@ -78,10 +78,4 @@ public class Checkpoint {
 
         return timeStr + " / " + memoryStr;
     }
-
-    @SuppressWarnings("unused")
-    public void load() {
-        Submission _temp1 = this.submission;
-        IOPair _temp2 = this.ioPair;
-    }
 }

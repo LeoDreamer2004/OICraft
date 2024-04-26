@@ -40,13 +40,9 @@ public class ProblemServiceImpl implements ProblemService {
                 Submission.Language.fromString(language));
         submission = submissionDao.createSubmission(submission);
         int id = submission.getId();
-        submission.load();
 
         final Submission finalSubmission = submission;
         final Iterable<IOPair> ioPairs = problemDao.getTestsById(problem.getId());
-        for (IOPair ioPair : ioPairs) {
-            ioPair.load();
-        }
 
         executorService.execute(() -> {
             logger.info("Start testing code for submission {}", id);

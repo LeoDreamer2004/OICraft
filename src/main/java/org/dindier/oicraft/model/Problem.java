@@ -90,13 +90,6 @@ public class Problem implements Comparable<Problem> {
         return String.format("%.2f%%", 100.0 * passed / submit);
     }
 
-    @SuppressWarnings("unused")
-    public void load() {
-        List<IOPair> _temp1 = this.ioPairs;
-        List<Submission> _temp2 = this.submissions;
-        User _temp3 = this.author;
-    }
-
     @Override
     public int compareTo(Problem o) {
         return Integer.compare(this.id, o.id);

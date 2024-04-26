@@ -52,16 +52,43 @@ public class JpaSubmissionDao implements SubmissionDao {
                     return problem;
                 })
                 .map(problem -> {
-                    if (submission.getStatus().equals(Submission.Status.PASSED)) {
-                        problem.setPassed(problem.getPassed() + 1);
-                        userDao.addExperience(submission.getUser(), 10);
-                    }
+                    ifAddExperience(submission);
+                    ifAddPassed(submission, problem);
                     return problem;
                 }).ifPresent(problem -> problemRepository.save(problem));
         Submission newSubmission = submissionRepository.save(submission);
         logger.info("Create submission for problem {} (id: {})", newSubmission.getProblemId(),
                 newSubmission.getId());
         return newSubmission;
+    }
+
+    /*
+     *Check if the submission is not in passed submissions
+     */
+    private void ifAddExperience(Submission submission) {
+        if (submission.getStatus().equals(Submission.Status.PASSED) &&
+                userRepository.findById(submission.getUser().getId())
+                        .map(User::getSubmissions)
+                        .map(submissions -> submissions
+                                .stream()
+                                .filter(s -> s.getStatus().equals(Submission.Status.PASSED))
+                                .map(Submission::getProblemId)
+                                .toList())
+                        .map(problemIds -> !problemIds.contains(submission.getProblemId()))
+                        .orElse(false)
+        ) {
+            userDao.addExperience(submission.getUser(), 10);
+        }
+    }
+
+    private void ifAddPassed(Submission submission, Problem problem) {
+        if (submission.getStatus().equals(Submission.Status.PASSED) &&
+                !submissionRepository.findById(submission.getId())
+                        .map(Submission::getStatus)
+                        .map(status -> status.equals(Submission.Status.PASSED))
+                        .orElse(false)) {
+            problem.setPassed(problem.getPassed() + 1);
+        }
     }
 
     @Override
@@ -86,15 +113,8 @@ public class JpaSubmissionDao implements SubmissionDao {
     public Submission updateSubmission(Submission submission) {
         Problem problem = submission.getProblem();
 
-        if (submission.getStatus().equals(Submission.Status.PASSED) &&
-                // Check if the submission is not in passed submissions
-                submissionRepository.findById(submission.getId())
-                        .map(Submission::getStatus)
-                        .orElse(Submission.Status.WAITING) != Submission.Status.PASSED
-        ) {
-            problem.setPassed(problem.getPassed() + 1);
-            userDao.addExperience(submission.getUser(), 10);
-        }
+        ifAddExperience(submission);
+        ifAddPassed(submission, problem);
         problemRepository.save(problem);
 
         Submission newSubmission = submissionRepository.save(submission);
