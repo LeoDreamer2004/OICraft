@@ -32,6 +32,9 @@ public class WebSecurityConfig {
 
         http.authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
+                                "/admin/**"
+                        ).hasRole("ADMIN")
+                        .requestMatchers(
                                 "/submission/**",
                                 "/problem/*/submit",
                                 "/problem/new"
