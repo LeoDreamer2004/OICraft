@@ -50,18 +50,18 @@ public interface UserService {
     /**
      * Send a verification code to the email
      *
-     * @param request The request to get the IP address
+     * @param user The user to send the code to
      * @param email The email to send the code to
      */
-    void sendVerificationCode(HttpServletRequest request, String email);
+    void sendVerificationCode(User user, String email);
 
     /**
      * Verify the email with the code. If true, record the email into the database
      *
-     * @param request The request to get the IP address
+     * @param user The user to verify
      * @param email The email to verify
      * @param code The verification code sent from the client
      * @return Whether the email is verified
      */
-    boolean verifyEmail(HttpServletRequest request, String email, String code);
+    boolean verifyEmail(User user, String email, String code);
 }
