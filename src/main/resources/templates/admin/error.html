@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>站点管理</title>
+    <link th:replace="~{index :: indexStyle}"/>
+    <th:block th:replace="~{base :: baseStyle}"></th:block>
+    <link th:replace="~{user/profile :: profileStyle}"/>
+</head>
+<body>
+<div class="profile-header">
+    <div th:insert="~{index :: nav}"></div>
+    <h2>错误信息</h2>
+</div>
+
+<main role="main" class="container">
+    <div class="card my-card p-3" style="align-items: center;">
+        <h2 style="text-align: center; padding-bottom: 10px" th:text="${error}"></h2>
+        <a th:href="@{/admin}" class="btn btn-primary" style="min-width: 100px">返回</a>
+    </div>
+</main>
+
+<script>
+</script>
+</body>
+</html>
