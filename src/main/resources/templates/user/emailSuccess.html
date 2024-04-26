@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>邮箱认证</title>
+    <link th:replace="~{index :: indexStyle}"/>
+    <th:block th:replace="~{base :: baseStyle}"></th:block>
+</head>
+
+<body class="colored-background">
+<div th:insert="~{index :: nav}"></div>
+<main role="main" class="card-container">
+    <div class="login-card" id="registerForm">
+        <form class="login-form" th:action="@{/}" method="get">
+            <div class="login-title">
+                <h1>您已成功绑定邮箱</h1>
+            </div>
+            <button type="submit">返回主页</button>
+        </form>
+    </div>
+</main>
+<footer th:replace="~{index :: footer}"></footer>
+</body>
+</html>
