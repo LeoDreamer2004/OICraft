@@ -59,6 +59,7 @@ public interface ProblemDao {
      * Delete a problem from the database
      *
      * @param problem the problem to delete
+     * @implNote This method will also delete all submissions and I/O pairs of the problem
      */
     void deleteProblem(Problem problem);
 

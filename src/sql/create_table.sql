@@ -8,11 +8,14 @@ drop table if exists User;
 
 create table if not exists User
 (
-    id       int primary key auto_increment,
-    username varchar(255)                                            not null,
-    password varchar(255)                                            not null,
-    role     enum ('ADMIN', 'USER')                                  not null,
-    grade    enum ('BEGINNER', 'INTERMEDIATE', 'ADVANCED', 'EXPERT') not null
+    id         int primary key auto_increment,
+    username   varchar(255)                                            not null,
+    password   varchar(255)                                            not null,
+    role       enum ('ADMIN', 'USER')                                  not null,
+    grade      enum ('BEGINNER', 'INTERMEDIATE', 'ADVANCED', 'EXPERT') not null,
+    date       date default null,
+    experience int  default 0,
+    constraint unique (username)
 );
 
 create table if not exists Problem
@@ -27,7 +30,7 @@ create table if not exists Problem
     memory_limit  int                             not null,
     submit        int default 0,
     passed        int default 0,
-    author_id     int                             not null,
+    author_id     int,
     foreign key (author_id) references User (id)
 );
 
@@ -70,15 +73,3 @@ create table if not exists CheckPoint
     foreign key (io_pair_id) references IOPair (id),
     foreign key (submission_id) references Submission (id)
 );
-
-alter table User
-    add constraint unique (username);
-
-alter table User
-    add column experience int default 0;
-
-alter table User
-    drop column last_checkin;
-
-alter table User
-    add column last_checkin date default null;

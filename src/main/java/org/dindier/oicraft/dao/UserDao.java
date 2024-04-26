@@ -34,6 +34,7 @@ public interface UserDao {
      * Delete a user from database
      *
      * @param user the user to delete
+     * @implNote All submissions of the user will be deleted as well.
      */
     void deleteUser(User user);
 

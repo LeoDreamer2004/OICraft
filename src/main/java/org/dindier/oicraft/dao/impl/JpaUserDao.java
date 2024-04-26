@@ -1,7 +1,11 @@
 package org.dindier.oicraft.dao.impl;
 
 import org.dindier.oicraft.dao.UserDao;
+import org.dindier.oicraft.dao.repository.CheckpointRepository;
+import org.dindier.oicraft.dao.repository.ProblemRepository;
+import org.dindier.oicraft.dao.repository.SubmissionRepository;
 import org.dindier.oicraft.dao.repository.UserRepository;
+import org.dindier.oicraft.model.Checkpoint;
 import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.Submission;
 import org.dindier.oicraft.model.User;
@@ -20,6 +24,9 @@ public class JpaUserDao implements UserDao {
     private static final int INTERMEDIATE_MIN_EXP = 100;
     private static final int ADVANCED_MIN_EXP = 200;
     private static final int EXPERT_MIN_EXP = 300;
+    private CheckpointRepository checkpointRepository;
+    private SubmissionRepository submissionRepository;
+    private ProblemRepository problemRepository;
 
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
@@ -57,6 +64,23 @@ public class JpaUserDao implements UserDao {
 
     @Override
     public void deleteUser(User user) {
+        // delete the user's submissions and related checkpoints
+        List<Submission> submissions = user.getSubmissions();
+        List<Checkpoint> checkpoints = submissions
+                .stream()
+                .map(Submission::getCheckpoints)
+                .flatMap(List::stream)
+                .toList();
+        checkpointRepository.deleteAll(checkpoints);
+        submissionRepository.deleteAll(submissions);
+
+        // set the user's problem to null
+        List<Problem> problems = user.getProblems();
+        for (Problem problem : problems) {
+            problem.setAuthor(null);
+        }
+        problemRepository.saveAll(problems);
+
         userRepository.delete(user);
         logger.info("Delete user: {} (id: {})", user.getName(), user.getId());
     }
@@ -140,4 +164,18 @@ public class JpaUserDao implements UserDao {
         return userRepository.save(user);
     }
 
+    @Autowired
+    public void setCheckpointRepository(CheckpointRepository checkpointRepository) {
+        this.checkpointRepository = checkpointRepository;
+    }
+
+    @Autowired
+    public void setSubmissionRepository(SubmissionRepository submissionRepository) {
+        this.submissionRepository = submissionRepository;
+    }
+
+    @Autowired
+    public void setProblemRepository(ProblemRepository problemRepository) {
+        this.problemRepository = problemRepository;
+    }
 }
