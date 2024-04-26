@@ -34,7 +34,6 @@ public class UserServiceImpl implements UserService {
             user.setGrade(User.Grade.BEGINNER);
             user.setExperience(0);
         }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userDao.createUser(user);
     }
 
@@ -44,6 +43,11 @@ public class UserServiceImpl implements UserService {
         if (username == null)
             return null;
         return userDao.getUserByUsername(username);
+    }
+
+    @Override
+    public String encodePassword(String password) {
+        return passwordEncoder.encode(password);
     }
 
     private Date getTomorrow() {
@@ -84,10 +88,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean verifyEmail(HttpServletRequest request, String email, String code) {
         // TODO: Implement this method
-        User user = getUserByRequest(request);
-        if (user == null)
-            return false;
-        logger.info("Binding email " + email + " for user " + user.getUsername());
+        logger.info("Verifying email " + email);
         return true;
     }
 }

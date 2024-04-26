@@ -42,13 +42,13 @@ public class Checkpoint {
     protected Checkpoint() {
     }
 
-    public Checkpoint(Submission submission, IOPair ioPair, Status status, int usedTime, int usedMemory, String info) {
+    public Checkpoint(Submission submission, IOPair ioPair) {
         this.submission = submission;
         this.ioPair = ioPair;
-        this.status = status;
-        this.usedTime = usedTime;
-        this.usedMemory = usedMemory;
-        this.info = info;
+        this.status = Status.P;
+        this.usedTime = 0;
+        this.usedMemory = 0;
+        this.info = "";
     }
 
     public String getStatusString() {

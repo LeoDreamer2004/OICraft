@@ -27,7 +27,6 @@ public class ProblemServiceImpl implements ProblemService {
     private CheckpointDao checkpointDao;
     private UserDao userDao;
     private final ExecutorService executorService = Executors.newCachedThreadPool();
-
     private final Logger logger = LoggerFactory.getLogger(ProblemServiceImpl.class);
 
     /**
@@ -36,12 +35,10 @@ public class ProblemServiceImpl implements ProblemService {
      */
     @Override
     public int testCode(User user, Problem problem, String code, String language) {
-        Submission submission = new Submission(user, problem, code,
+        Submission temp = new Submission(user, problem, code,
                 Submission.Language.fromString(language));
-        submission = submissionDao.createSubmission(submission);
-        int id = submission.getId();
-
-        final Submission finalSubmission = submission;
+        int id = temp.getId();
+        final Submission submission = submissionDao.createSubmission(temp);
         final Iterable<IOPair> ioPairs = problemDao.getTestsById(problem.getId());
 
         executorService.execute(() -> {
@@ -49,37 +46,26 @@ public class ProblemServiceImpl implements ProblemService {
 
             CodeChecker codeChecker = new CodeChecker();
             int score = 0;
-            boolean ifPass = true;
+            boolean passed = true;
 
             Iterator<IOPair> iterator = ioPairs.iterator();
             while (iterator.hasNext()) {
                 IOPair ioPair = iterator.next();
-                Checkpoint checkpoint = new Checkpoint(
-                        finalSubmission,
-                        ioPair,
-                        Checkpoint.Status.P,
-                        0, 0, "Waiting for testing..."
-                );
+                Checkpoint checkpoint = new Checkpoint(submission, ioPair);
                 checkpoint = checkpointDao.createCheckpoint(checkpoint);
+
+                // test the code
                 try {
                     codeChecker.setIO(code, language, ioPair.getInput(), ioPair.getOutput(), id)
                             .setLimit(problem.getTimeLimit(), problem.getMemoryLimit())
                             .test(!iterator.hasNext());
-                } catch (IOException e) {
-                    logger.warn("CodeChecker encounter IOException: {}", e.getMessage());
-                    if (!iterator.hasNext()) {
-                        logger.warn("Temp file not deleted, submission {} failed", id);
-                    }
-                    finalSubmission.setStatus(Submission.Status.FAILED);
-                    submissionDao.updateSubmission(finalSubmission);
-                } catch (InterruptedException e) {
-                    logger.warn("CodeChecker encounter InterruptedException: {}", e.getMessage());
-                    finalSubmission.setStatus(Submission.Status.FAILED);
-                    if (!iterator.hasNext()) {
-                        logger.warn("Temp file not deleted, submission {} failed", id);
-                    }
-                    submissionDao.updateSubmission(finalSubmission);
+                } catch (IOException | InterruptedException e) {
+                    logger.warn("CodeChecker encounter exception: {}", e.getMessage());
+                    submission.setStatus(Submission.Status.FAILED);
+                    submissionDao.updateSubmission(submission);
                 }
+
+                // read the result
                 checkpoint.setStatus(Checkpoint.Status.fromString(codeChecker.getStatus()));
                 checkpoint.setUsedTime(codeChecker.getUsedTime());
                 checkpoint.setUsedMemory(codeChecker.getUsedMemory());
@@ -88,14 +74,15 @@ public class ProblemServiceImpl implements ProblemService {
                 if (codeChecker.getStatus().equals("AC")) {
                     score += ioPair.getScore();
                 } else {
-                    ifPass = false;
+                    passed = false;
                 }
             }
 
-            finalSubmission.setScore(score);
-            finalSubmission.setStatus(ifPass ?
+            // update the submission
+            submission.setScore(score);
+            submission.setStatus(passed ?
                     Submission.Status.PASSED : Submission.Status.FAILED);
-            submissionDao.updateSubmission(finalSubmission);
+            submissionDao.updateSubmission(submission);
         });
         return id;
     }
@@ -109,19 +96,41 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
+    public Map<Problem, Integer> getAllProblemWithPassInfo(User user) {
+        if (user == null) {
+            TreeMap<Problem, Integer> map = new TreeMap<>();
+            for (Problem problem : problemDao.getProblemList()) {
+                map.put(problem, 0);
+            }
+            return map;
+        }
+
+        List<Problem> passedProblems = userDao.getPassedProblemsByUserId(user.getId());
+        List<Problem> failedProblems = userDao.getNotPassedProblemsByUserId(user.getId());
+        Iterable<Problem> problems = problemDao.getProblemList();
+        Map<Problem, Integer> map = new TreeMap<>();
+        for (Problem problem : problems) {
+            if (passedProblems.contains(problem)) {
+                map.put(problem, 1);
+            } else if (failedProblems.contains(problem)) {
+                map.put(problem, -1);
+            } else {
+                map.put(problem, 0);
+            }
+        }
+        return map;
+    }
+
+    @Override
     public byte[] getProblemMarkdown(Problem problem) {
         StringBuilder sb = new StringBuilder();
         sb.append("# ").append(problem.getTitle()).append("\n\n")
                 .append("## 题目描述\n\n").append(problem.getDescription()).append("\n\n")
                 .append("## 输入格式\n\n").append(problem.getInputFormat()).append("\n\n")
-                .append("## 输出格式\n\n").append(problem.getOutputFormat()).append("\n\n");
-        int sampleCount = 0;
+                .append("## 输出格式\n\n").append(problem.getOutputFormat()).append("\n\n")
+                .append("## 样例\n\n");
         for (IOPair ioPair : problemDao.getSamplesById(problem.getId())) {
-            if (sampleCount++ == 0) {
-                sb.append("## 样例\n\n");
-            }
-            sb.append("#### 样例").append(sampleCount).append("\n\n")
-                    .append("##### 输入\n\n").append("```\n")
+            sb.append("##### 输入\n\n").append("```\n")
                     .append(ioPair.getInput()).append(("\n```\n\n"))
                     .append("##### 输出\n\n").append("```\n")
                     .append(ioPair.getOutput()).append(("\n```\n\n"));
@@ -160,31 +169,5 @@ public class ProblemServiceImpl implements ProblemService {
     @Autowired
     private void setUserDao(UserDao userDao) {
         this.userDao = userDao;
-    }
-
-    @Override
-    public Map<Problem, Integer> getAllProblemWithPassInfo(User user) {
-        if (user == null) {
-            TreeMap<Problem, Integer> map = new TreeMap<>();
-            for (Problem problem : problemDao.getProblemList()) {
-                map.put(problem, 0);
-            }
-            return map;
-        }
-
-        List<Problem> passedProblems = userDao.getPassedProblemsByUserId(user.getId());
-        List<Problem> failedProblems = userDao.getNotPassedProblemsByUserId(user.getId());
-        Iterable<Problem> problems = problemDao.getProblemList();
-        Map<Problem, Integer> map = new TreeMap<>();
-        for (Problem problem : problems) {
-            if (passedProblems.contains(problem)) {
-                map.put(problem, 1);
-            } else if (failedProblems.contains(problem)) {
-                map.put(problem, -1);
-            } else {
-                map.put(problem, 0);
-            }
-        }
-        return map;
     }
 }
