@@ -53,7 +53,7 @@ public class JpaProblemDao implements ProblemDao {
     }
 
     @Override
-    public Iterable<IOPair> getSamplesById(int id) {
+    public List<IOPair> getSamplesById(int id) {
         List<IOPair> ioPairs = problemRepository.findById(id).map(Problem::getIoPairs).orElse(null);
         if (ioPairs == null) {
             return List.of();
@@ -62,7 +62,7 @@ public class JpaProblemDao implements ProblemDao {
     }
 
     @Override
-    public Iterable<IOPair> getTestsById(int id) {
+    public List<IOPair> getTestsById(int id) {
         List<IOPair> ioPairs = problemRepository.findById(id).map(Problem::getIoPairs).orElse(null);
         if (ioPairs == null) {
             return List.of();

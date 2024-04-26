@@ -44,6 +44,7 @@ public class IOPairServiceImpl implements IOPairService {
         List<IOPair> ioPairs = new ArrayList<>();
         Path tempDir = Paths.get(putZipDir + File.separator + setId++);
         try (ZipInputStream zipInputStream = new ZipInputStream(fileStream)) {
+            // extract the zip file
             ZipEntry entry;
             while ((entry = zipInputStream.getNextEntry()) != null) {
                 if (entry.isDirectory()) {
@@ -55,6 +56,7 @@ public class IOPairServiceImpl implements IOPairService {
             }
         }
         try (Stream<Path> paths = Files.walk(tempDir)) {
+            // read the input and output files
             paths.filter(Files::isRegularFile).forEach(path -> {
                 String fileName = path.getFileName().toString();
                 if (fileName.endsWith(".in")) {
@@ -70,8 +72,7 @@ public class IOPairServiceImpl implements IOPairService {
                         IOPair.Type type = path.getParent().getFileName().toString().equals("sample") ?
                                 IOPair.Type.SAMPLE :
                                 IOPair.Type.TEST;
-                        IOPair ioPair = new IOPair(input, output, type, scoreInt);
-                        ioPair.setProblem(problem);
+                        IOPair ioPair = new IOPair(problem, input, output, type, scoreInt);
                         ioPairs.add(ioPair);
                     } catch (IOException e) {
                         flag[0] = -1;
@@ -80,6 +81,8 @@ public class IOPairServiceImpl implements IOPairService {
                 }
             });
         }
+
+        // delete the old IOPairs and add the new ones
         ioPairDao.deleteIOPairByProblemId(problemId);
         ioPairDao.addIOPairs(ioPairs);
         fileStream.close();
@@ -101,6 +104,8 @@ public class IOPairServiceImpl implements IOPairService {
         List<IOPair> ioPairs = ioPairDao.getIOPairByProblemId(problemId);
         String folderPath = getZipDir + File.separator + getId++;
         Path tempDir = Files.createDirectories(Paths.get(folderPath));
+
+        // write the input and output files
         for (IOPair ioPair : ioPairs) {
             String dir = ioPair.getType() == IOPair.Type.SAMPLE ? "sample" : "test";
             Path dirPath = tempDir.resolve(dir);
@@ -112,11 +117,12 @@ public class IOPairServiceImpl implements IOPairService {
             Path scoreFilePath = dirPath.resolve(ioPair.getId() + ".score");
             Files.writeString(scoreFilePath, String.valueOf(ioPair.getScore()));
         }
+
+        // zip the files
         Path zipDir = Paths.get(tempZipDir + File.separator + getId);
         Files.createDirectories(zipDir);
         Path tempZipPath = Files.createTempFile(zipDir, "ioPairs", ".zip");
         File tempZipFile = tempZipPath.toFile();
-
         try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(tempZipFile))) {
             try (Stream<Path> paths = Files.walk(tempDir)) {
                 paths.filter(path -> !Files.isDirectory(path))
@@ -131,6 +137,7 @@ public class IOPairServiceImpl implements IOPairService {
                             }
                         });
             }
+
             try (Stream<Path> paths = Files.walk(tempDir)) {
                 paths.sorted(Comparator.reverseOrder())
                         .map(Path::toFile)
@@ -142,6 +149,7 @@ public class IOPairServiceImpl implements IOPairService {
                         });
             }
 
+            // return the zip file as a stream
             return new FileInputStream(tempZipFile) {
                 @Override
                 public void close() throws IOException {
