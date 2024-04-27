@@ -1,6 +1,7 @@
 package org.dindier.oicraft.dao;
 
 import org.dindier.oicraft.model.Submission;
+import org.springframework.lang.Nullable;
 
 public interface SubmissionDao {
     /**
@@ -29,6 +30,7 @@ public interface SubmissionDao {
      * @param id the ID of the submission
      * @return A {@code Submission} class if the submission exists, {@code null} otherwise.
      */
+    @Nullable
     Submission getSubmissionById(int id);
 
     /**

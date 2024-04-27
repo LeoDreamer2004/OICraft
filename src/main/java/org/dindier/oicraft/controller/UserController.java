@@ -59,6 +59,17 @@ public class UserController {
         return new ModelAndView("user/email");
     }
 
+    @PostMapping("/email")
+    public Object setEmail(@RequestParam("email") String email,
+                           @RequestParam("code") String code) {
+        User user = userService.getUserByRequest(request);
+        if (user == null || !userService.verifyEmail(user, email, code))
+            return new RedirectView("/email?error");
+        user.setEmail(email);
+        userDao.updateUser(user);
+        return new ModelAndView("user/emailSuccess");
+    }
+
     @GetMapping("/email/verification/new")
     public ResponseEntity<String> getVerificationForNew(@PathParam("email") String email) {
         User user = userService.getUserByRequest(request);
@@ -68,21 +79,13 @@ public class UserController {
         return ResponseEntity.ok("Get verification");
     }
 
-    @GetMapping("/email/verification")
+    @GetMapping("/email/verification/reset")
     public Object getVerificationForReset(@PathParam("username") String username) {
         User user = userDao.getUserByUsername(username);
-        if (user == null)
-            return ResponseEntity.badRequest().body("User not found");
+        if (user == null || user.getEmail() == null)
+            return ResponseEntity.badRequest().body("User or email not found");
         userService.sendVerificationCode(user, user.getEmail());
         return ResponseEntity.ok("Get verification");
-    }
-
-    @PostMapping("/email")
-    public Object setEmail(@RequestParam("email") String email,
-                           @RequestParam("code") String code) {
-        if (userService.verifyEmail(userService.getUserByRequest(request), email, code))
-            return new ModelAndView("user/emailSuccess");
-        return new RedirectView("/email?error");
     }
 
     @GetMapping("/password/forget")
@@ -111,7 +114,6 @@ public class UserController {
             @PathParam("originalPassword") String originalPassword) {
         // The original password parameter is from forget page, which served as a key
         User user = userDao.getUserByUsername(username);
-        System.out.println(username + password + originalPassword);
         if (user == null || !user.getPassword().equals(originalPassword))
             // illegal access
             return ResponseEntity.badRequest().body("Illegal access");

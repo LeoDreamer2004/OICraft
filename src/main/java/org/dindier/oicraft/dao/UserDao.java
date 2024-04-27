@@ -2,6 +2,7 @@ package org.dindier.oicraft.dao;
 
 import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.User;
+import org.springframework.lang.Nullable;
 
 import java.util.List;
 
@@ -52,6 +53,7 @@ public interface UserDao {
      * @param userId the user's ID to query
      * @return A {@code User} class if the user exist, {@code null} otherwise.
      */
+    @Nullable
     User getUserById(int userId);
 
     /**
@@ -60,6 +62,7 @@ public interface UserDao {
      * @param username the username
      * @return A {@code User} class if the user exists, {@code null} otherwise.
      */
+    @Nullable
     User getUserByUsername(String username);
 
     /**

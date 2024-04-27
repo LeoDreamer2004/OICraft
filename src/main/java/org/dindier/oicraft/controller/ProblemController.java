@@ -58,6 +58,8 @@ public class ProblemController {
     @GetMapping("/problem/{id}")
     public ModelAndView problem(@PathVariable int id) {
         Problem problem = problemDao.getProblemById(id);
+        if (problem == null)
+            return new ModelAndView("error/404");
         User user = userService.getUserByRequest(request);
         return new ModelAndView("problem/problem")
                 .addObject("problem", problem)
@@ -98,8 +100,10 @@ public class ProblemController {
     }
 
     @GetMapping("/problem/{id}/download")
-    public ResponseEntity<InputStreamSource> download(@PathVariable int id) {
+    public ResponseEntity<Object> download(@PathVariable int id) {
         Problem problem = problemDao.getProblemById(id);
+        if (problem == null)
+            return ResponseEntity.badRequest().body("No such problem");
         InputStreamSource inputStreamSource = new ByteArrayResource(problemService.getProblemMarkdown(problem));
         return ResponseEntity.ok().header("Content-Disposition",
                         "attachment; filename=\"%s.md\"".formatted(problem.getIdString()))
@@ -145,6 +149,8 @@ public class ProblemController {
                                     @RequestParam("timeLimit") int timeLimit,
                                     @RequestParam("memoryLimit") int memoryLimit) {
         Problem problem = problemDao.getProblemById(id);
+        if (problem == null)
+            return new RedirectView("error/404");
         if (!canEdit(problem))
             return new RedirectView("error/403");
         problem.setTitle(title);
@@ -191,6 +197,8 @@ public class ProblemController {
         Problem problem = problemDao.getProblemById(id);
         if (!canEdit(problem))
             return new ModelAndView("error/403");
+        if (problem == null)
+            return new ModelAndView("error/404");
         String errorMsg = null;
         try {
             InputStream inputStream = file.getInputStream();

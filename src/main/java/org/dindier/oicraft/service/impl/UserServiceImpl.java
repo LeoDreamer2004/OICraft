@@ -28,8 +28,8 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
     private final Logger logger = Logger.getLogger(UserServiceImpl.class.getName());
     private JavaMailSender mailSender;
-    private final Map<Pair<String,String>, VerificationCode> verificationCodes = new ConcurrentHashMap<>();
-    private static final long VAILD_TIME = TimeUnit.MINUTES.toMillis(30);
+    private final Map<Pair<String, String>, VerificationCode> verificationCodes = new ConcurrentHashMap<>();
+    private static final long VALID_TIME = TimeUnit.MINUTES.toMillis(5);
 
     @Getter
     public static class VerificationCode {
@@ -113,27 +113,27 @@ public class UserServiceImpl implements UserService {
     public void sendVerificationCode(User user, String email) {
         String username = user.getUsername();
         String verificationCode = UUID.randomUUID().toString();
-        Pair<String,String> key = new Pair<>(username, email);
+        Pair<String, String> key = new Pair<>(username, email);
         verificationCodes.put(key, new VerificationCode(verificationCode));
         MimeMessage mailMessage = mailSender.createMimeMessage();
+        String htmlMsg = "<div style='font-family: Arial, sans-serif;'>" +
+                "<h2 style='color: #f37934;'>OICraft</h2>" +
+                "<p>Dear " + username + ",</p>" +
+                "<p>You requested for a verification code. Here it is:</p>" +
+                "<h1 style='font-size: 24px; color: #f37934;'><b>" + verificationCode + "</b></h1>" +
+                "<p>This code will expire in 30 minutes.</p>" +
+                "<p>If you did not request this code, you can safely ignore this email.</p>" +
+                "<p>Best,</p>" +
+                "<p>OICraft Team</p>" +
+                "</div>";
         try {
             MimeMessageHelper helper = new MimeMessageHelper(mailMessage, false, "utf-8");
-            String htmlMsg = "<div style='font-family: Arial, sans-serif;'>" +
-                    "<h2 style='color: #f37934;'>OICraft</h2>" +
-                    "<p>Dear " + username + ",</p>" +
-                    "<p>You requested for a verification code. Here it is:</p>" +
-                    "<h1 style='font-size: 24px; color: #f37934;'><b>" + verificationCode + "</b></h1>" +
-                    "<p>This code will expire in 30 minutes.</p>" +
-                    "<p>If you did not request this code, you can safely ignore this email.</p>" +
-                    "<p>Best,</p>" +
-                    "<p>OICraft Team</p>" +
-                    "</div>";
             mailMessage.setContent(htmlMsg, "text/html");
             helper.setTo(email);
             helper.setSubject("Your OICraft verification code");
             helper.setFrom("oicraft2024@163.com");
         } catch (MessagingException e) {
-            logger.info("Error while sending email");
+            logger.info("Error while trying to send email to " + email);
         }
         mailSender.send(mailMessage);
         logger.info("Verification code sent to " + email);
@@ -142,20 +142,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean verifyEmail(User user, String email, String code) {
         String username = user.getUsername();
-        Pair<String,String> key = new Pair<>(username, email);
+        Pair<String, String> key = new Pair<>(username, email);
         if (!verificationCodes.containsKey(key))
             return false;
         String correctCode = verificationCodes.get(key).getCode();
         if (correctCode == null || !correctCode.equals(code))
             return false;
-        if(System.currentTimeMillis() - verificationCodes.get(key).getTimestamp() > VAILD_TIME) {
+        if (System.currentTimeMillis() - verificationCodes.get(key).getTimestamp() > VALID_TIME) {
             verificationCodes.remove(key);
             return false;
         }
         verificationCodes.remove(key);
-        user.setEmail(email);
-        userDao.updateUser(user);
-        logger.info("Verifying email " + email);
+        logger.info("Email from " + email + " verified successfully");
         return true;
     }
 }
