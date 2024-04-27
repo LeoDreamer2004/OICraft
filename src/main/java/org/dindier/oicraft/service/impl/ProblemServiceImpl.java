@@ -13,10 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -136,6 +133,17 @@ public class ProblemServiceImpl implements ProblemService {
                     .append(ioPair.getOutput()).append(("\n```\n\n"));
         }
         return sb.toString().getBytes();
+    }
+
+    @Override
+    public List<Problem> searchProblems(String keyword) {
+        // TODO: Implement this method
+
+        // temporary implementation
+        return List.of(
+                Objects.requireNonNull(problemDao.getProblemById(1)),
+                Objects.requireNonNull(problemDao.getProblemById(2))
+        );
     }
 
     @Override

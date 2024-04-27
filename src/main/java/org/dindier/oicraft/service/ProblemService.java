@@ -3,7 +3,7 @@ package org.dindier.oicraft.service;
 import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.User;
 
-import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 
 public interface ProblemService {
@@ -43,8 +43,18 @@ public interface ProblemService {
      * Get all problems with a certain user's pass info
      *
      * @param user the user logged in
-     * @return a map of problems and the user's pass info
-     * if the user not exists, return an empty map
+     * @return A map of problems and the user's pass info
+     * If the user not exists, return an empty map
      */
     Map<Problem, Integer> getAllProblemWithPassInfo(User user);
+
+    /**
+     * Get the list of problems by keyword
+     *
+     * @param keyword the keyword to search
+     *        The keyword may be searched in the title and description of the problem ?
+     * @return The list of problems that contains the keyword
+     *         It's better to order the list by the relevance of the keyword
+     */
+    List<Problem> searchProblems(String keyword);
 }

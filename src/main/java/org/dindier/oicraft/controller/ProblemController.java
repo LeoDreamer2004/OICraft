@@ -27,6 +27,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 
 
@@ -49,10 +50,26 @@ public class ProblemController {
     @GetMapping("/problems")
     public ModelAndView problems() {
         User user = userService.getUserByRequest(request);
+        // Do NOT use problemService.hasPassed() here for optimization
         Map<Problem, Integer> problemMap = problemService.getAllProblemWithPassInfo(user);
         return new ModelAndView("problem/list")
                 .addObject("problems", problemMap.keySet())
                 .addObject("hasPassed", problemMap.values());
+    }
+
+    @GetMapping("/problems/search")
+    public Object search(@RequestParam("keyword") String keyword) {
+        if (keyword.isEmpty())
+            // If the user input nothing, clear the filter and show all problems
+            return new RedirectView("/problems");
+        List<Problem> problems = problemService.searchProblems(keyword);
+        User user = userService.getUserByRequest(request);
+        List<Integer> hasPassed = problems.stream()
+                .map(problem -> problemService.hasPassed(user, problem))
+                .toList();
+        return new ModelAndView("problem/list")
+                .addObject("problems", problems)
+                .addObject("hasPassed", hasPassed);
     }
 
     @GetMapping("/problem/{id}")
