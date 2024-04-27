@@ -29,6 +29,7 @@ public class SubmissionController {
         Submission submission = submissionDao.getSubmissionById(id);
         User user = userService.getUserByRequest(request);
         if (user == null) return null; // Actually, this page has been protected by interceptor
+        if (submission == null) return new ModelAndView("error/404");
 
         Problem problem = problemDao.getProblemById(submission.getProblemId());
         if (problemService.hasPassed(user, problem) <= 0

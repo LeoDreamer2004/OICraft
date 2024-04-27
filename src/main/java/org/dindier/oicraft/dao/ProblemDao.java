@@ -3,6 +3,7 @@ package org.dindier.oicraft.dao;
 import org.dindier.oicraft.model.IOPair;
 import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.Submission;
+import org.springframework.lang.Nullable;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ public interface ProblemDao {
      * @param id the ID of the problem
      * @return the problem if it exists, otherwise null
      */
+    @Nullable
     Problem getProblemById(int id);
 
     /**

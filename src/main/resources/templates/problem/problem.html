@@ -22,7 +22,7 @@
     <!--/*@thymesVar id="user" type="org.dindier.oicraft.model.User"*/-->
     <a th:unless="${user eq null || !canSubmit}" class="btn btn-primary mb-3"
        th:href="@{/problem/{id}/submit(id=${problem.id})}">提交代码</a>
-    <a th:if="${user eq null && canSubmit}" class="btn btn-primary mb-3" th:href="@{/login}">登录后提交</a>
+    <a th:if="${user eq null && canSubmit}" class="btn btn-primary mb-3" th:href="@{/problem/{id}/submit(id=${problem.id})}">登录后提交</a>
     <a class="btn btn-secondary mb-3" th:href="@{/problems}">返回题单</a>
     <span th:unless="${canSubmit}" class="ml-3">此题暂无测试点，不可提交</span>
 
