@@ -15,6 +15,7 @@ create table if not exists User
     grade      enum ('BEGINNER', 'INTERMEDIATE', 'ADVANCED', 'EXPERT') not null,
     date       date default null,
     experience int  default 0,
+    email      varchar(255),
     constraint unique (username)
 );
 
