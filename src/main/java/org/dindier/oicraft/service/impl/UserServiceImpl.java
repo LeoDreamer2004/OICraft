@@ -120,7 +120,7 @@ public class UserServiceImpl implements UserService {
         verificationCodes.put(key, new VerificationCode(verificationCode));
         MimeMessage mailMessage = mailSender.createMimeMessage();
         // read email.html and replace the username and placeholder with the verification code
-        URL emailUrl = getClass().getClassLoader().getResource("email.html");
+        URL emailUrl = getClass().getClassLoader().getResource("templates/email.html");
         if (emailUrl == null) {
             logger.warning("Error while trying to send email to " + email);
             return;
