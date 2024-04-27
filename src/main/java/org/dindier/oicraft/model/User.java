@@ -23,7 +23,6 @@ public class User implements UserDetails {
     @Column(name = "username")
     private String name;
     private String password;
-    // TODO: Add this field to SQL schema
     private String email;
     @Enumerated(EnumType.STRING)
     private Role role;

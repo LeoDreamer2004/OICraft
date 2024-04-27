@@ -14,6 +14,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.dindier.oicraft.dao.UserDao;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.sql.Date;
 import java.util.Calendar;
 import java.util.Map;
@@ -116,16 +119,21 @@ public class UserServiceImpl implements UserService {
         Pair<String, String> key = new Pair<>(username, email);
         verificationCodes.put(key, new VerificationCode(verificationCode));
         MimeMessage mailMessage = mailSender.createMimeMessage();
-        String htmlMsg = "<div style='font-family: Arial, sans-serif;'>" +
-                "<h2 style='color: #f37934;'>OICraft</h2>" +
-                "<p>Dear " + username + ",</p>" +
-                "<p>You requested for a verification code. Here it is:</p>" +
-                "<h1 style='font-size: 24px; color: #f37934;'><b>" + verificationCode + "</b></h1>" +
-                "<p>This code will expire in 5 minutes.</p>" +
-                "<p>If you did not request this code, you can safely ignore this email.</p>" +
-                "<p>Best,</p>" +
-                "<p>OICraft Team</p>" +
-                "</div>";
+        // read email.html and replace the username and placeholder with the verification code
+        URL emailUrl = getClass().getClassLoader().getResource("email.html");
+        if (emailUrl == null) {
+            logger.warning("Error while trying to send email to " + email);
+            return;
+        }
+        String htmlMsg;
+        try (InputStream emailStream = emailUrl.openStream()) {
+            htmlMsg = new String(emailStream.readAllBytes());
+        } catch (IOException e) {
+            logger.warning("Error while trying to send email to " + email);
+            return;
+        }
+        htmlMsg = htmlMsg.replace("{{username}}", username);
+        htmlMsg = htmlMsg.replace("{{code}}", verificationCode);
         try {
             MimeMessageHelper helper = new MimeMessageHelper(mailMessage, false, "utf-8");
             mailMessage.setContent(htmlMsg, "text/html");
