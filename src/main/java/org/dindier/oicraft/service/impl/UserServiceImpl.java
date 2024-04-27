@@ -121,7 +121,7 @@ public class UserServiceImpl implements UserService {
                 "<p>Dear " + username + ",</p>" +
                 "<p>You requested for a verification code. Here it is:</p>" +
                 "<h1 style='font-size: 24px; color: #f37934;'><b>" + verificationCode + "</b></h1>" +
-                "<p>This code will expire in 30 minutes.</p>" +
+                "<p>This code will expire in 5 minutes.</p>" +
                 "<p>If you did not request this code, you can safely ignore this email.</p>" +
                 "<p>Best,</p>" +
                 "<p>OICraft Team</p>" +
