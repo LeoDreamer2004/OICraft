@@ -162,6 +162,35 @@
     cursor: pointer;
 }
 
+.blinking-code {
+    font-family: 'Consolas', serif;
+    display: inline-block;
+    position: relative;
+    font-size: 20px;
+    height: 40px;
+    line-height: 40px;
+}
+
+.blinking-code::after {
+    content: '';
+    position: absolute;
+    right: -10px;
+    top: 5px;
+    height: 25px;
+    width: 2px;
+    animation: san 0.8s steps(1) infinite;
+}
+
+@keyframes san {
+    0%,
+    100% {
+        background-color: #242627;
+    }
+    50% {
+        background-color: transparent;
+    }
+}
+
 @keyframes dropdownFadeIn {
     from {
         opacity: 0;

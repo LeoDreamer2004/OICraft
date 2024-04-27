@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>题目列表</title>
     <th:block th:replace="~{base :: baseStyle}"></th:block>
+    <link rel="stylesheet" href="/css/problem.css">
 </head>
 <body>
 <div class="header">
@@ -29,6 +30,12 @@
     </div>
 </div>
 <main role="main" class="container">
+    <h5>搜索试题</h5>
+    <form class="search-container mb-4" action="/problems/search" method="get">
+        <input type="text" class="form-control search-field" name="keyword"
+               placeholder="输入题目名称">
+        <button type="submit" class="iconfont icon-sousuo search-icon"></button>
+    </form>
     <div class="card my-card p-3">
         <table class="table">
             <tr>

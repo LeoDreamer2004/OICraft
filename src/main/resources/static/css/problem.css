@@ -71,3 +71,28 @@
     font-weight: bold;
     margin: 0;
 }
+
+
+.search-container {
+    position: relative;
+}
+
+.search-field {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.search-icon {
+    border: none;
+    background-color: transparent;
+    position: absolute !important;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.search-icon:hover {
+    cursor: pointer;
+    color: #007bff;
+}
