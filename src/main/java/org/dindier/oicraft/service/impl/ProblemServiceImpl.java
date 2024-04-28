@@ -43,6 +43,13 @@ public class ProblemServiceImpl implements ProblemService {
     private UserDao userDao;
     private final ExecutorService executorService = Executors.newCachedThreadPool();
     private final Logger logger = LoggerFactory.getLogger(ProblemServiceImpl.class);
+    private static final int MAX_SEARCH_RESULT = 100;
+    private static final Map<String, Float> boosts = new HashMap<>();
+
+    static {
+        boosts.put("title", 4.0f);
+        boosts.put("description", 1.0f);
+    }
 
     /**
      * Create the submission model and return its id first,
@@ -172,10 +179,6 @@ public class ProblemServiceImpl implements ProblemService {
             indexWriter.commit();
             indexWriter.close();
 
-            Map<String, Float> boosts = new HashMap<>();
-            boosts.put("title", 4.0f);
-            boosts.put("description", 1.0f);
-
             MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[]{"title",
                     "description"}, new SmartChineseAnalyzer(), boosts);
             Query query;
@@ -186,7 +189,7 @@ public class ProblemServiceImpl implements ProblemService {
             }
             try (IndexReader indexReader = DirectoryReader.open(directory)) {
                 IndexSearcher indexSearcher = new IndexSearcher(indexReader);
-                TopDocs topDocs = indexSearcher.search(query, 100);
+                TopDocs topDocs = indexSearcher.search(query, MAX_SEARCH_RESULT);
                 for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
                     int id = Integer.parseInt(indexSearcher.doc(scoreDoc.doc).get("id"));
                     result.add(problemDao.getProblemById(id));
