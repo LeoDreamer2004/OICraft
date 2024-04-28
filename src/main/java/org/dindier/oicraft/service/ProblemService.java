@@ -10,6 +10,7 @@ public interface ProblemService {
     /**
      * Create the submission model and return its id first,
      * and then use the threading pool to test the code
+     * @return The submission id
      */
     int testCode(User user, Problem problem, String code, String language);
 
@@ -44,7 +45,7 @@ public interface ProblemService {
      *
      * @param user the user logged in
      * @return A map of problems and the user's pass info
-     * If the user not exists, return an empty map
+     *         If the user not exists, return an empty map
      */
     Map<Problem, Integer> getAllProblemWithPassInfo(User user);
 

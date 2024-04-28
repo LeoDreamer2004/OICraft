@@ -51,10 +51,6 @@ public class ProblemServiceImpl implements ProblemService {
         boosts.put("description", 1.0f);
     }
 
-    /**
-     * Create the submission model and return its id first,
-     * and then use the threading pool to test the code
-     */
     @Override
     public int testCode(User user, Problem problem, String code, String language) {
         Submission temp = new Submission(user, problem, code,
@@ -66,7 +62,6 @@ public class ProblemServiceImpl implements ProblemService {
         executorService.execute(() -> {
             logger.info("Start testing code for submission {}", id);
 
-            CodeChecker codeChecker = new CodeChecker();
             int score = 0;
             boolean passed = true;
 
@@ -75,9 +70,11 @@ public class ProblemServiceImpl implements ProblemService {
                 IOPair ioPair = iterator.next();
                 Checkpoint checkpoint = new Checkpoint(submission, ioPair);
                 checkpoint = checkpointDao.createCheckpoint(checkpoint);
+                CodeChecker codeChecker = new CodeChecker();
 
                 // test the code
                 try {
+                    // do not delete the files until the last test
                     codeChecker.setIO(code, language, ioPair.getInput(), ioPair.getOutput(), id)
                             .setLimit(problem.getTimeLimit(), problem.getMemoryLimit())
                             .test(!iterator.hasNext());
@@ -162,7 +159,6 @@ public class ProblemServiceImpl implements ProblemService {
 
     @Override
     public List<Problem> searchProblems(String keyword) {
-        // TODO: Implement this method
         List<Problem> result = new ArrayList<>();
         try (Directory directory = new ByteBuffersDirectory();
              IndexWriter indexWriter = new IndexWriter(directory,
