@@ -1,5 +1,22 @@
 package org.dindier.oicraft.service.impl;
 
+import org.apache.lucene.analysis.cn.smart.SmartChineseAnalyzer;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
+import org.apache.lucene.document.TextField;
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.store.ByteBuffersDirectory;
+import org.apache.lucene.store.Directory;
 import org.dindier.oicraft.dao.CheckpointDao;
 import org.dindier.oicraft.dao.ProblemDao;
 import org.dindier.oicraft.dao.SubmissionDao;
@@ -13,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -138,12 +156,46 @@ public class ProblemServiceImpl implements ProblemService {
     @Override
     public List<Problem> searchProblems(String keyword) {
         // TODO: Implement this method
+        List<Problem> result = new ArrayList<>();
+        try (Directory directory = new ByteBuffersDirectory();
+             IndexWriter indexWriter = new IndexWriter(directory,
+                     new IndexWriterConfig(new SmartChineseAnalyzer()))
+        ) {
+            Iterable<Problem> problems = problemDao.getProblemList();
+            for (Problem problem : problems) {
+                Document document = new Document();
+                document.add(new StringField("id", String.valueOf(problem.getId()), Field.Store.YES));
+                document.add(new TextField("title", problem.getTitle(), Field.Store.YES));
+                document.add(new TextField("description", problem.getDescription(), Field.Store.YES));
+                indexWriter.addDocument(document);
+            }
+            indexWriter.commit();
+            indexWriter.close();
 
-        // temporary implementation
-        return List.of(
-                Objects.requireNonNull(problemDao.getProblemById(1)),
-                Objects.requireNonNull(problemDao.getProblemById(2))
-        );
+            Map<String, Float> boosts = new HashMap<>();
+            boosts.put("title", 4.0f);
+            boosts.put("description", 1.0f);
+
+            MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[]{"title",
+                    "description"}, new SmartChineseAnalyzer(), boosts);
+            Query query;
+            try {
+                query = parser.parse(keyword);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+            try (IndexReader indexReader = DirectoryReader.open(directory)) {
+                IndexSearcher indexSearcher = new IndexSearcher(indexReader);
+                TopDocs topDocs = indexSearcher.search(query, 100);
+                for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
+                    int id = Integer.parseInt(indexSearcher.doc(scoreDoc.doc).get("id"));
+                    result.add(problemDao.getProblemById(id));
+                }
+            }
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        return result;
     }
 
     @Override
