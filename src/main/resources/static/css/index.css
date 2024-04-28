@@ -181,6 +181,22 @@
     animation: san 0.8s steps(1) infinite;
 }
 
+.welcome {
+    animation: flowUp 0.5s ease-in-out 1;
+    background-color: rgba(200, 230, 230, 0.5);
+}
+
+@keyframes flowUp {
+    0% {
+        transform: translateY(10px);
+        opacity: 0.3;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
 @keyframes san {
     0%,
     100% {
