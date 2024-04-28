@@ -55,8 +55,8 @@ public class ProblemServiceImpl implements ProblemService {
     public int testCode(User user, Problem problem, String code, String language) {
         Submission temp = new Submission(user, problem, code,
                 Submission.Language.fromString(language));
-        int id = temp.getId();
         final Submission submission = submissionDao.createSubmission(temp);
+        final int id = submission.getId();
         final Iterable<IOPair> ioPairs = problemDao.getTestsById(problem.getId());
 
         executorService.execute(() -> {
