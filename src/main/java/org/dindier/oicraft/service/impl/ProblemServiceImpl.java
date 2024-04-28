@@ -164,6 +164,7 @@ public class ProblemServiceImpl implements ProblemService {
              IndexWriter indexWriter = new IndexWriter(directory,
                      new IndexWriterConfig(new SmartChineseAnalyzer()))
         ) {
+            // index the problems
             Iterable<Problem> problems = problemDao.getProblemList();
             for (Problem problem : problems) {
                 Document document = new Document();
@@ -175,6 +176,7 @@ public class ProblemServiceImpl implements ProblemService {
             indexWriter.commit();
             indexWriter.close();
 
+            // parse the query
             MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[]{"title",
                     "description"}, new SmartChineseAnalyzer(), boosts);
             Query query;
@@ -183,6 +185,8 @@ public class ProblemServiceImpl implements ProblemService {
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }
+
+            // search the problems
             try (IndexReader indexReader = DirectoryReader.open(directory)) {
                 IndexSearcher indexSearcher = new IndexSearcher(indexReader);
                 TopDocs topDocs = indexSearcher.search(query, MAX_SEARCH_RESULT);
