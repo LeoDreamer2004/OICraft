@@ -42,7 +42,7 @@ public class UserController {
                                  @RequestParam("password") String password) {
         if (userDao.existsUser(username))
             return new RedirectView("/register?error");
-        User user = new User(username, userService.encodePassword(password),
+        User user = new User(username, password,
                 User.Role.USER, User.Grade.BEGINNER);
         user = userService.createUser(user);
         return new RedirectView("/register/success/" + user.getId());
