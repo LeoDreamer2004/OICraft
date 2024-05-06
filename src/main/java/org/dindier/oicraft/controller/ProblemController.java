@@ -260,10 +260,9 @@ public class ProblemController {
                 "attachment; filename=\"checkpoints.zip\"").body(bytes);
     }
 
-
     private boolean canEdit(Problem problem) {
         User user = userService.getUserByRequest(request);
-        return (user != null) && ((user.isAdmin()) || (user.getId() == problem.getAuthor().getId()));
+        return (user != null) && ((user.isAdmin()) || user.equals(problem.getAuthor()));
     }
 
     @Autowired

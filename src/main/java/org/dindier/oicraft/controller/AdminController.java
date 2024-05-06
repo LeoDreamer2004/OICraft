@@ -62,7 +62,7 @@ public class AdminController {
     public Object upgradeUserConfirm(@PathVariable int id) {
         User user = userDao.getUserById(id);
         String error = canEditUser(user);
-        if (error != null)
+        if (error != null || user == null)
             return new ModelAndView("admin/error")
                     .addObject("error", error);
         user.setRole(User.Role.ADMIN);
@@ -85,7 +85,7 @@ public class AdminController {
     public Object downgradeUserConfirm(@PathVariable int id) {
         User user = userDao.getUserById(id);
         String error = canEditUser(user);
-        if (error != null)
+        if (error != null || user == null)
             return new ModelAndView("admin/error")
                     .addObject("error", error);
         user.setRole(User.Role.USER);

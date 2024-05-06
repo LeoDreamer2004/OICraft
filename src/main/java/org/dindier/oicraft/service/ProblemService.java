@@ -53,7 +53,6 @@ public interface ProblemService {
      * Get the list of problems by keyword
      *
      * @param keyword the keyword to search
-     *        The keyword may be searched in the title and description of the problem ?
      * @return The list of problems that contains the keyword
      *         It's better to order the list by the relevance of the keyword
      */
