@@ -2,6 +2,7 @@ package org.dindier.oicraft.util;
 
 
 import lombok.Getter;
+import org.apache.tomcat.jni.LibraryNotFoundError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +23,8 @@ public class CodeChecker {
     private int memoryLimit = 0;
     // The working directory for the submission
     private File workingDirectory;
+
+    private static final String platform;
 
     private static final Logger logger = LoggerFactory.getLogger(CodeChecker.class);
 
@@ -45,7 +48,16 @@ public class CodeChecker {
 
     static {
         // Load the native library
-        URL url = CodeChecker.class.getClassLoader().getResource("lib/CodeChecker.dll");
+        URL url;
+        if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+            url = CodeChecker.class.getClassLoader().getResource("lib/CodeChecker.so");
+            platform = "Linux";
+        } else if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+            url = CodeChecker.class.getClassLoader().getResource("lib/CodeChecker.dll");
+            platform = "Windows";
+        } else {
+            throw new LibraryNotFoundError("CodeChecker", "Unsupported platform");
+        }
         if (url != null) {
             System.load(url.getPath());
         }
@@ -201,12 +213,14 @@ public class CodeChecker {
             case "C++" -> {
                 compiler = CodeCompiler.CPP;
                 runCmd = new String[1];
-                runCmd[0] = workingDirectory.getPath() + "/main.exe";
+                runCmd[0] = workingDirectory.getPath() + (platform.equals("Linux") ? "/main" :
+                        "/main.exe");
             }
             case "C" -> {
                 compiler = CodeCompiler.C;
                 runCmd = new String[1];
-                runCmd[0] = workingDirectory.getPath() + "/main.exe";
+                runCmd[0] = workingDirectory.getPath() + (platform.equals("Linux") ? "/main" :
+                        "/main.exe");
             }
             default -> throw new IllegalArgumentException("Unsupported language: " + language);
         }
