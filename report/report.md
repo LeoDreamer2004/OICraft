@@ -27,6 +27,7 @@ OICraft 所用服务器是 SpringBoot 内置的 Tomcat 服务器（在本机运�
 - 在 `resources/application.properties` 文件中配置数据库连接信息和邮箱信息。这里我们已经配好了远程阿里云数据库和公用邮箱。
 - 运行 `OICraftApplication.java` 启动项目。如果控制台出现了 OICraft 的 Logo，并随后出现了 SpringBoot 的运行日志 `Completed initialization in xxx ms`，说明项目启动成功。（注意：由于要链接数据库，需要保持较好的网络连接）
 - 在浏览器中输入 `http://localhost:8080` 即可访问网站。
+- 在网站的右上角登录账户，如果没有账户，可以点击注册按钮注册账户。（为了更好地展示所有功能，可以登录事先的管理员账户：用户名 admin；密码 123
 
 本项目已在 [GitHub](https://github.com/LeoDreamer2004/OICraft) 上开源。
 

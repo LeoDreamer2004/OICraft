@@ -48,6 +48,9 @@
                     <span class="badge badge-secondary my-large-badge">测试中</span>
                 </td>
                 <td>
+                    <a th:href="@{/profile/{id}(id=${submission.user.id})}">
+                        <img class="avatar mr-2" th:src="@{/profile/{id}/avatar(id=${submission.user.id})}" width="30" height="30" alt="avatar">
+                    </a>
                     <a th:href="@{/profile/{id}(id=${submission.user.id})}" th:text="${submission.user.name}"
                        th:class="${submission.user.getGradeString()}"></a>
                 </td>

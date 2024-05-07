@@ -24,6 +24,10 @@ public class User implements UserDetails {
     private String name;
     private String password;
     private String email;
+    // TODO: Add these two fields to the database
+    private String signature;
+    @Lob
+    private byte[] avatar;
     @Enumerated(EnumType.STRING)
     private Role role;
     @Enumerated(EnumType.STRING)

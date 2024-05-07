@@ -17,6 +17,8 @@ import org.dindier.oicraft.dao.UserDao;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Date;
 import java.util.Calendar;
 import java.util.Map;
@@ -164,4 +166,26 @@ public class UserServiceImpl implements UserService {
         logger.info("Email from " + email + " verified successfully");
         return true;
     }
+
+    @Override
+    public byte[] getUserAvatar(User user) {
+        byte[] avatar = user.getAvatar();
+        if (avatar != null) return avatar;
+        final String filePath = "static/img/user/default_avatar.jpeg";
+        URL url = getClass().getClassLoader().getResource(filePath);
+        if (url == null) {
+            logger.warning("No default avatar found");
+            return new byte[0];
+        }
+        try {
+            byte[] bytes = Files.readAllBytes(Paths.get(url.toURI()));
+            user.setAvatar(bytes); // cache the avatar
+            // userDao.updateUser(user);
+            return bytes;
+        } catch (Exception e) {
+            logger.warning("Error while reading default avatar: " + e.getMessage());
+            return new byte[0];
+        }
+    }
+
 }
