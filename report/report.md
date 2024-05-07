@@ -38,7 +38,7 @@ OICraft 所用服务器是 SpringBoot 内置的 Tomcat 服务器（在本机运�
 
 ### 用户管理
 
-<img src="./img/profile.png" alt="个人档案实例">
+<img src="../../../../../Python/report/img/profile.png" alt="个人档案实例">
 
 依托于 SpringSecurity 框架，本项目实现了用户的注册、登录、登出功能。用户可以在网站上注册账号，登录后可以提交代码，查看提交记录等。对于某些网页，需要登录后才能访问。
 
@@ -62,7 +62,7 @@ OICraft 所用服务器是 SpringBoot 内置的 Tomcat 服务器（在本机运�
 
 ## 项目结构
 
-<img src="./img/structure.jpg" alt="项目结构图">
+<img src="../../../../../Python/report/img/structure.jpg" alt="项目结构图">
 
 从整体上，项目大致分为五个主要层次：
 
@@ -84,10 +84,176 @@ Spring架构提供的Bean容器，可以自动扫描并加载这些层次的类�
 
 我们设计了五个重要的模型：
 
-- **用户(User)**：用户的信息。同时实现 `UserDetails` 接口，用于 SpringSecurity 的用户认证。
-- **题目(Problem)**：一个题目的信息。包括题目描述、输入输出样例、题目难度等。
+- **用户(User)**：用户的信息。包括用户名、密码、邮箱、积分等。
+- **题目(Problem)**：题目的信息。包括题目描述、输入输出样例、题目难度等。
 - **提交(Submission)**：用户提交的代码。包括提交的代码、针对的问题、结果等。
 - **输入输出对(IOpair)**：一个依赖于题目和提交的弱实体。包括输入输出样例、得分等。
 - **测试点(Checkpoint)**：实际上是输入输出对-提交之间的多对多联系。
 
-每个模型在数据库都有对应的表，表之间通过外键联系。这样，我们就可以通过 JPA 框架来操作数据库。
+每个模型在数据库都有对应的表，表之间通过外键联系。
+
+### 数据库访问（DAO层）
+
+为了方便前后端工作的分离，我们把 DAO 层声明为若干个接口。这样，我们就可以在 Service 层或 Controller 层直接调用 DAO 层的方法，而不用关心具体的实现，就实现了数据访问层的解耦合。
+
+我们通过 JPA 框架来操作数据库。通过在模型类上添加注解，可以自动生成数据库表。同时，我们还可以通过在接口中定义方法，自动生成 SQL 语句。
+
+TODO: 陈润璘（更多有关Repository的内容）
+
+在建立 DAO 对象时，使用 Bean 容器自动装配 `@Autowired` 的方式，直接调用接口的方法即可。这样，我们就可以在不改变接口的情况下，更换具体的实现。
+
+```java
+public class UserService {
+    private UserDao userDao;
+
+    @Autowired
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
+}
+```
+
+### 业务逻辑（Service层）
+
+和 DAO 层一样，我们也把 Service 层设计为若干个对外开放的接口和内部的实现。在对外开放后，使用自动装配生成对象，调用接口方法，实现解耦合。
+
+TODO: 任子博（更多有关Service的内容，多插代码，代码中不必要的细节用省略号代替）
+
+#### 代码评测
+
+（线程池）（CodeChecker的子进程设计）
+
+#### 邮箱绑定
+
+（UUID生成）（邮件发送与验证）
+
+#### 测试点读取
+
+（Zipfile的解压）（文件的读取）
+
+#### 签到
+
+（签到机制）
+
+### 控制层（Controller层）
+
+Controller 层是整个项目的入口，用于处理用户请求。我们通过注解 `@Controller` 来声明一个控制器。利用 `@GetMapping` 或 `@PostMapping` 来映射请求路径。
+
+在我们的控制器实现中，方法可以接受以下两种参数：
+
+- `@PathVariable` 注解，获取请求的路径参数。
+
+    ```java
+    @GetMapping("/your/url/path/{id}")
+    public String getView(@PathVariable("id") int id);
+    ```
+
+- `@RequestParam` 注解，在用户提交表单时，获取表单的参数。
+
+    ```java
+    @PostMapping("/your/url/path")
+    public String postView(@RequestParam("name") String name);
+    ```
+
+随后返回以下三者之一：
+
+- `ModelAndView` 对象，这个对象包含了视图的名称和数据
+
+    ```java
+    @GetMapping("/your/url/path")
+    public ModelAndView getView() {
+        return new ModelAndView("local/path/to/view")
+                .addObject("name", object);
+    }
+    ```
+
+- `RedirectView` 对象，这个对象包含了重定向的路径
+
+    ```java
+    @GetMapping("/your/url/path")
+    public RedirectView redirect() {
+        return new RedirectView("/redirect/url/path");
+    }
+    ```
+
+- `ResponseEntity` 对象，这个对象包含了 HTTP 的响应。
+
+    ```java
+    @GetMapping("/your/url/path")
+    public ResponseEntity<String> response() {
+        return ResponseEntity.ok("response body");
+    }
+    ```
+
+此外，我们设计了一个简单的拦截器，用于拦截请求，捕获必要的信息在拦截器中。这里我们在请求前后捕获当前的用户信息，随后把此用户作为 Object 插入到 `ModelAndView` 中，我们可以通过 `HttpServletRequest` 对象获取请求的信息。
+
+```java
+public class UserInfoInterceptor implements HandlerInterceptor {
+    @Override
+    public void postHandle(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull Object handler,
+            ModelAndView modelAndView
+    ) {
+        User user; // Get the user object from the request 
+        modelAndView.addObject("user", user);
+    }
+}
+```
+
+建立之后，把拦截器加入到 MVC 的配置当中。
+
+### 前端页面（View层）
+
+前端页面是用户直接看到的页面，我们使用 Thymeleaf 模板引擎来渲染页面。Thymeleaf 是一个 Java 模板引擎，可以处理 HTML、XML、JavaScript、CSS、甚至纯文本。
+
+- 在 Controller 层的 ModelAndView 对象中，我们可以通过 `addObject` 方法添加对象，然后在 HTML 页面中通过 `${}` 语法来获取对象的属性。
+
+    ```html
+    <p th:text="${user.name}"></p>
+    ```
+
+- 在 HTML 页面中，我们可以通过 `th:if` 和 `th:unless` 语法来控制元素的显示。
+
+    ```html
+    <div th:if="${user.isAdmin()}"></div>
+    ```
+
+- HTML 的超链接和表单提交，我们可以用 `@{/}` 语法来生成 URL。这样，我们就可以在页面上使用相对路径，而不用担心路径的变化。
+
+    ```html
+    <a href="@{/your/url/path}">Link</a>
+    ```
+
+- 为了提高代码复用性，可以使用 `th:replace` 语法来引入其他页面。
+
+    ```html
+    <link rel="stylesheet" th:replace="~{base :: baseCSS}">
+    ```
+
+#### 用户管理（Spring Security）
+
+我们使用 Spring Security 6 框架来实现用户的认证和授权。Spring Security 是一个功能强大且高度可定制的身份验证和访问控制框架。
+
+首先要让用户模型实现 `UserDetails` 接口，表明让 Spirng Security 使用这个类作为用户。同时建立一个类实现 `UserDetailsService` 接口，让 Spirng Security 能找到对应的用户信息。
+
+我们创建一个 Spring Security 配置类，编写其过滤器链，并利用注解将其自动装配在配置用户的认证和授权。
+
+```java
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
+public class WebSecurityConfig {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception;
+}
+```
+
+这里充分体现了流式编程的设计思想，我们可以通过链式调用的方式，一步一步配置 Spring Security 的功能。
+
+- `authorizeHttpRequests` 配置 URL 的访问权限。例如，对于 `admin/**` 下的 URL，只有管理员才能访问。某些网页，必须登录之后才可访问。
+- `csrf` 配置 CSRF 保护。CSRF（跨站请求伪造）是一种网络攻击方式，Spring Security 提供了 CSRF 保护。可以配置对部分 POST 请求忽略保护。
+- `formLogin` 配置登录页面。可以自定义用户登录页面的 URL。
+- `logout` 配置登出页面。可以自定义用户登出页面的 URL。
+- `rememberMe` 配置记住我功能。利用浏览器的 Cookie 机制，实现用户的自动登录。
