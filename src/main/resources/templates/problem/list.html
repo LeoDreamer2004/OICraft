@@ -24,6 +24,9 @@
             <a class="user-item" th:href="@{/login}">登录</a>
         </div>
         <div th:unless="${user} eq null">
+            <a class="user-item" th:href="@{/profile/{id}(id=${user.id})}">
+            <img class="avatar" th:src="@{/profile/{id}/avatar(id=${user.id})}" width="30" height="30" alt="avatar">
+            </a>
             <a class="user-item" th:text="${user.name}" th:href="@{/profile}"></a>
             <a class="user-item" th:href="@{/logout}">登出</a>
         </div>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑头像</title>
+    <link th:replace="~{index :: indexStyle}"/>
+    <th:block th:replace="~{base :: baseStyle}"></th:block>
+    <link th:replace="~{user/profile :: profileStyle}"/>
+</head>
+<body>
+<!--/*@thymesVar id="user" type="org.dindier.oicraft.model.User"*/-->
+<div class="profile-header">
+    <div th:insert="~{index :: nav}"></div>
+    <h2>编辑头像</h2>
+</div>
+
+<main role="main" class="container">
+    <h3 class="underlined-title">选择头像</h3>
+    <img class="avatar" th:src="@{/profile/{id}/avatar(id=${user.id})}" alt="avatar" height="300" width="300">
+    <form th:action="@{/profile/edit/avatar}" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <input type="file" class="form-control-file" id="avatar" name="avatar"
+            accept="image/png, image/jpeg, image/jpg" required>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2 mb-2" style="display: inline">确定修改</button>
+    </form>
+</main>
+</body>
+</html>

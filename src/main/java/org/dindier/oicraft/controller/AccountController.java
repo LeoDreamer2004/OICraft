@@ -16,7 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
-public class UserController {
+public class AccountController {
 
     private UserDao userDao;
     private UserService userService;
@@ -130,33 +130,6 @@ public class UserController {
     @GetMapping("/logout")
     public ModelAndView logout() {
         return new ModelAndView("user/logout");
-    }
-
-    @GetMapping("/profile")
-    public RedirectView profile() {
-        User user = userService.getUserByRequest(request);
-        if (user == null)
-            return new RedirectView("/login");
-        // Redirect to user profile with user id
-        return new RedirectView("/profile/" + user.getId());
-    }
-
-    @GetMapping("/profile/{id}")
-    public ModelAndView profile(@PathVariable int id) {
-        User user = userDao.getUserById(id);
-        if (user == null)
-            return new ModelAndView("error/404");
-        // use 'seeUser' in case of conflict with 'user' in the interceptor
-        return new ModelAndView("user/profile", "seeUser", user)
-                .addObject("passed", userDao.getPassedProblemsByUserId(user.getId()))
-                .addObject("toSolve", userDao.getNotPassedProblemsByUserId(user.getId()))
-                .addObject("hasCheckedIn", userService.hasCheckedInToday(user));
-    }
-
-    @PostMapping("/checkin")
-    public ResponseEntity<String> checkin() {
-        userService.checkIn(userService.getUserByRequest(request));
-        return ResponseEntity.ok("Checkin");
     }
 
     @Autowired

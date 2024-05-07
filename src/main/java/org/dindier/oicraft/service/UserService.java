@@ -50,7 +50,7 @@ public interface UserService {
     /**
      * Send a verification code to the email
      *
-     * @param user The user to send the code to
+     * @param user  The user to send the code to
      * @param email The email to send the code to
      */
     void sendVerificationCode(User user, String email);
@@ -58,10 +58,20 @@ public interface UserService {
     /**
      * Verify the email with the code. If true, record the email into the database
      *
-     * @param user The user to verify
+     * @param user  The user to verify
      * @param email The email to verify
-     * @param code The verification code sent from the client
+     * @param code  The verification code sent from the client
      * @return Whether the email is verified
      */
     boolean verifyEmail(User user, String email, String code);
+
+    /**
+     * Get the avatar of the user
+     * If not set, return the default avatar
+     *
+     * @param user The user to get the avatar from
+     * @return The avatar of the user
+     */
+    byte[] getUserAvatar(User user);
+
 }

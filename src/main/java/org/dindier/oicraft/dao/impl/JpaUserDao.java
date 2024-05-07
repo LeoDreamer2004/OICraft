@@ -115,7 +115,7 @@ public class JpaUserDao implements UserDao {
                         .sorted(Comparator.comparingInt(Problem::getId)).toList())
                 .orElse(List.of());
     }
-
+    
     @Override
     public List<Problem> getPassedProblemsByUserId(int userId) {
         return userRepository

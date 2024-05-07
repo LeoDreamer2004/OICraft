@@ -10,8 +10,12 @@
 <body>
 <div class="profile-header">
     <div th:insert="~{index :: nav}"></div>
-    <h2 th:text="${seeUser.name}" th:class="${seeUser.getGradeString()}"></h2>
-    <p>这个人很懒，什么都没有留下</p>
+    <img class="avatar" th:src="@{/profile/{id}/avatar(id=${seeUser.id})}" alt="avatar">
+    <a class="modify-avatar" th:if="${user != null && user.equals(seeUser)}"
+       href="/profile/edit/avatar">修改头像</a>
+    <h2 th:text="${seeUser.name}" th:class="${seeUser.getGradeString()}" style="margin-left: 220px !important;"></h2>
+    <p th:if="${seeUser.signature eq null}" style="margin-left: 220px !important;">这个人很懒，什么都没有留下</p>
+    <p th:unless="${seeUser.signature eq null}" th:text="${seeUser.signature}"></p>
 
     <!--/*@thymesVar id="user" type="org.dindier.oicraft.model.User"*/-->
     <div class="buttons" th:if="${user != null}">

@@ -31,7 +31,7 @@ public class Submission {
 
     @Getter
     public enum Language {
-        JAVA("java"), PYTHON("python"), C("c"), CPP("c++");
+        JAVA("Java"), PYTHON("Python"), C("C"), CPP("C++");
 
         private final String displayName;
 
