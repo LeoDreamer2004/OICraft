@@ -20,10 +20,12 @@ SpringBoot是一个基于Spring的轻量级框架，它可以用来快速开发�
 
 OICraft 所用服务器是 SpringBoot 内置的 Tomcat 服务器（在本机运行），数据库 MySQL 来自于远程的阿里云服务器，采用了 JPA 框架来操作数据库。前端页面采用了 Thymeleaf 模板引擎。
 
+> <b><font color="red">请注意，务必将本项目放在英文目录文件夹下，否则可能不能正常评测代码！</font></b>
+
 - 下载项目源代码后，使用 IntelliJ IDEA 作为项目打开。
 - 点击 `pom.xml` 文件，刷新导入 Maven 依赖。
 - 在 `resources/application.properties` 文件中配置数据库连接信息和邮箱信息。这里我们已经配好了远程阿里云数据库和公用邮箱。
-- 运行 `OICraftApplication.java` 启动项目。如果控制台出现了 OICraft 的 Logo，并随后出现了 SpringBoot 的运行日志 `Completed initialization in xxx ms`，说明项目启动成功。
+- 运行 `OICraftApplication.java` 启动项目。如果控制台出现了 OICraft 的 Logo，并随后出现了 SpringBoot 的运行日志 `Completed initialization in xxx ms`，说明项目启动成功。（注意：由于要链接数据库，需要保持较好的网络连接）
 - 在浏览器中输入 `http://localhost:8080` 即可访问网站。
 
 本项目已在 [GitHub](https://github.com/LeoDreamer2004/OICraft) 上开源。
@@ -38,7 +40,7 @@ OICraft 所用服务器是 SpringBoot 内置的 Tomcat 服务器（在本机运�
 
 ### 用户管理
 
-<img src="../../../../../Python/report/img/profile.png" alt="个人档案实例">
+<img src="./img/profile.png" alt="个人档案实例">
 
 依托于 SpringSecurity 框架，本项目实现了用户的注册、登录、登出功能。用户可以在网站上注册账号，登录后可以提交代码，查看提交记录等。对于某些网页，需要登录后才能访问。
 
@@ -62,7 +64,7 @@ OICraft 所用服务器是 SpringBoot 内置的 Tomcat 服务器（在本机运�
 
 ## 项目结构
 
-<img src="../../../../../Python/report/img/structure.jpg" alt="项目结构图">
+<img src="./img/structure.jpg" alt="项目结构图">
 
 从整体上，项目大致分为五个主要层次：
 
@@ -134,6 +136,10 @@ TODO: 任子博（更多有关Service的内容，多插代码，代码中不必�
 #### 签到
 
 （签到机制）
+
+#### 问题搜索
+
+（搜索方法）
 
 ### 控制层（Controller层）
 
@@ -236,7 +242,7 @@ public class UserInfoInterceptor implements HandlerInterceptor {
 
 我们使用 Spring Security 6 框架来实现用户的认证和授权。Spring Security 是一个功能强大且高度可定制的身份验证和访问控制框架。
 
-首先要让用户模型实现 `UserDetails` 接口，表明让 Spirng Security 使用这个类作为用户。同时建立一个类实现 `UserDetailsService` 接口，让 Spirng Security 能找到对应的用户信息。
+首先要让用户模型实现 `UserDetails` 接口，表明让 Spring Security 使用这个类作为用户。同时建立一个类实现 `UserDetailsService` 接口，让 Spring Security 能找到对应的用户信息。
 
 我们创建一个 Spring Security 配置类，编写其过滤器链，并利用注解将其自动装配在配置用户的认证和授权。
 
@@ -257,3 +263,19 @@ public class WebSecurityConfig {
 - `formLogin` 配置登录页面。可以自定义用户登录页面的 URL。
 - `logout` 配置登出页面。可以自定义用户登出页面的 URL。
 - `rememberMe` 配置记住我功能。利用浏览器的 Cookie 机制，实现用户的自动登录。
+
+---
+
+## 项目总结
+
+在这次实习作业当中，我们依托于 SpringBoot 框架自主设计了一个代码评测网站，并实现了诸多此类网站应有的实际功能。
+
+- 我们利用 Spring 的 Bean 容器的特点降低了代码耦合度，提高了代码的可维护性。同时，注解开发的方式和约定大于配置的原则，很大地提高了我们的开发效率。
+
+- 我们使用一般项目常用的设计模式，例如 MVC 模式，DAO 模式，Service 模式等。分层次的设计便于我们更好地分工合作。
+
+- 我们学习了使用 maven 来管理项目和第三方依赖，合理地调用第三方依赖可以避免重复造轮子，提高代码效率。
+
+- 我们学习了如何使用 Spring Security 来实现用户的认证和授权，如何使用 Thymeleaf 模板引擎来渲染页面，也学习了如何使用 JPA 框架来操作数据库。
+
+总之，这次实习作业让我们对 SpringBoot 框架有了更深入的了解，也让我们对 Java Web 开发有了更多的实践经验。希望我们的 OICraft 项目能够为大家提供一些参考。
