@@ -225,7 +225,7 @@ public List<Problem> searchProblems(String keyword) {
     // 搜索问题
     int id = Integer.parseInt(indexSearcher.doc(scoreDoc.doc).get("id"));
     result.add(problemDao.getProblemById(id));
-  ...
+    ...
 }
 ```
 
