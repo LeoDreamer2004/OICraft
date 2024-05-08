@@ -80,7 +80,7 @@ public class ProfileController {
         if (user == null) return new RedirectView("/login");
         byte[] avatarData = avatar.getInputStream().readAllBytes();
         user.setAvatar(avatarData); // temporarily, we give no limits here
-        // userDao.updateUser(user);
+        userDao.updateUser(user);
         return new RedirectView("/profile");
     }
 
@@ -96,7 +96,7 @@ public class ProfileController {
         User user = userService.getUserByRequest(request);
         if (user == null) return new RedirectView("/login");
         user.setSignature(signature);
-        // userDao.updateUser(user);
+        userDao.updateUser(user);
         return new RedirectView("/profile");
     }
 
