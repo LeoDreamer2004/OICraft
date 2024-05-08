@@ -79,6 +79,10 @@ public class ProfileController {
         User user = userService.getUserByRequest(request);
         if (user == null) return new RedirectView("/login");
         byte[] avatarData = avatar.getInputStream().readAllBytes();
+        if (avatarData.length > 20 * 1024 * 1024) { // 20MB
+            // FIXME: error message
+            return new RedirectView("/profile/edit/avatar");
+        }
         user.setAvatar(avatarData); // temporarily, we give no limits here
         userDao.updateUser(user);
         return new RedirectView("/profile");
@@ -95,6 +99,10 @@ public class ProfileController {
     public RedirectView editInfo(@RequestParam("signature") String signature) {
         User user = userService.getUserByRequest(request);
         if (user == null) return new RedirectView("/login");
+        if (signature.length() > 255) {
+            // FIXME: error message
+            return new RedirectView("/profile/edit/info");
+        }
         user.setSignature(signature);
         userDao.updateUser(user);
         return new RedirectView("/profile");

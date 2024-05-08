@@ -16,6 +16,8 @@ create table if not exists User
     date       date default null,
     experience int  default 0,
     email      varchar(255),
+    signature  varchar(255),
+    avatar     mediumblob,
     constraint unique (username)
 );
 
