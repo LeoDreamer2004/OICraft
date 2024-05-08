@@ -42,6 +42,7 @@ public class AccountController {
                                  @RequestParam("password") String password) {
         if (userDao.existsUser(username))
             return new RedirectView("/register?error");
+        // FIXME: Limit the length of username and password
         User user = new User(username, password,
                 User.Role.USER, User.Grade.BEGINNER);
         user = userService.createUser(user);
@@ -117,6 +118,7 @@ public class AccountController {
         if (user == null || !user.getPassword().equals(originalPassword))
             // illegal access
             return ResponseEntity.badRequest().body("Illegal access");
+        // FIXME: Limit the length of password
         user.setPassword(userService.encodePassword(password));
         userDao.updateUser(user);
         return ResponseEntity.ok().body("Password reset");
