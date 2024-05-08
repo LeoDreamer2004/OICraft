@@ -17,13 +17,18 @@
 <main role="main" class="container">
     <div th:replace="~{user/editProfile :: profileEditBar}"></div>
     <h3 class="underlined-title">选择头像</h3>
-    <img class="avatar" th:src="@{/profile/{id}/avatar(id=${user.id})}" alt="avatar" height="300" width="300">
+    <p>支持JPEG/PNG格式，大小不得超过16MB</p>
+    <img class="avatar" th:src="${user.avatarPath}" alt="avatar" height="300" width="300">
     <form th:action="@{/profile/edit/avatar}" method="post" enctype="multipart/form-data">
         <div class="form-group">
             <input type="file" class="form-control-file" id="avatar" name="avatar"
-            accept="image/png, image/jpeg, image/jpg" required>
+                   accept="image/png, image/jpeg, image/jpg" required>
+        </div>
+        <div class="alert alert-danger mb-0" th:if="${param.error}">
+            文件不符合要求
         </div>
         <button type="submit" class="btn btn-primary mt-2 mb-2">确定修改</button>
+        <a th:href="@{/profile/edit/avatar/delete}" class="btn btn-danger">清除头像</a>
     </form>
 </main>
 </body>
