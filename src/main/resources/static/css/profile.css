@@ -1,3 +1,8 @@
+body {
+    margin-bottom: 50px;
+}
+
+
 .profile-header {
     position: relative;
     top: 0;
@@ -69,7 +74,7 @@
     bottom: 20px;
 }
 
-.profile-header .buttons button {
+.profile-header .buttons .button-item {
     margin-right: 20px;
     width: 100px;
 }
@@ -84,4 +89,31 @@
     min-width: 250px;
     float: right;
     height: 220px;
+}
+
+.profile-edit-bar {
+    margin-bottom: 20px;
+    display: flex;
+    height: 50px;
+    background-color: #eee;
+    border-radius: 5px 5px 0 0;
+}
+
+.profile-edit-bar a {
+    width: 100px;
+    line-height: 50px;
+    border-radius: 5px 5px 0 0;
+    font-size: 17px;
+    text-align: center;
+    text-decoration: none;
+    color: #000;
+    background-color: #eee;
+    transition: background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.profile-edit-bar a:hover {
+    background-color: #ddd;
+    border-bottom: 2px solid #2af;
+    color: #2af;
 }

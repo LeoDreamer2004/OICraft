@@ -16,13 +16,12 @@
 
 <main role="main" class="container">
     <div th:replace="~{user/editProfile :: profileEditBar}"></div>
-    <h3 class="underlined-title">选择头像</h3>
-    <img class="avatar" th:src="@{/profile/{id}/avatar(id=${user.id})}" alt="avatar" height="300" width="300">
-    <form th:action="@{/profile/edit/avatar}" method="post" enctype="multipart/form-data">
+    <h3 class="underlined-title">编辑个人信息</h3>
+    <form th:action="@{/profile/edit/info}" method="post">
         <div class="form-group">
-            <input type="file" class="form-control-file" id="avatar" name="avatar"
-            accept="image/png, image/jpeg, image/jpg" required>
         </div>
+        <label for="signature">个性签名</label>
+        <input type="text" class="form-control" id="signature" name="signature" th:value="${user.signature}" maxlength="50">
         <button type="submit" class="btn btn-primary mt-2 mb-2">确定修改</button>
     </form>
 </main>

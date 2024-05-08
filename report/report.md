@@ -18,18 +18,16 @@ SpringBoot是一个基于Spring的轻量级框架，它可以用来快速开发�
 
 ## 使用方法
 
-OICraft 所用服务器是 SpringBoot 内置的 Tomcat 服务器（在本机运行），数据库 MySQL 来自于远程的阿里云服务器，采用了 JPA
-框架来操作数据库。前端页面采用了 Thymeleaf 模板引擎。
+OICraft 所用服务器是 SpringBoot 内置的 Tomcat 服务器（在本机运行），数据库 MySQL 来自于远程的阿里云服务器，采用了 JPA 框架来操作数据库。前端页面采用了 Thymeleaf 模板引擎。
 
-> <b><font color="red">请注意，务必将本项目放在英文目录文件夹下，否则可能不能正常评测代码！</font></b>
+> <b><font color="red">请注意，务必将本项目放在英文目录文件夹下，否则可能不能正常评测代码！</font></b> 如果在测试当中遇到问题，可以用微信联系。
 
 - 下载项目源代码后，使用 IntelliJ IDEA 作为项目打开。
 - 点击 `pom.xml` 文件，刷新导入 Maven 依赖。
 - 在 `resources/application.properties` 文件中配置数据库连接信息和邮箱信息。这里我们已经配好了远程阿里云数据库和公用邮箱。
-- 运行 `OICraftApplication.java` 启动项目。如果控制台出现了 OICraft 的 Logo，并随后出现了 SpringBoot
-  的运行日志 `Completed initialization in xxx ms`，说明项目启动成功。（注意：由于要链接数据库，需要保持较好的网络连接）
+- 运行 `OICraftApplication.java` 启动项目。如果控制台出现了 OICraft 的 Logo，并随后出现了 SpringBoot 的运行日志 `Completed initialization in xxx ms`，说明项目启动成功。（注意：由于要链接数据库，需要保持较好的网络连接）
 - 在浏览器中输入 `http://localhost:8080` 即可访问网站。
-- 在网站的右上角登录账户，如果没有账户，可以点击注册按钮注册账户。（为了更好地展示所有功能，可以登录事先的管理员账户：用户名 admin；密码 123
+- 在网站的右上角登录账户，如果没有账户，可以点击注册按钮注册账户。（为了更好地展示所有功能，可以登录事先的管理员账户：用户名 （待定）；密码 （待定））
 
 本项目已在 [GitHub](https://github.com/LeoDreamer2004/OICraft) 上开源。
 
@@ -49,11 +47,9 @@ OICraft 所用服务器是 SpringBoot 内置的 Tomcat 服务器（在本机运�
 
 我们设置了管理员系统。管理员可以任意编辑问题，查看用户提交记录等。同时，我们还提供了站点管理的操作页面。管理员可以编辑其他用户的权限，或者对用户进行删除。
 
-我们还将用户根据积分分成了若干用户组。从低到高依次为 `BEGINNER`, `INTERMEDIATE`, `ADVANCED`, `EXPERT`
-。积分可以通过每日的签到系统获得，也可以通过提交代码获得。不同用户组的用户名称会被着以不同的颜色。
+我们还将用户根据积分分成了若干用户组。从低到高依次为 `BEGINNER`, `INTERMEDIATE`, `ADVANCED`, `EXPERT`。积分可以通过每日的签到系统获得，也可以通过提交代码获得。不同用户组的用户名称会被着以不同的颜色。
 
-我们还设置了绑定邮箱的功能。用户可以绑定邮箱，绑定邮箱后可以通过邮箱找回密码。通过使用一个公共邮箱，生成一个 UUID
-验证码，发送到用户的邮箱，用户输入验证码即可完成验证或者找回密码。
+我们还设置了绑定邮箱的功能。用户可以绑定邮箱，绑定邮箱后可以通过邮箱找回密码。通过使用一个公共邮箱，生成一个 UUID 验证码，发送到用户的邮箱，用户输入验证码即可完成验证或者找回密码。
 
 ### 问题管理
 
@@ -61,8 +57,7 @@ OICraft 所用服务器是 SpringBoot 内置的 Tomcat 服务器（在本机运�
 
 任何已登录用户都可以上传问题，但只有出题者或管理员可以在网站上编辑和删除问题。问题的内容包括题目描述、输入输出样例、题目难度等。用户可以在网站上查看问题，提交代码，查看提交记录。
 
-> 注：我们对网页端渲染提供了 markdown 和相应的 KaTeX 支持，用户可以在题目描述中使用 markdown 语法。允许用户下载题目的
-> markdown 版本。
+> 注：我们对网页端渲染提供了 markdown 和相应的 KaTeX 支持，用户可以在题目描述中使用 markdown 语法。允许用户下载题目的 markdown 版本。
 
 关于编辑测试点，我们提供了两种方式。用户可以在网站上上传测试点文件，也可以手动输入测试点。我们还提供了测试点的下载功能，以满足备份等等的需要。文件的具体格式在网页上有详细说明。
 
@@ -72,16 +67,15 @@ OICraft 所用服务器是 SpringBoot 内置的 Tomcat 服务器（在本机运�
 
 <img src="./img/structure.jpg" alt="项目结构图">
 
-从整体上，项目大致分为五个主要层次：
+由于项目较大，文件过多，UML图太复杂不能很好地反映项目结构，这里从整体上介绍项目分为的五个主要层次：
 
 - **Model**：模型层，用于定义数据结构，与数据库中的表一一对应。
 - **DAO**：数据访问层，是对 SQL 语言的包装，这里用 JPA 对数据进行增删改查，直接与数据库交互。
 - **Service**：服务层，用于处理业务逻辑，例如测试代码。调用 DAO 层处理数据，并返回结果给 Controller。
-- **Controller**：控制层，是 MVC 架构的重点。用于处理用户请求，调用 Service 和 DAO 层处理业务逻辑，并返回结果给用户。此外，还有拦截器
-  Interceptor 用于拦截请求捕获必要的信息。
+- **Controller**：控制层，是 MVC 架构的重点。用于处理用户请求，调用 Service 和 DAO 层处理业务逻辑，并返回结果给用户。此外，还有拦截器 Interceptor 用于拦截请求捕获必要的信息。
 - **View**：前端页面，包括 HTML、CSS、JavaScript 等文件，依托于 bootstrap 样式和 Thymeleaf 模板引擎，给用户展示页面并直接与用户交互。
 
-Spring架构提供的Bean容器，可以自动扫描并加载这些层次的类，实现了解耦合，提高了代码的可维护性。
+Spring 架构提供的 Bean 容器，可以自动扫描并加载这些层次的类，实现了解耦合，提高了代码的可维护性。
 
 ---
 
@@ -103,11 +97,9 @@ Spring架构提供的Bean容器，可以自动扫描并加载这些层次的类�
 
 ### 数据库访问（DAO层）
 
-为了方便前后端工作的分离，我们把 DAO 层声明为若干个接口。这样，我们就可以在 Service 层或 Controller 层直接调用 DAO
-层的方法，而不用关心具体的实现，就实现了数据访问层的解耦合。
+为了方便前后端工作的分离，我们把 DAO 层声明为若干个接口。这样，我们就可以在 Service 层或 Controller 层直接调用 DAO 层的方法，而不用关心具体的实现，就实现了数据访问层的解耦合。
 
-我们通过 JPA 框架来操作数据库。通过在模型类上添加注解，可以自动生成数据库表。同时，我们还可以通过在接口中定义方法，自动生成
-SQL 语句。
+我们通过 JPA 框架来操作数据库。通过在模型类上添加注解，可以自动生成数据库表。同时，我们还可以通过在接口中定义方法，自动生成 SQL 语句。
 
 TODO: 陈润璘（更多有关Repository的内容）
 
@@ -140,21 +132,17 @@ private final ExecutorService executorService = Executors.newCachedThreadPool();
 
 ```java
 public int testCode(User user, Problem problem, String code, String language) {
-  ...
+    ...
     //在线程池中开启一个子线程
     executorService.execute(() -> {
-        while (...){
-            CodeChecker codeChecker = new CodeChecker();
-            // 测试代码
-            try {
-                codeChecker.setIO(code, language, ioPair.getInput(), ioPair.getOutput(), id)
-                        .setLimit(problem.getTimeLimit(), problem.getMemoryLimit())
-                        .test(!iterator.hasNext());
-            } 
-      ...
-        }
-    };
-}
+          CodeChecker codeChecker = new CodeChecker();
+          // 测试代码
+          codeChecker.setIO(code, language, ioPair.getInput(), ioPair.getOutput(), id)
+                    .setLimit(problem.getTimeLimit(), problem.getMemoryLimit())
+                    .test(!iterator.hasNext());
+          ... // 处理结果
+    }
+};
 ```
 
 测试结束后，调用相应的DAO层方法，将结果存入数据库.
@@ -167,7 +155,7 @@ public int testCode(User user, Problem problem, String code, String language) {
 private JavaMailSender mailSender;
 
 public void sendVerificationCode(User user, String email) {
-  ...
+    ...
     //邮件创建与发送
     MimeMessageHelper helper = new MimeMessageHelper(mailMessage, false, "utf-8");
     mailMessage.setContent(htmlMsg, "text/html");
@@ -175,7 +163,7 @@ public void sendVerificationCode(User user, String email) {
     helper.setSubject("Your OICraft verification code");
     helper.setFrom("oicraft2024@163.com");
     mailSender.send(mailMessage);
-  ...
+    ...
 }
 ```
 
@@ -203,7 +191,6 @@ public InputStream getIOPairsStream(int problemId) throws IOException;
 
 #### 签到
 
-（签到机制）
 通过以下两个方法，我们实现了用户的签到功能。
 
 ```java
@@ -224,24 +211,17 @@ public boolean hasCheckedInToday(User user);
 
 ```java
 public List<Problem> searchProblems(String keyword) {
-  ...
+    ...
     // 建立问题索引
     IndexWriter indexWriter = new IndexWriter(directory, new IndexWriterConfig(new SmartChineseAnalyzer()));
     Iterable<Problem> problems = problemDao.getProblemList();
-    for (Problem problem : problems) {
-        Document document = new Document();
-        document.add(new StringField("id", String.valueOf(problem.getId()), Field.Store.YES));
-        document.add(new TextField("title", problem.getTitle(), Field.Store.YES));
-        document.add(new TextField("description", problem.getDescription(), Field.Store.YES));
-        indexWriter.addDocument(document);
-    }
-  ...
+    ...
     // 分解关键字
     MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[]{"title",
             "description"}, new SmartChineseAnalyzer(), boosts);
-  ...
+    ...
     query = parser.parse(keyword);
-  ...
+    ...
     // 搜索问题
     int id = Integer.parseInt(indexSearcher.doc(scoreDoc.doc).get("id"));
     result.add(problemDao.getProblemById(id));
@@ -251,8 +231,7 @@ public List<Problem> searchProblems(String keyword) {
 
 ### 控制层（Controller层）
 
-Controller 层是整个项目的入口，用于处理用户请求。我们通过注解 `@Controller` 来声明一个控制器。利用 `@GetMapping`
-或 `@PostMapping` 来映射请求路径。
+Controller 层是整个项目的入口，用于处理用户请求。我们通过注解 `@Controller` 来声明一个控制器。利用 `@GetMapping` 或 `@PostMapping` 来映射请求路径。
 
 在我们的控制器实现中，方法可以接受以下两种参数：
 
@@ -272,7 +251,7 @@ Controller 层是整个项目的入口，用于处理用户请求。我们通过
 
 随后返回以下三者之一：
 
-- `ModelAndView` 对象，这个对象包含了视图的名称和数据
+- `ModelAndView` 对象，这个对象包含了视图的名称和数据。
 
     ```java
     @GetMapping("/your/url/path")
@@ -282,7 +261,7 @@ Controller 层是整个项目的入口，用于处理用户请求。我们通过
     }
     ```
 
-- `RedirectView` 对象，这个对象包含了重定向的路径
+- `RedirectView` 对象，这个对象包含了重定向的路径。
 
     ```java
     @GetMapping("/your/url/path")
@@ -300,8 +279,7 @@ Controller 层是整个项目的入口，用于处理用户请求。我们通过
     }
     ```
 
-此外，我们设计了一个简单的拦截器，用于拦截请求，捕获必要的信息在拦截器中。这里我们在请求前后捕获当前的用户信息，随后把此用户作为
-Object 插入到 `ModelAndView` 中，我们可以通过 `HttpServletRequest` 对象获取请求的信息。
+此外，我们设计了一个简单的拦截器，用于拦截请求，捕获必要的信息在拦截器中。这里我们在请求前后捕获当前的用户信息，随后把此用户作为 Object 插入到 `ModelAndView` 中，我们可以通过 `HttpServletRequest` 对象获取请求的信息。
 
 ```java
 public class UserInfoInterceptor implements HandlerInterceptor {
@@ -372,11 +350,22 @@ public class WebSecurityConfig {
 这里充分体现了流式编程的设计思想，我们可以通过链式调用的方式，一步一步配置 Spring Security 的功能。
 
 - `authorizeHttpRequests` 配置 URL 的访问权限。例如，对于 `admin/**` 下的 URL，只有管理员才能访问。某些网页，必须登录之后才可访问。
-- `csrf` 配置 CSRF 保护。CSRF（跨站请求伪造）是一种网络攻击方式，Spring Security 提供了 CSRF 保护。可以配置对部分 POST
-  请求忽略保护。
+- `csrf` 配置 CSRF 保护。CSRF（跨站请求伪造）是一种网络攻击方式，Spring Security 提供了 CSRF 保护。可以配置对部分 POST 请求忽略保护。
 - `formLogin` 配置登录页面。可以自定义用户登录页面的 URL。
 - `logout` 配置登出页面。可以自定义用户登出页面的 URL。
 - `rememberMe` 配置记住我功能。利用浏览器的 Cookie 机制，实现用户的自动登录。
+
+---
+
+## 扩展展望
+
+一些可能的扩展和改进：
+
+- 代码评测功能的优化，例如支持更多语言，支持更多测试点，支持更多的编译器和运行环境。一个正在尝试的设计是把运行放在 Docker 容器中，这样可以更好地隔离环境。
+- 用户管理功能的优化，例如支持更多的用户操作，支持更多的用户信息。也许可以设计用户关注和私信聊天的功能。
+- 问题管理功能的优化，例如设计题目的标签和分类。
+- 网站的美化，例如设计更多的动画效果，更多的交互效果。当然，这方面属于前端的工作，不是本次 Java 课程设计的重点。
+- 性能优化，例如对数据库的查询进行优化，对代码评测的速度进行优化。这方面需要更多的测试和实验。
 
 ---
 
@@ -390,8 +379,6 @@ public class WebSecurityConfig {
 
 - 我们学习了使用 maven 来管理项目和第三方依赖，合理地调用第三方依赖可以避免重复造轮子，提高代码效率。
 
-- 我们学习了如何使用 Spring Security 来实现用户的认证和授权，如何使用 Thymeleaf 模板引擎来渲染页面，也学习了如何使用 JPA
-  框架来操作数据库。
+- 我们学习了如何使用 Spring Security 来实现用户的认证和授权，如何使用 Thymeleaf 模板引擎来渲染页面，也学习了如何使用 JPA 框架来操作数据库。
 
-总之，这次实习作业让我们对 SpringBoot 框架有了更深入的了解，也让我们对 Java Web 开发有了更多的实践经验。希望我们的 OICraft
-项目能够为大家提供一些参考。
+总之，这次实习作业让我们对 SpringBoot 框架有了更深入的了解，也让我们对 Java Web 开发有了更多的实践经验。希望我们的 OICraft 项目能够为大家提供一些参考。
