@@ -63,15 +63,15 @@ public interface UserService {
      * @param code  The verification code sent from the client
      * @return Whether the email is verified
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     boolean verifyEmail(User user, String email, String code);
 
     /**
-     * Get the avatar of the user
-     * If not set, return the default avatar
-     *
-     * @param user The user to get the avatar from
-     * @return The avatar of the user
+     * Save the avatar of the user
+     * If avatar is null, the avatar will be deleted
+     * @param user The user to save the avatar to
+     * @return if the avatar is saved successfully
      */
-    byte[] getUserAvatar(User user);
+    int saveUserAvatar(User user, byte[] avatar);
 
 }

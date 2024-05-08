@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.net.URL;
 import java.sql.Date;
 import java.util.Collection;
 import java.util.List;
@@ -27,11 +28,6 @@ public class User implements UserDetails {
     private String email;
     private String signature;
     private int experience = 0;
-
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column(columnDefinition = "MEDIUMBLOB")
-    private byte[] avatar;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -109,5 +105,16 @@ public class User implements UserDetails {
         if (other == null)
             return false;
         return this.id == other.id;
+    }
+
+    public boolean hasAvatar() {
+        URL url = getClass().getClassLoader().getResource("static/img/user/" + name + "/avatar");
+        return url != null;
+    }
+
+    public String getAvatarPath() {
+        if (!hasAvatar())
+            return "/img/user/default_avatar.jpeg";
+        return "/img/user/" + name + "/avatar";
     }
 }

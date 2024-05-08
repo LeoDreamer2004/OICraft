@@ -10,7 +10,7 @@
 <body>
 <div class="profile-header">
     <div th:insert="~{index :: nav}"></div>
-    <img class="avatar" th:src="@{/profile/{id}/avatar(id=${seeUser.id})}" alt="avatar">
+    <img class="avatar" th:src="${seeUser.avatarPath}" alt="avatar">
     <a class="modify-avatar" th:if="${user != null && user.equals(seeUser)}"
        href="/profile/edit/avatar">修改头像</a>
     <h2 th:text="${seeUser.name}" th:class="${seeUser.getGradeString()}" style="margin-left: 220px !important;"></h2>

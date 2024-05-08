@@ -168,24 +168,49 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public byte[] getUserAvatar(User user) {
-        byte[] avatar = user.getAvatar();
-        if (avatar != null) return avatar;
-        final String filePath = "static/img/user/default_avatar.jpeg";
-        URL url = getClass().getClassLoader().getResource(filePath);
-        if (url == null) {
-            logger.warning("No default avatar found");
-            return new byte[0];
-        }
-        try {
-            byte[] bytes = Files.readAllBytes(Paths.get(url.toURI()));
-            user.setAvatar(bytes); // cache the avatar
-            // userDao.updateUser(user);
-            return bytes;
-        } catch (Exception e) {
-            logger.warning("Error while reading default avatar: " + e.getMessage());
-            return new byte[0];
-        }
-    }
+    public int saveUserAvatar(User user, byte[] avatar) {
+        URL url = getClass().getClassLoader().getResource("static/img/user/" + user.getUsername());
 
+        if (avatar == null) {
+            // delete the avatar
+            if (url != null) {
+                try {
+                    String avatarPath = url.getPath();
+                    if (avatarPath.startsWith("/"))
+                        avatarPath = avatarPath.substring(1);
+
+                    Files.deleteIfExists(Paths.get(avatarPath + "/avatar"));
+                    logger.info("User " + user.getName() + "cleared avatar.");
+                } catch (IOException e) {
+                    logger.warning("Error while deleting avatar: " + e.getMessage());
+                    return -1;
+                }
+            }
+            return 0;
+        }
+
+        if (avatar.length > 16 * 1024 * 1024) // 16MB
+            return -1;
+
+        try {
+            if (url == null) {
+                // create the user directory
+                URL url2 = getClass().getClassLoader().getResource("static/img/user");
+                if (url2 == null) {
+                    logger.warning("Error while saving avatar: cannot find the user directory");
+                    return -1;
+                }
+                String userFolder = url2.getPath() + "/" + user.getUsername();
+                if (userFolder.startsWith("/")) userFolder = userFolder.substring(1);
+                Files.createDirectories(Paths.get(userFolder));
+
+                // save the avatar
+                Files.write(Paths.get(userFolder + "/avatar"), avatar);
+            }
+        } catch (IOException e) {
+            logger.warning("Error while saving avatar: " + e.getMessage());
+            return -1;
+        }
+        return 0;
+    }
 }

@@ -5,9 +5,6 @@ import org.dindier.oicraft.dao.UserDao;
 import org.dindier.oicraft.model.User;
 import org.dindier.oicraft.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,17 +46,6 @@ public class ProfileController {
                 .addObject("hasCheckedIn", userService.hasCheckedInToday(user));
     }
 
-    @GetMapping("/profile/{id}/avatar")
-    public ResponseEntity<byte[]> getAvatar(@PathVariable int id) {
-        User user = userDao.getUserById(id);
-        if (user == null)
-            return ResponseEntity.notFound().build();
-        byte[] avatarData = userService.getUserAvatar(user);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.IMAGE_JPEG);
-        return new ResponseEntity<>(avatarData, headers, HttpStatus.OK);
-    }
-
     @GetMapping("/profile/edit")
     public ModelAndView editProfile() {
         User user = userService.getUserByRequest(request);
@@ -79,13 +65,17 @@ public class ProfileController {
         User user = userService.getUserByRequest(request);
         if (user == null) return new RedirectView("/login");
         byte[] avatarData = avatar.getInputStream().readAllBytes();
-        if (avatarData.length > 20 * 1024 * 1024) { // 20MB
-            // FIXME: error message
-            return new RedirectView("/profile/edit/avatar");
-        }
-        user.setAvatar(avatarData); // temporarily, we give no limits here
-        userDao.updateUser(user);
-        return new RedirectView("/profile");
+        if (userService.saveUserAvatar(user, avatarData) != 0)
+            return new RedirectView("/profile/edit/avatar?error");
+        return new RedirectView("/profile/edit/avatar");
+    }
+
+    @GetMapping("/profile/edit/avatar/delete")
+    public RedirectView deleteAvatar() {
+        User user = userService.getUserByRequest(request);
+        if (user == null) return new RedirectView("/login");
+        userService.saveUserAvatar(user, null);
+        return new RedirectView("/profile/edit/avatar");
     }
 
     @GetMapping("/profile/edit/info")
@@ -99,12 +89,10 @@ public class ProfileController {
     public RedirectView editInfo(@RequestParam("signature") String signature) {
         User user = userService.getUserByRequest(request);
         if (user == null) return new RedirectView("/login");
-        if (signature.length() > 255) {
-            // FIXME: error message
-            return new RedirectView("/profile/edit/info");
+        if (signature.length() <= 200) {
+            user.setSignature(signature);
+            userDao.updateUser(user);
         }
-        user.setSignature(signature);
-        userDao.updateUser(user);
         return new RedirectView("/profile");
     }
 
