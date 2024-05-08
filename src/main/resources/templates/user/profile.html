@@ -19,8 +19,9 @@
 
     <!--/*@thymesVar id="user" type="org.dindier.oicraft.model.User"*/-->
     <div class="buttons" th:if="${user != null}">
-        <button class="btn btn-primary" th:if="${user.equals(seeUser) && !hasCheckedIn}" id="checkInBtn">签到</button>
-        <button class="btn btn-secondary" th:if="${user.equals(seeUser) && hasCheckedIn}" disabled>√ 已签到</button>
+        <a class="btn btn-primary button-item" th:href="@{/profile/edit}" th:if="${user.equals(seeUser)}">编辑档案</a>
+        <button class="btn btn-primary button-item" th:if="${user.equals(seeUser) && !hasCheckedIn}" id="checkInBtn">签到</button>
+        <button class="btn btn-secondary button-item" th:if="${user.equals(seeUser) && hasCheckedIn}" disabled>√ 已签到</button>
     </div>
 </div>
 <main role="main" class="container">

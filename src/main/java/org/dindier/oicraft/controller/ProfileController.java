@@ -60,6 +60,13 @@ public class ProfileController {
         return new ResponseEntity<>(avatarData, headers, HttpStatus.OK);
     }
 
+    @GetMapping("/profile/edit")
+    public ModelAndView editProfile() {
+        User user = userService.getUserByRequest(request);
+        if (user == null) return new ModelAndView("error/404");
+        return new ModelAndView("user/editProfile");
+    }
+
     @GetMapping("/profile/edit/avatar")
     public ModelAndView editAvatar() {
         User user = userService.getUserByRequest(request);
@@ -77,6 +84,21 @@ public class ProfileController {
         return new RedirectView("/profile");
     }
 
+    @GetMapping("/profile/edit/info")
+    public ModelAndView editInfo() {
+        User user = userService.getUserByRequest(request);
+        if (user == null) return new ModelAndView("error/404");
+        return new ModelAndView("user/editInfo");
+    }
+
+    @PostMapping("/profile/edit/info")
+    public RedirectView editInfo(@RequestParam("signature") String signature) {
+        User user = userService.getUserByRequest(request);
+        if (user == null) return new RedirectView("/login");
+        user.setSignature(signature);
+        // userDao.updateUser(user);
+        return new RedirectView("/profile");
+    }
 
     @PostMapping("/checkin")
     public ResponseEntity<String> checkin() {
