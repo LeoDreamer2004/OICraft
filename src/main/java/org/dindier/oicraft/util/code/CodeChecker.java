@@ -1,4 +1,4 @@
-package org.dindier.oicraft.util;
+package org.dindier.oicraft.util.code;
 
 
 import lombok.Getter;

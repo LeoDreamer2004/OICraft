@@ -11,12 +11,18 @@
 }
 
 .problem-part {
-    margin-bottom: 1em;
-    border-bottom: 1px dashed #ddd;
+    padding-bottom: 1em;
+    margin-bottom: 1em !important;
+    border-bottom: 1px dashed #ddd !important;
+}
+
+.problem-part div {
+    font-size: 17px !important;
+    line-height: 27px !important;
 }
 
 .problem-part:last-child {
-    border-bottom: none;
+    border-bottom: none !important;
 }
 
 .problem-part h3 {

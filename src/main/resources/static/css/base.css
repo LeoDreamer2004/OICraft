@@ -107,22 +107,18 @@
 
 .BEGINNER {
     color: rgb(70, 161, 222) !important;
-    text-decoration: none !important;
 }
 
 .INTERMEDIATE {
     color: rgb(82, 196, 26) !important;
-    text-decoration: none !important;
 }
 
 .ADVANCED {
     color: rgb(243, 156, 17) !important;
-    text-decoration: none !important;
 }
 
 .EXPERT {
     color: rgb(254, 76, 97) !important;
-    text-decoration: none !important;
 }
 
 .avatar {

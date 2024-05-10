@@ -1,6 +1,6 @@
 package org.dindier.oicraft;
 
-import org.dindier.oicraft.util.CodeCompiler;
+import org.dindier.oicraft.util.code.CodeCompiler;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 

@@ -23,7 +23,7 @@ import org.dindier.oicraft.dao.SubmissionDao;
 import org.dindier.oicraft.dao.UserDao;
 import org.dindier.oicraft.model.*;
 import org.dindier.oicraft.service.ProblemService;
-import org.dindier.oicraft.util.CodeChecker;
+import org.dindier.oicraft.util.code.CodeChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
