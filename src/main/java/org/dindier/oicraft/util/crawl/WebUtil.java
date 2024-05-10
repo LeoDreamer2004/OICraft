@@ -2,10 +2,9 @@ package org.dindier.oicraft.util.crawl;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,21 +22,18 @@ public class WebUtil {
         return urlConnection;
     }
 
-    public static String getContentFromUrl(String strUrl) {
+    public static String getContentFromUrl(String strUrl, String charCode) {
         if (SHOW_PROCESS)
             System.out.println("==============> 正在爬取：" + strUrl);
-        URL pythonPath = WebUtil.class.getClassLoader().getResource("scripts/python/request.py");
-        String scriptPath = Objects.requireNonNull(pythonPath).getPath();
-        if (scriptPath.startsWith("/"))
-            scriptPath = scriptPath.substring(1);
-        ProcessBuilder pb = new ProcessBuilder("python", scriptPath, strUrl);
-        pb.redirectErrorStream(true);
         try {
-            Process process = pb.start();
-            InputStream stream = process.getInputStream();
-            return readAll(stream);
-        } catch (IOException e) {
-            System.out.println("执行Python脚本异常");
+            HttpURLConnection urlConnection = getHttpURLConnection(strUrl);
+            InputStream stream = urlConnection.getInputStream();
+            return readAll(stream, charCode);
+        } catch (MalformedURLException e) {
+            System.out.println("URL格式有错");
+        } catch (IOException ioe) {
+            System.out.println("IO异常");
+
         }
         return "";
     }
@@ -52,9 +48,9 @@ public class WebUtil {
         }
     }
 
-    private static String readAll(InputStream stream) throws IOException {
+    private static String readAll(InputStream stream, String charCode) throws IOException {
         BufferedReader reader = new BufferedReader(
-                new InputStreamReader(stream, StandardCharsets.UTF_8));
+                new InputStreamReader(stream, charCode));
         StringBuilder sb = new StringBuilder();
         String line;
         while ((line = reader.readLine()) != null) {

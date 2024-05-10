@@ -20,7 +20,7 @@ public class CrawlToOpenJudge {
      */
     public List<Problem> crawl(User author) {
         String url = "http://bailian.openjudge.cn";
-        String content = WebUtil.getContentFromUrl(url + "/practice");
+        String content = WebUtil.getContentFromUrl(url + "/practice", "UTF-8");
         WebUtil.saveToFile(content, "temp.html");
         String pattern = "<td class=\"title\"><a href=\"(.*?)\">(.*?)</a></td>";
         List<String> problems = WebUtil.findAllPatterns(content, pattern, 1);
@@ -37,7 +37,7 @@ public class CrawlToOpenJudge {
      * @return The problem crawled from OpenJudge
      */
     public static Problem crawlProblem(String url, User author) {
-        String content = WebUtil.getContentFromUrl(url);
+        String content = WebUtil.getContentFromUrl(url, "UTF-8");
         String title = WebUtil.findPattern(content, "<div id=\"pageTitle\"><h2>(.*?)</h2></div>", 1);
         String description = WebUtil.findPattern(content,
                 "<dt>描述</dt>\\s*?<dd>(.*?)</dd>", 1);
