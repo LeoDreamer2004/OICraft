@@ -18,10 +18,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Date;
 import java.util.Calendar;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -169,22 +171,38 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int saveUserAvatar(User user, byte[] avatar) {
-        URL url = getClass().getClassLoader().getResource("static/img/user/" + user.getUsername());
+        // save the avatar to the target folder, in order to make it accessible by the web
+        String folder = Objects.requireNonNull(getClass().getClassLoader()
+                .getResource("static/img/user")).getPath();
+        int a1 = saveUserAvatarToPath(user, avatar, folder);
+
+        // save the avatar to local folder, in order to make it accessible by the server
+        folder = "/src/main/resources/static/img/user";
+        int a2 = saveUserAvatarToPath(user, avatar, folder);
+
+        return a1 == 0 && a2 == 0 ? 0 : -1;
+    }
+
+    private int saveUserAvatarToPath(User user, byte[] avatar, String usersFolder) {
+
+        // make the directory first
+        String userFolder = usersFolder + "/" + user.getName();
+        if (userFolder.startsWith("/")) userFolder = userFolder.substring(1);
+        try {
+            Files.createDirectories(Paths.get(userFolder));
+        } catch (IOException ex) {
+            logger.info("Error when making the directory for user " + user.getName());
+        }
+        Path avatarPath = Paths.get(userFolder + "/avatar");
 
         if (avatar == null) {
             // delete the avatar
-            if (url != null) {
-                try {
-                    String avatarPath = url.getPath();
-                    if (avatarPath.startsWith("/"))
-                        avatarPath = avatarPath.substring(1);
-
-                    Files.deleteIfExists(Paths.get(avatarPath + "/avatar"));
-                    logger.info("User " + user.getName() + "cleared avatar.");
-                } catch (IOException e) {
-                    logger.warning("Error while deleting avatar: " + e.getMessage());
-                    return -1;
-                }
+            try {
+                Files.deleteIfExists(avatarPath);
+                logger.info("User " + user.getName() + "cleared avatar.");
+            } catch (IOException e) {
+                logger.warning("Error while deleting avatar: " + e.getMessage());
+                return -1;
             }
             return 0;
         }
@@ -193,20 +211,9 @@ public class UserServiceImpl implements UserService {
             return -1;
 
         try {
-            if (url == null) {
-                // create the user directory
-                URL url2 = getClass().getClassLoader().getResource("static/img/user");
-                if (url2 == null) {
-                    logger.warning("Error while saving avatar: cannot find the user directory");
-                    return -1;
-                }
-                String userFolder = url2.getPath() + "/" + user.getUsername();
-                if (userFolder.startsWith("/")) userFolder = userFolder.substring(1);
-                Files.createDirectories(Paths.get(userFolder));
-
-                // save the avatar
-                Files.write(Paths.get(userFolder + "/avatar"), avatar);
-            }
+            // save the avatar
+            Files.write(avatarPath, avatar);
+            logger.info("Saving avatar for user " + user.getName());
         } catch (IOException e) {
             logger.warning("Error while saving avatar: " + e.getMessage());
             return -1;

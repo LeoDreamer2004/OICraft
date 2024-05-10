@@ -24,6 +24,9 @@
                 <li class="nav-item">
                     <a th:href="@{/problems}" class="nav-link">题目清单</a>
                 </li>
+                <li class="nav-item" th:unless="${user eq null}">
+                    <a th:href="@{/profile}" class="nav-link">个人主页</a>
+                </li>
             </ul>
             <ul class="navbar-nav ml-auto" th:if="${user} eq null">
                 <li class="nav-item">
@@ -53,15 +56,21 @@
     </nav>
 </div>
 <main role="main" class="container pt-4">
-    <div class="jumbotron welcome">
+    <div class="jumbotron welcome mb-1">
         <h1 class="display-4">OICraft</h1>
         <p class="lead">
             一个更简单的代码评测网站。 <br/>
             欢迎使用，以提升您的编程能力。 <br/>
         </p>
-        <span class="blinking-code" style="float: right;"></span>
+        <div>
+            <span class="blinking-code" style="float: right;"></span>
+        </div>
     </div>
-
+    <div id="start-arrow-container">
+        <div id="start-arrow">
+            <a class="iconfont icon-icon_xiangxia_" style="text-decoration: none" th:href="@{/problems}"></a>
+        </div>
+    </div>
 
     <footer class="footer" th:fragment="footer">
         <span class="mb-0">&copy; 2024 OICraft. All rights reserved.</span>

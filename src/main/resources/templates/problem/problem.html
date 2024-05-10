@@ -58,15 +58,15 @@
                 </a>
                 <div class="problem-part">
                     <h3 class="mt-0">题目描述</h3>
-                    <p id="description" class="markdown" th:text="${problem.description}"></p>
+                    <div id="description" class="markdown" th:utext="${problem.description}"></div>
                 </div>
                 <div class="problem-part">
                     <h3>输入格式</h3>
-                    <p id="inputFormat" class="markdown" th:text="${problem.inputFormat}"></p>
+                    <div id="inputFormat" class="markdown" th:utext="${problem.inputFormat}"></div>
                 </div>
                 <div class="problem-part">
                     <h3>输出格式</h3>
-                    <p id="outputFormat" class="markdown" th:text="${problem.outputFormat}"></p>
+                    <div id="outputFormat" class="markdown" th:utext="${problem.outputFormat}"></div>
                 </div>
                 <div class="problem-part">
                     <h3>输入输出样例</h3>
