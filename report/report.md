@@ -97,7 +97,7 @@ Spring 架构提供的 Bean 容器，可以自动扫描并加载这些层次的�
 - **用户(User)**：用户的信息。包括用户名、密码、邮箱、积分等。
 - **题目(Problem)**：题目的信息。包括题目描述、输入输出样例、题目难度等。
 - **提交(Submission)**：用户提交的代码。包括提交的代码、针对的问题、结果等。
-- **输入输出对(IOpair)**：一个依赖于题目和提交的弱实体。包括输入输出样例、得分等。
+- **输入输出对(IOPair)**：一个依赖于题目和提交的弱实体。包括输入输出样例、得分等。
 - **测试点(Checkpoint)**：实际上是输入输出对-提交之间的多对多联系。
 
 每个模型在数据库都有对应的表，表之间通过外键联系。
@@ -143,7 +143,6 @@ public User updateUser(User user) {
         user.setGrade(User.Grade.BEGINNER);
     }
     user = userRepository.save(user);
-    logger.info("Update user: {} (id: {})", user.getName(), user.getId());
     return user;
 }
 ```
@@ -152,13 +151,9 @@ public User updateUser(User user) {
 
 ```java
 public void deleteUser(User user) {
-    // delete the user's submissions and related checkpoints
-    List<Submission> submissions = user.getSubmissions();
-    List<Checkpoint> checkpoints = submissions
-            .stream()
-            .map(Submission::getCheckpoints)
-            .flatMap(List::stream)
-            .toList();
+    // get the user's submissions and related checkpoints
+    List<Checkpoint> checkpoints;
+    List<Submission> submissions;
     checkpointRepository.deleteAll(checkpoints);
     submissionRepository.deleteAll(submissions);
 
@@ -167,10 +162,9 @@ public void deleteUser(User user) {
     for (Problem problem : problems) {
         problem.setAuthor(null);
     }
+    
     problemRepository.saveAll(problems);
-
     userRepository.delete(user);
-    logger.info("Delete user: {} (id: {})", user.getName(), user.getId());
 }
 ```
 
@@ -186,6 +180,8 @@ public class UserService {
     }
 }
 ```
+
+另外，对于用户头像的存储有两种办法，其一是用 BLOB 类型直接存储在数据库中，但这时每次用户刷新网页请求时会造成大量的数据查询影响数据库性能；另一种是存储在一个固定的 URL 中，我们采用的是这一种方案。由于我们并没有一个存储数据的服务器，这里简单地存储在本地磁盘。
 
 ### 业务逻辑（Service层）
 
@@ -211,7 +207,7 @@ public int testCode(User user, Problem problem, String code, String language) {
         codeChecker.setIO(code, language, ioPair.getInput(), ioPair.getOutput(), id)
                 .setLimit(problem.getTimeLimit(), problem.getMemoryLimit())
                 .test(!iterator.hasNext());
-          ... // 处理结果
+        ... // 处理结果
     }
 }
 ```
@@ -400,7 +396,7 @@ HTML、XML、JavaScript、CSS、甚至纯文本。
     <link rel="stylesheet" th:replace="~{base :: baseCSS}">
     ```
 
-#### 用户管理（Spring Security）
+### 用户管理（Spring Security）
 
 我们使用 Spring Security 6 框架来实现用户的认证和授权。Spring Security 是一个功能强大且高度可定制的身份验证和访问控制框架。
 
@@ -410,7 +406,6 @@ HTML、XML、JavaScript、CSS、甚至纯文本。
 我们创建一个 Spring Security 配置类，编写其过滤器链，并利用注解将其自动装配在配置用户的认证和授权。
 
 ```java
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -429,6 +424,15 @@ public class WebSecurityConfig {
 - `logout` 配置登出页面。可以自定义用户登出页面的 URL。
 - `rememberMe` 配置记住我功能。利用浏览器的 Cookie 机制，实现用户的自动登录。
 
+另外，考虑到要兼顾数据库的安全性，我们对用户密码进行了加密，使用了 BCrypt 加密算法。
+
+```java
+@Bean
+public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+}
+```
+
 ---
 
 ## 扩展展望
@@ -438,7 +442,7 @@ public class WebSecurityConfig {
 - 代码评测功能的优化，例如支持更多语言，支持更多测试点，支持更多的编译器和运行环境。一个正在尝试的设计是把运行放在 Docker
   容器中，这样可以更好地隔离环境。<font color="red">（可能会在提交前实现）</font>
 - 用户管理功能的优化，例如支持更多的用户操作，支持更多的用户信息。也许可以设计用户关注和私信聊天的功能。
-- 问题管理功能的优化，例如设计题目的标签和分类。
+- 问题管理优化，例如设计题目的标签和分类。
 - 网站的美化，例如设计更多的动画效果，更多的交互效果。当然，这方面属于前端的工作，不是本次 Java 课程设计的重点。
 - 性能优化，例如对数据库的查询进行优化，对代码评测的速度进行优化。这方面需要更多的测试和实验。
 

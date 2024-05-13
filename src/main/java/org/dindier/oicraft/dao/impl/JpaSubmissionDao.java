@@ -62,9 +62,7 @@ public class JpaSubmissionDao implements SubmissionDao {
         return newSubmission;
     }
 
-    /*
-     *Check if the submission is not in passed submissions
-     */
+    /* Check if the submission is not in passed submissions */
     private void ifAddExperience(Submission submission) {
         if (submission.getStatus().equals(Submission.Status.PASSED) &&
                 userRepository.findById(submission.getUser().getId())

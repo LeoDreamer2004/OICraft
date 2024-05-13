@@ -31,11 +31,10 @@ public enum CodeCompiler {
      * @param sourceFile The source file to compile
      * @return The error message if the compilation failed, otherwise null
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     public String compile(File sourceFile, File workingDirectory) {
         try {
-            if (!workingDirectory.exists()) {
-                workingDirectory.mkdir();
+            if (!workingDirectory.exists() && !workingDirectory.mkdir()) {
+                throw new RuntimeException("Error when making new file folder for " + sourceFile);
             }
             String[] args = new String[compileOption.length + 2];
             args[0] = compiler;
