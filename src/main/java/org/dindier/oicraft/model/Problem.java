@@ -32,7 +32,15 @@ public class Problem implements Comparable<Problem> {
     List<Post> posts;
 
     public enum Difficulty {
-        EASY, MEDIUM, HARD
+        EASY, MEDIUM, HARD;
+        public static Difficulty fromString(String string) {
+            for (Difficulty difficulty : Difficulty.values()) {
+                if (difficulty.toString().equalsIgnoreCase(string)) {
+                    return difficulty;
+                }
+            }
+            return null;
+        }
     }
 
     private int timeLimit; // ms
