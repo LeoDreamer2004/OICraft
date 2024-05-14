@@ -5,7 +5,6 @@
     <title th:text="${problem.title}"></title>
     <th:block th:replace="~{base :: baseStyle}"></th:block>
     <th:block th:replace="~{base :: markdown}"></th:block>
-    <th:block th:replace="~{base :: highlight}"></th:block>
     <link rel="stylesheet" href="/css/problem.css" th:fragment="problemStyle">
 </head>
 <body>
@@ -128,8 +127,7 @@
             </div>
         </div>
     </div>
-    <th:block th:replace="~{base :: runHighlight}"></th:block>
 </main>
-
+<th:block th:replace="~{base :: runMarkdown}"></th:block>
 </body>
 </html>

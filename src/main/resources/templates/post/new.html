@@ -1,10 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>发布帖子</title>
+    <th:block th:replace="~{base :: baseStyle}"></th:block>
 </head>
 <body>
+<div class="header">
+    <p class="link">
+        <a th:href="@{/}">首页</a>
+        <span>></span>
+        <a th:href="@{/problems}">题目清单</a>
+        <span>></span>
+        <a th:href="@{/problem/{id}(id=${problem.id})}" th:text="${problem.title}"></a>
+        <span>></span>
+        <span>发布帖子</span>
+    </p>
+    <div th:replace="~{problem/list :: nav}"></div>
+    <h2>发布帖子</h2>
+    <a class="btn btn-secondary mb-3" th:href="@{/problem/{id}(id=${problem.id})}">返回题目</a>
+</div>
+<main role="main" class="container">
+    <!-- Input code -->
 
+    <form role="form" class="form" th:action="@{/problem/{id}/post/new(id=${problem.id})}" method="post">
+        <label for="title">标题</label>
+        <input id="title" name="title" type="text" class="form-control" maxlength="100" required>
+        <label for="content" class="mt-3">内容</label>
+        <textarea id="content" name="content" type="text" class="form-control"
+                  style="resize: none; height: 400px" maxlength="10000" required></textarea>
+        <button class="btn btn-secondary mt-3" type="reset">重置</button>
+        <button class="btn btn-primary mt-3" type="submit">发布</button>
+    </form>
+</main>
 </body>
 </html>

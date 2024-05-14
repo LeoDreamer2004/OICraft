@@ -4,10 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.dindier.oicraft.dao.IOPairDao;
 import org.dindier.oicraft.dao.ProblemDao;
 import org.dindier.oicraft.dao.SubmissionDao;
-import org.dindier.oicraft.model.IOPair;
-import org.dindier.oicraft.model.Problem;
-import org.dindier.oicraft.model.Submission;
-import org.dindier.oicraft.model.User;
+import org.dindier.oicraft.model.*;
 import org.dindier.oicraft.service.IOPairService;
 import org.dindier.oicraft.service.ProblemService;
 import org.dindier.oicraft.service.UserService;
@@ -191,24 +188,6 @@ public class ProblemController {
             return new RedirectView("error/403");
         problemDao.deleteProblem(problem);
         return new RedirectView("/problems");
-    }
-
-    @GetMapping("/problem/{id}/posts")
-    public ModelAndView posts(@PathVariable int id) {
-        Problem problem = problemDao.getProblemById(id);
-        if (problem == null)
-            return new ModelAndView("error/404");
-        return new ModelAndView("post/list")
-                .addObject("problem", problem);
-    }
-
-    @GetMapping("/problem/{id}/post/new")
-    public ModelAndView newPost(@PathVariable int id) {
-        Problem problem = problemDao.getProblemById(id);
-        if (problem == null)
-            return new ModelAndView("error/404");
-        return new ModelAndView("post/new")
-                .addObject("problem", problem);
     }
 
     @GetMapping("/problem/{id}/edit/checkpoints")

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/css/submission.css">
     <th:block th:replace="~{base :: baseStyle}"></th:block>
-    <th:block th:replace="~{base :: highlight}"></th:block>
+    <th:block th:replace="~{base :: markdown}"></th:block>
     <title>测试结果</title>
 </head>
 <body>
@@ -22,20 +22,21 @@
     <h2>提交结果</h2>
     <a class="btn btn-secondary mb-3" th:href="@{/problem/{id}(id=${problem.id})}">返回题目</a>
 </div>
-<main role="main" class="container" th:switch="${submission.statusString}">
-    <div th:case="'passed'" class="result-box passed-box">
-        <span class="iconfont icon-duigou1" style="font-size: 20px"></span>
-        <span> 您通过了此题！</span>
+<main role="main" class="container">
+    <div th:if="${isAuthor}" th:switch="${submission.statusString}">
+        <div th:case="'passed'" class="result-box passed-box">
+            <span class="iconfont icon-duigou1" style="font-size: 20px"></span>
+            <span> 您通过了此题！</span>
+        </div>
+        <div th:case="'failed'" class="result-box failed-box">
+            <span class="iconfont icon-ziyuan" style="font-size: 20px"></span>
+            <span> 您未通过此题！</span>
+        </div>
+        <div th:case="'waiting'" class="result-box pending-box">
+            <span class="iconfont icon-shenglvehao" style="font-size: 20px"></span>
+            <span> 正在测试中...请稍后刷新重试。</span>
+        </div>
     </div>
-    <div th:case="'failed'" class="result-box failed-box">
-        <span class="iconfont icon-ziyuan" style="font-size: 20px"></span>
-        <span> 您未通过此题！</span>
-    </div>
-    <div th:case="'waiting'" class="result-box pending-box">
-        <span class="iconfont icon-shenglvehao" style="font-size: 20px"></span>
-        <span> 正在测试中...请稍后刷新重试。</span>
-    </div>
-
     <h4 class="underlined-title">代码</h4>
     <pre>
     <code th:text="${submission.code}">
@@ -85,6 +86,19 @@
             </div>
         </div>
     </div>
+
+
+    <div th:if="${isAuthor && submission.status.displayName == 'failed'}">
+        <h4 class="underlined-title pt-5">AI帮助</h4>
+        <form th:action="@{/submission/ai}" method="post" class="mt-3" th:if="${submission.adviceAI eq null}">
+            <input type="hidden" name="submissionId" th:value="${submission.id}">
+            <p>本AI来源于科大讯飞（的白嫖的 2M Tokens）提供的官方 Java 接口。<br />
+                申请帮助后，可能需要等待一段时间，之后进行刷新即可得到回应。</p>
+            <button type="submit" class="btn btn-danger">我需要AI帮助</button>
+        </form>
+        <div class="markdown" th:unless="${submission.adviceAI eq null}" th:utext="${submission.adviceAI}"></div>
+    </div>
 </main>
+<th:block th:replace="~{base :: runMarkdown}"></th:block>
 </body>
 </html>

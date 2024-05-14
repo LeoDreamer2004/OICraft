@@ -53,15 +53,11 @@
             })
         </script>
         <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    </th:block>
-
-    <!-- grammar highlight -->
-    <th:block th:fragment="highlight">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/docco.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
         <script>hljs.highlightAll();</script>
     </th:block>
-    <th:block th:fragment="runHighlight">
+    <th:block th:fragment="runMarkdown">
         <script>
             var elements = document.getElementsByClassName('markdown');
             for (i = 0; i < elements.length; i++) {

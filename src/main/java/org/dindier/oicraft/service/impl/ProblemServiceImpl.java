@@ -169,15 +169,13 @@ public class ProblemServiceImpl implements ProblemService {
                 Document document = new Document();
                 document.add(new StringField("id", String.valueOf(problem.getId()), Field.Store.YES));
                 document.add(new TextField("title", problem.getTitle(), Field.Store.YES));
-                document.add(new TextField("description", problem.getDescription(), Field.Store.YES));
                 indexWriter.addDocument(document);
             }
             indexWriter.commit();
             indexWriter.close();
 
             // parse the query
-            MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[]{"title",
-                    "description"}, new SmartChineseAnalyzer(), boosts);
+            MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[]{"title"}, new SmartChineseAnalyzer(), boosts);
             Query query;
             try {
                 query = parser.parse(keyword);

@@ -28,7 +28,7 @@ public class Post {
     @JoinColumn(name = "user_id")
     private User author;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<Comment> comments;
 
     public Post(String title, String content, Problem problem, User author) {
