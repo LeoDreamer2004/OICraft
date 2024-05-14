@@ -1,22 +1,21 @@
 package org.dindier.oicraft.dao.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.dindier.oicraft.dao.CheckpointDao;
 import org.dindier.oicraft.dao.repository.CheckpointRepository;
 import org.dindier.oicraft.dao.repository.SubmissionRepository;
 import org.dindier.oicraft.model.Checkpoint;
 import org.dindier.oicraft.model.Submission;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository("checkpointDao")
+@Slf4j
 public class JpaCheckpointDao implements CheckpointDao {
     private CheckpointRepository checkpointRepository;
     private SubmissionRepository submissionRepository;
-    private final Logger logger = LoggerFactory.getLogger(JpaCheckpointDao.class);
 
     @Autowired
     public void setCheckpointRepository(CheckpointRepository checkpointRepository) {
@@ -31,7 +30,7 @@ public class JpaCheckpointDao implements CheckpointDao {
     @Override
     public Checkpoint createCheckpoint(Checkpoint checkpoint) {
         checkpoint = this.checkpointRepository.save(checkpoint);
-        logger.info("Create checkpoint for submission {} (id: {})",
+        log.info("Create checkpoint for submission {} (id: {})",
                 checkpoint.getSubmission().getId(), checkpoint.getId());
         return checkpoint;
     }
@@ -39,7 +38,7 @@ public class JpaCheckpointDao implements CheckpointDao {
     @Override
     public Checkpoint updateCheckpoint(Checkpoint checkpoint) {
         checkpoint = this.checkpointRepository.save(checkpoint);
-        logger.info("Update checkpoint for submission {} (id: {})",
+        log.info("Update checkpoint for submission {} (id: {})",
                 checkpoint.getSubmission().getId(), checkpoint.getId());
         return checkpoint;
     }

@@ -1,5 +1,6 @@
 package org.dindier.oicraft.dao.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.dindier.oicraft.dao.SubmissionDao;
 import org.dindier.oicraft.dao.repository.ProblemRepository;
 import org.dindier.oicraft.dao.repository.SubmissionRepository;
@@ -7,20 +8,18 @@ import org.dindier.oicraft.dao.repository.UserRepository;
 import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.Submission;
 import org.dindier.oicraft.model.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository("submissionDao")
+@Slf4j
 public class JpaSubmissionDao implements SubmissionDao {
     private SubmissionRepository submissionRepository;
     private ProblemRepository problemRepository;
     private JpaUserDao userDao;
 
-    private final Logger logger = LoggerFactory.getLogger(JpaSubmissionDao.class);
     private UserRepository userRepository;
 
     @Autowired
@@ -57,7 +56,7 @@ public class JpaSubmissionDao implements SubmissionDao {
                     return problem;
                 }).ifPresent(problem -> problemRepository.save(problem));
         Submission newSubmission = submissionRepository.save(submission);
-        logger.info("Create submission for problem {} (id: {})", newSubmission.getProblemId(),
+        log.info("Create submission for problem {} (id: {})", newSubmission.getProblemId(),
                 newSubmission.getId());
         return newSubmission;
     }
@@ -116,7 +115,7 @@ public class JpaSubmissionDao implements SubmissionDao {
         problemRepository.save(problem);
 
         Submission newSubmission = submissionRepository.save(submission);
-        logger.info("Update submission for problem {} (id: {})", newSubmission.getProblemId(),
+        log.info("Update submission for problem {} (id: {})", newSubmission.getProblemId(),
                 newSubmission.getId());
         return newSubmission;
     }

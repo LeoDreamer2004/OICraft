@@ -1,5 +1,6 @@
 package org.dindier.oicraft.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.analysis.cn.smart.SmartChineseAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -24,8 +25,6 @@ import org.dindier.oicraft.dao.UserDao;
 import org.dindier.oicraft.model.*;
 import org.dindier.oicraft.service.ProblemService;
 import org.dindier.oicraft.util.code.CodeChecker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,13 +35,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Service("problemService")
+@Slf4j
 public class ProblemServiceImpl implements ProblemService {
     private SubmissionDao submissionDao;
     private ProblemDao problemDao;
     private CheckpointDao checkpointDao;
     private UserDao userDao;
     private final ExecutorService executorService = Executors.newCachedThreadPool();
-    private final Logger logger = LoggerFactory.getLogger(ProblemServiceImpl.class);
     private static final int MAX_SEARCH_RESULT = 100;
     private static final Map<String, Float> boosts = new HashMap<>();
 
@@ -60,7 +59,7 @@ public class ProblemServiceImpl implements ProblemService {
         final Iterable<IOPair> ioPairs = problemDao.getTestsById(problem.getId());
 
         executorService.execute(() -> {
-            logger.info("Start testing code for submission {}", id);
+            log.info("Start testing code for submission {}", id);
 
             int score = 0;
             boolean passed = true;
@@ -79,7 +78,7 @@ public class ProblemServiceImpl implements ProblemService {
                             .setLimit(problem.getTimeLimit(), problem.getMemoryLimit())
                             .test(!iterator.hasNext());
                 } catch (IOException | InterruptedException e) {
-                    logger.warn("CodeChecker encounter exception: {}", e.getMessage());
+                    log.warn("CodeChecker encounter exception: {}", e.getMessage());
                     submission.setStatus(Submission.Status.FAILED);
                     submissionDao.updateSubmission(submission);
                 }

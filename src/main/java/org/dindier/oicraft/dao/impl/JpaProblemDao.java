@@ -1,5 +1,6 @@
 package org.dindier.oicraft.dao.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.dindier.oicraft.dao.ProblemDao;
 import org.dindier.oicraft.dao.repository.CheckpointRepository;
 import org.dindier.oicraft.dao.repository.IOPairRepository;
@@ -9,8 +10,6 @@ import org.dindier.oicraft.model.Checkpoint;
 import org.dindier.oicraft.model.IOPair;
 import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.Submission;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -18,10 +17,10 @@ import java.util.Comparator;
 import java.util.List;
 
 @Repository("problemDao")
+@Slf4j
 public class JpaProblemDao implements ProblemDao {
     private ProblemRepository problemRepository;
     private IOPairRepository ioPairRepository;
-    private final Logger logger = LoggerFactory.getLogger(JpaProblemDao.class);
     private SubmissionRepository submissionRepository;
     private CheckpointRepository checkpointRepository;
 
@@ -38,7 +37,7 @@ public class JpaProblemDao implements ProblemDao {
     @Override
     public Problem createProblem(Problem problem) {
         problem = problemRepository.save(problem);
-        logger.info("Create problem: {}", problem.getId());
+        log.info("Create problem: {}", problem.getId());
         return problem;
     }
 
@@ -73,7 +72,7 @@ public class JpaProblemDao implements ProblemDao {
     @Override
     public Problem updateProblem(Problem problem) {
         problem = this.problemRepository.save(problem);
-        logger.info("Update problem: {}", problem.getId());
+        log.info("Update problem: {}", problem.getId());
         return problem;
     }
 
@@ -90,7 +89,7 @@ public class JpaProblemDao implements ProblemDao {
         submissionRepository.deleteAll(submissions);
         ioPairRepository.deleteAll(problem.getIoPairs());
         this.problemRepository.delete(problem);
-        logger.info("Delete problem: {}", problem.getId());
+        log.info("Delete problem: {}", problem.getId());
     }
 
     @Override

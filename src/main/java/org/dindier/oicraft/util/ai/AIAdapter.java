@@ -1,11 +1,10 @@
 package org.dindier.oicraft.util.ai;
 
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Component
+@Slf4j
 public class AIAdapter {
     @Value("${ai.host-url}")
     public String hostUrl;
@@ -26,8 +26,6 @@ public class AIAdapter {
     public String apiSecret;
     @Value("${ai.api-key}")
     public String apiKey;
-
-    private final Logger logger = LoggerFactory.getLogger(AIAdapter.class);
 
     /*
      * Generate the URL for the AI service
@@ -108,7 +106,7 @@ public class AIAdapter {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
-                    logger.error("Thread interrupted");
+                    log.error("Thread interrupted");
                 }
             } while (!closeFlag);
             webSocket.close(1000, "OK");
@@ -136,7 +134,7 @@ public class AIAdapter {
             JSONObject header = response.getJSONObject("header");
             int code = header.getInt("code");
             if (code != 0) {
-                logger.error("AI service error: {}", code);
+                log.error("AI service error: {}", code);
                 webSocket.close(1000, "AI service error");
             }
             List<Text> texts = getText(response);

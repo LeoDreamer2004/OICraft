@@ -84,7 +84,7 @@ create table if not exists Post
     id          int primary key auto_increment,
     title       varchar(255) not null,
     content     text         not null,
-    user_id     int          not null,
+    user_id     int,
     create_time timestamp    not null,
     problem_id  int          not null,
     foreign key (problem_id) references Problem (id),
@@ -95,7 +95,7 @@ create table if not exists Comment
 (
     id          int primary key auto_increment,
     content     text      not null,
-    user_id     int       not null,
+    user_id     int,
     post_id     int       not null,
     create_time timestamp not null,
     foreign key (user_id) references User (id),
