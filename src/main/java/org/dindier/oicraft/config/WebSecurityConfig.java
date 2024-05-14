@@ -37,6 +37,7 @@ public class WebSecurityConfig {
                                 "/submission/**",
                                 "/problem/*/submit",
                                 "/problem/new/**",
+                                "/problem/*/post/new",
                                 "/email/verification/new"
                         ).authenticated()
                         .anyRequest().permitAll()

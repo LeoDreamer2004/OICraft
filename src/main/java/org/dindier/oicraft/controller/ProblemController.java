@@ -41,12 +41,6 @@ public class ProblemController {
     private IOPairService ioPairService;
     private HttpServletRequest request;
 
-    private static final Map<String, Problem.Difficulty> difficultyMap = Map.of(
-            "easy", Problem.Difficulty.EASY,
-            "medium", Problem.Difficulty.MEDIUM,
-            "hard", Problem.Difficulty.HARD
-    );
-
     @GetMapping("/problems")
     public ModelAndView problems() {
         User user = userService.getUserByRequest(request);
@@ -105,7 +99,7 @@ public class ProblemController {
         if (user == null)
             return new RedirectView("/login");
         Problem problem = new Problem(user, title, description, inputFormat, outputFormat,
-                difficultyMap.get(difficulty), timeLimit, memoryLimit * 1024);
+                Problem.Difficulty.fromString(difficulty), timeLimit, memoryLimit * 1024);
         problem = problemDao.createProblem(problem);
         return new RedirectView("/problem/" + problem.getId());
     }
@@ -174,7 +168,7 @@ public class ProblemController {
         problem.setDescription(description);
         problem.setInputFormat(inputFormat);
         problem.setOutputFormat(outputFormat);
-        problem.setDifficulty(difficultyMap.get(difficulty));
+        problem.setDifficulty(Problem.Difficulty.fromString(difficulty));
         problem.setTimeLimit(timeLimit);
         problem.setMemoryLimit(memoryLimit * 1024);
         problemDao.updateProblem(problem);
