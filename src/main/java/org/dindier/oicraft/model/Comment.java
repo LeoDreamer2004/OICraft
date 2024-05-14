@@ -3,7 +3,7 @@ package org.dindier.oicraft.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 @Entity
 @Data
@@ -15,7 +15,7 @@ public class Comment {
     private String content;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date create_time;
+    private Timestamp createTime;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private User user;
@@ -23,10 +23,9 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private Post post;
 
-    public Comment(int id, String content, Date create_time, User user, Post post) {
-        this.id = id;
+    public Comment(User user, Post post, String content) {
         this.content = content;
-        this.create_time = create_time;
+        this.createTime = new Timestamp(System.currentTimeMillis());
         this.user = user;
         this.post = post;
     }

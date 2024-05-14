@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>讨论区</title>
+    <th:block th:replace="~{base :: baseStyle}"></th:block>
+    <link th:replace="~{problem/problem :: problemStyle}">
+    <th:block th:replace="~{base :: markdown}"></th:block>
+    <th:block th:replace="~{base :: highlight}"></th:block>
+</head>
+<body>
+<div class="header">
+    <p class="link">
+        <a th:href="@{/static}">首页</a>
+        <span>></span>
+        <a th:href="@{/problems}">题目清单</a>
+        <span>></span>
+        <a th:href="@{/problem/{id}(id=${problem.id})}" th:text="${problem.title}"></a>
+        <span>></span>
+        <span>讨论区</span>
+    </p>
+    <h2>讨论区</h2>
+    <a class="btn btn-secondary mb-3" th:href="@{/problem/{id}(id=${problem.id})}">返回题目</a>
+    <div th:replace="~{problem/list :: nav}"></div>
+</div>
+<main role="main" class="container">
+    <h5>讨论区</h5>
+    <div th:each="post: ${problem.posts}" class="card mb-3">
+
+        <div class="card-header">
+            <a th:text="${post.title}" th:href="${post/post.id}"></a>
+        </div>
+        <div class="card-body" th:utext="${post.content}"></div>
+    </div>
+</main>
+</body>
+</html>
