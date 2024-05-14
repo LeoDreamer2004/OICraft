@@ -25,10 +25,11 @@
     <div th:replace="~{problem/list :: nav}"></div>
 </div>
 <main role="main" class="container">
-    <a th:href="@{/profile/{id}(id=${post.user.id})}" style="text-decoration: none">
-        <img class="avatar" th:src="${post.user.avatarPath}" width="30" height="30" alt="avatar">
+    <a th:href="@{/profile/{id}(id=${post.getAuthor.id})}" style="text-decoration: none">
+        <img class="avatar" th:src="${post.getAuthor.avatarPath}" width="30" height="30" alt="avatar">
     </a>
-    <a th:class="${post.user.gradeString}" th:text="${post.user.name}" th:href="@{/profile/{id}(id=${post.user.id})}"></a>
+    <a th:class="${post.getAuthor.gradeString}" th:text="${post.getAuthor.name}"
+       th:href="@{/profile/{id}(id=${post.getAuthor.id})}"></a>
     <span>发布于</span>
     <span th:text="${post.createTime}"></span>
     <div class="card mb-3 mt-3">
@@ -41,18 +42,19 @@
         <input type="hidden" name="postId" th:value="${post.id}">
         <div class="form-group">
             <div class="mb-3">
-            <label for="comment" class="mb-0" style="font-size: 20px">评论</label>
-            <button type="submit" class="btn btn-primary ml-auto mb-0" style="float: right">发布</button>
+                <label for="comment" class="mb-0" style="font-size: 20px">评论</label>
+                <button type="submit" class="btn btn-primary ml-auto mb-0" style="float: right">发布</button>
             </div>
             <textarea class="form-control" id="comment" name="content" rows="3" placeholder="说点什么吧"></textarea>
         </div>
     </form>
     <div class="card mb-3" th:each="comment: ${post.comments}" th:unless="${post.comments.isEmpty()}">
         <div class="card-header">
-            <a th:href="@{/profile/{id}(id=${comment.user.id})}">
-                <img class="avatar" th:src="${comment.user.avatarPath}" width="30" height="30" alt="avatar">
+            <a th:href="@{/profile/{id}(id=${comment.getAuthor.id})}">
+                <img class="avatar" th:src="${comment.getAuthor.avatarPath}" width="30" height="30" alt="avatar">
             </a>
-            <a th:class="${comment.user.gradeString}" th:text="${post.user.name}" th:href="@{/profile/{id}(id=${post.user.id})}"></a>
+            <a th:class="${comment.getAuthor.gradeString}" th:text="${post.getAuthor.name}"
+               th:href="@{/profile/{id}(id=${post.getAuthor.id})}"></a>
             <span th:text="${comment.createTime}"></span>
         </div>
         <div class="card-body markdown" th:text="${comment.content}"></div>

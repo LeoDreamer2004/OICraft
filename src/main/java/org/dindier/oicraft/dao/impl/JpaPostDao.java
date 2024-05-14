@@ -1,12 +1,15 @@
 package org.dindier.oicraft.dao.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.dindier.oicraft.dao.PostDao;
 import org.dindier.oicraft.dao.repository.PostRepository;
 import org.dindier.oicraft.model.Post;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository("postDao")
+@Slf4j
 public class JpaPostDao implements PostDao {
     private final PostRepository postRepository;
 
@@ -22,6 +25,7 @@ public class JpaPostDao implements PostDao {
 
     @Override
     public Post createPost(Post post) {
+        log.info("User {} created a post on problem {}", post.getAuthor().getName(), post.getProblem().getId());
         return postRepository.save(post);
     }
 }

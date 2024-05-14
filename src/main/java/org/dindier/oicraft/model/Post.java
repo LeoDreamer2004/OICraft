@@ -25,17 +25,18 @@ public class Post {
     private Problem problem;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    private User user;
+    @JoinColumn(name = "user_id")
+    private User author;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<Comment> comments;
 
-    public Post(String title, String content, Problem problem, User user) {
+    public Post(String title, String content, Problem problem, User author) {
         this.title = title;
         this.content = content;
         this.createTime = new Timestamp(System.currentTimeMillis());
         this.problem = problem;
-        this.user = user;
+        this.author = author;
         this.comments = new ArrayList<>();
     }
 

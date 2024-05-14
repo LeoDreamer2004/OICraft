@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.misc.Pair;
 import org.dindier.oicraft.model.User;
 import org.dindier.oicraft.service.UserService;
@@ -27,13 +28,12 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 @Service("userService")
+@Slf4j
 public class UserServiceImpl implements UserService {
     private UserDao userDao;
     private PasswordEncoder passwordEncoder;
-    private final Logger logger = Logger.getLogger(UserServiceImpl.class.getName());
     private JavaMailSender mailSender;
     private final Map<Pair<String, String>, VerificationCode> verificationCodes = new ConcurrentHashMap<>();
     private static final long VALID_TIME = TimeUnit.MINUTES.toMillis(5);
@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService {
         Date lastCheckin = user.getLast_checkin();
         Date tomorrow = getTomorrow();
         if (lastCheckin == null || lastCheckin.before(tomorrow)) {
-            logger.info("User " + user.getUsername() + " checked in today");
+            log.info("User {} checked in today", user.getUsername());
             userDao.addExperience(user, 1);
             user.setLast_checkin(tomorrow);
             userDao.updateUser(user);
@@ -124,14 +124,14 @@ public class UserServiceImpl implements UserService {
         // read email.html and replace the username and placeholder with the verification code
         URL emailUrl = getClass().getClassLoader().getResource("static/html/email.html");
         if (emailUrl == null) {
-            logger.warning("Error while trying to send email to " + email);
+            log.warn("Error while trying to send email to {}", email);
             return;
         }
         String htmlMsg;
         try (InputStream emailStream = emailUrl.openStream()) {
             htmlMsg = new String(emailStream.readAllBytes());
         } catch (IOException e) {
-            logger.warning("Error while trying to send email to " + email);
+            log.warn("Error while trying to send email to {}", email);
             return;
         }
         htmlMsg = htmlMsg.replace("{{username}}", username);
@@ -143,10 +143,10 @@ public class UserServiceImpl implements UserService {
             helper.setSubject("Your OICraft verification code");
             helper.setFrom("oicraft2024@163.com");
         } catch (MessagingException e) {
-            logger.info("Error while trying to send email to " + email);
+            log.info("Error while trying to send email to {}", email);
         }
         mailSender.send(mailMessage);
-        logger.info("Verification code sent to " + email);
+        log.info("Verification code sent to {}", email);
     }
 
     @Override
@@ -163,7 +163,7 @@ public class UserServiceImpl implements UserService {
             return false;
         }
         verificationCodes.remove(key);
-        logger.info("Email from " + email + " verified successfully");
+        log.info("Email from {} verified successfully", email);
         return true;
     }
 
@@ -189,7 +189,7 @@ public class UserServiceImpl implements UserService {
         try {
             Files.createDirectories(Paths.get(userFolder));
         } catch (IOException ex) {
-            logger.info("Error when making the directory for user " + user.getName());
+            log.info("Error when making the directory for user {}", user.getName());
         }
         Path avatarPath = Paths.get(userFolder + "/avatar");
 
@@ -197,9 +197,9 @@ public class UserServiceImpl implements UserService {
             // delete the avatar
             try {
                 Files.deleteIfExists(avatarPath);
-                logger.info("User " + user.getName() + "cleared avatar.");
+                log.info("User {}cleared avatar.", user.getName());
             } catch (IOException e) {
-                logger.warning("Error while deleting avatar: " + e.getMessage());
+                log.warn("Error while deleting avatar: {}", e.getMessage());
                 return -1;
             }
             return 0;
@@ -211,9 +211,9 @@ public class UserServiceImpl implements UserService {
         try {
             // save the avatar
             Files.write(avatarPath, avatar);
-            logger.info("Saving avatar for user " + user.getName());
+            log.info("Saving avatar for user {}", user.getName());
         } catch (IOException e) {
-            logger.warning("Error while saving avatar: " + e.getMessage());
+            log.warn("Error while saving avatar: {}", e.getMessage());
             return -1;
         }
         return 0;

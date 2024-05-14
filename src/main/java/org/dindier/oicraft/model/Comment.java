@@ -18,15 +18,16 @@ public class Comment {
     private Timestamp createTime;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    private User user;
+    @JoinColumn(name = "user_id")
+    private User author;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private Post post;
 
-    public Comment(User user, Post post, String content) {
+    public Comment(User author, Post post, String content) {
         this.content = content;
         this.createTime = new Timestamp(System.currentTimeMillis());
-        this.user = user;
+        this.author = author;
         this.post = post;
     }
 

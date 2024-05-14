@@ -1,6 +1,5 @@
 package org.dindier.oicraft;
 
-import org.dindier.oicraft.util.ai.AIAdapter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

@@ -1,14 +1,8 @@
 package org.dindier.oicraft.dao.impl;
 
 import org.dindier.oicraft.dao.UserDao;
-import org.dindier.oicraft.dao.repository.CheckpointRepository;
-import org.dindier.oicraft.dao.repository.ProblemRepository;
-import org.dindier.oicraft.dao.repository.SubmissionRepository;
-import org.dindier.oicraft.dao.repository.UserRepository;
-import org.dindier.oicraft.model.Checkpoint;
-import org.dindier.oicraft.model.Problem;
-import org.dindier.oicraft.model.Submission;
-import org.dindier.oicraft.model.User;
+import org.dindier.oicraft.dao.repository.*;
+import org.dindier.oicraft.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +22,8 @@ public class JpaUserDao implements UserDao {
     private CheckpointRepository checkpointRepository;
     private SubmissionRepository submissionRepository;
     private ProblemRepository problemRepository;
+    private PostRepository postRepository;
+    private CommentRepository commentRepository;
 
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
@@ -82,6 +78,18 @@ public class JpaUserDao implements UserDao {
         }
         problemRepository.saveAll(problems);
 
+        // set the user's post and comment to null
+        List<Post> posts = user.getPosts();
+        for (Post post : posts) {
+            post.setAuthor(null);
+        }
+        List<Comment> comments = user.getComments();
+        for (Comment comment : comments) {
+            comment.setAuthor(null);
+        }
+        postRepository.saveAll(posts);
+        commentRepository.saveAll(comments);
+
         userRepository.delete(user);
         logger.info("Delete user: {} (id: {})", user.getName(), user.getId());
     }
@@ -115,7 +123,7 @@ public class JpaUserDao implements UserDao {
                         .sorted(Comparator.comparingInt(Problem::getId)).toList())
                 .orElse(List.of());
     }
-    
+
     @Override
     public List<Problem> getPassedProblemsByUserId(int userId) {
         return userRepository
@@ -181,5 +189,15 @@ public class JpaUserDao implements UserDao {
     @Autowired
     public void setProblemRepository(ProblemRepository problemRepository) {
         this.problemRepository = problemRepository;
+    }
+
+    @Autowired
+    public void setPostRepository(PostRepository postRepository) {
+        this.postRepository = postRepository;
+    }
+
+    @Autowired
+    public void setCommentRepository(CommentRepository commentRepository) {
+        this.commentRepository = commentRepository;
     }
 }

@@ -2,9 +2,8 @@ package org.dindier.oicraft.util.code;
 
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.jni.LibraryNotFoundError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URL;
@@ -12,6 +11,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+@Slf4j
 public class CodeChecker {
 
     public static final String FOLDER = "temp/";
@@ -25,8 +25,6 @@ public class CodeChecker {
     private File workingDirectory;
 
     private static final String platform;
-
-    private static final Logger logger = LoggerFactory.getLogger(CodeChecker.class);
 
     private static final Map<String, String> extensionsMap = Map.of(
             "Java", "java",
@@ -351,7 +349,7 @@ public class CodeChecker {
             }
         }
         if (!folder.delete()) {
-            logger.warn("Failed to delete folder {}, you may need to delete it by yourself",
+            log.warn("Failed to delete folder {}, you may need to delete it by yourself",
                     folder);
         }
     }
