@@ -28,6 +28,9 @@ public class Problem implements Comparable<Problem> {
     @Enumerated(EnumType.STRING)
     private Difficulty difficulty;
 
+    @OneToMany(mappedBy = "problem", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    List<Post> posts;
+
     public enum Difficulty {
         EASY, MEDIUM, HARD
     }

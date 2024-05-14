@@ -1,5 +1,7 @@
 use homework;
 
+drop table if exists Post;
+drop table if exists Comment;
 drop table if exists CheckPoint;
 drop table if exists Submission;
 drop table if exists IOPair;
@@ -8,16 +10,16 @@ drop table if exists User;
 
 create table if not exists User
 (
-    id         int primary key auto_increment,
-    username   varchar(255)                                            not null,
-    password   varchar(255)                                            not null,
-    role       enum ('ADMIN', 'USER')                                  not null,
-    grade      enum ('BEGINNER', 'INTERMEDIATE', 'ADVANCED', 'EXPERT') not null,
-    date       date default null,
-    experience int  default 0,
-    email      varchar(255),
-    signature  varchar(255),
-    avatar     mediumblob,
+    id           int primary key auto_increment,
+    username     varchar(255)                                            not null,
+    password     varchar(255)                                            not null,
+    role         enum ('ADMIN', 'USER')                                  not null,
+    grade        enum ('BEGINNER', 'INTERMEDIATE', 'ADVANCED', 'EXPERT') not null,
+    last_checkin date default null,
+    experience   int  default 0,
+    email        varchar(255),
+    signature    varchar(255),
+    avatar       mediumblob,
     constraint unique (username)
 );
 
@@ -75,4 +77,27 @@ create table if not exists CheckPoint
     info          text                                             not null,
     foreign key (io_pair_id) references IOPair (id),
     foreign key (submission_id) references Submission (id)
+);
+
+create table if not exists Post
+(
+    id          int primary key auto_increment,
+    title       varchar(255) not null,
+    content     text         not null,
+    user_id     int          not null,
+    create_time timestamp    not null,
+    problem_id  int          not null,
+    foreign key (problem_id) references Problem (id),
+    foreign key (user_id) references User (id)
+);
+
+create table if not exists Comment
+(
+    id          int primary key auto_increment,
+    content     text      not null,
+    user_id     int       not null,
+    post_id     int       not null,
+    create_time timestamp not null,
+    foreign key (user_id) references User (id),
+    foreign key (post_id) references Post (id)
 );
