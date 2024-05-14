@@ -1,10 +1,14 @@
 use jni::objects::*;
-use jni::JNIEnv;
 use jni::sys::jlong;
+use jni::JNIEnv;
 use sysinfo::Pid;
 
 #[no_mangle]
-pub extern "C" fn Java_org_dindier_oicraft_util_CodeChecker_getProcessMemoryUsage(_env: JNIEnv, _class: JClass, pid: jlong) -> jlong {
+pub extern "C" fn Java_org_dindier_oicraft_util_code_CodeChecker_getProcessMemoryUsage(
+    _env: JNIEnv,
+    _class: JClass,
+    pid: jlong,
+) -> jlong {
     get_process_memory_usage(pid as usize)
 }
 
@@ -19,13 +23,12 @@ pub fn get_process_memory_usage(pid: usize) -> jlong {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
+    use super::*;
     use std::process::Command;
     use std::thread::sleep;
     use std::time::Duration;
-    use super::*;
 
     #[test]
     fn test_jni() {
