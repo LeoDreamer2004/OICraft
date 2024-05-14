@@ -2,35 +2,32 @@
 
 ## 项目简介
 
-SpringBoot是一个基于Spring的轻量级框架，它可以用来快速开发基于Java的Web应用程序。
+SpringBoot 是一个基于 Spring 的轻量级框架，它可以用来快速开发基于 Java 的 Web 应用程序。
 
-~~由于长期苦于Openjudge和编程网格的网页界面~~，本次课程设计作业依托于 SpringBoot 架构开发了一款在线代码测评网站——OICraft。
+~~由于长期苦于 OpenJudge 和编程网格的网页界面~~，本次课程设计作业依托于 SpringBoot 架构开发了一款在线代码测评网站——OICraft。
 
 ---
 
 ## 项目分工
 
-- 原梓轩 2200010825：前端交互页面以及 MVC 框架搭建
-- 陈润璘 2200010848：SQL 数据库的设计与 JPA 实现
-- 任子博 2200010626：业务逻辑与后端代码编写
+- 原梓轩 2200010825：代码大框架设计，前端交互页面以及 MVC 框架搭建
+- 陈润璘 2200010848：SQL 数据库的设计与 JPA 实现，外部服务器支持
+- 任子博 2200010626：部分核心业务逻辑与后端代码编写
 
 ---
 
 ## 使用方法
 
-OICraft 所用服务器是 SpringBoot 内置的 Tomcat 服务器（在本机运行），数据库 MySQL 来自于远程的阿里云服务器，采用了 JPA
-框架来操作数据库。前端页面采用了 Thymeleaf 模板引擎。
+OICraft 所用服务器是 SpringBoot 内置的 Tomcat 服务器（在本机运行），数据库 MySQL 来自于远程的阿里云服务器，采用了 JPA 框架来操作数据库。前端页面采用了 Thymeleaf 模板引擎。
 
 > <b><font color="red">请注意，务必将本项目放在英文目录文件夹下，否则可能不能正常评测代码！</font></b> 如果在测试当中遇到问题，可以用微信联系。
 
 - 下载项目源代码后，使用 IntelliJ IDEA 作为项目打开。
 - 点击 `pom.xml` 文件，刷新导入 Maven 依赖。
 - 在 `resources/application.properties` 文件中配置数据库连接信息和邮箱信息。这里我们已经配好了远程阿里云数据库和公用邮箱。
-- 运行 `OICraftApplication.java` 启动项目。如果控制台出现了 OICraft 的 Logo，并随后出现了 SpringBoot
-  的运行日志 `Completed initialization in xxx ms`，说明项目启动成功。（注意：由于要链接数据库，需要保持较好的网络连接）
+- 运行 `OICraftApplication.java` 启动项目。如果控制台出现了 OICraft 的 Logo，并随后出现了 SpringBoot 的运行日志 `Completed initialization in xxx ms`，说明项目启动成功。（注意：由于要链接数据库，需要保持较好的网络连接）
 - 在浏览器中输入 `http://localhost:8080` 即可访问网站。
-- 在网站的右上角登录账户，如果没有账户，可以点击注册按钮注册账户。（为了更好地展示所有功能，可以登录事先的管理员账户：<font color="red">用户名
-  （待定）；密码 （待定））</font>
+- 在网站的右上角登录账户，如果没有账户，可以点击注册按钮注册账户。（为了更好地展示所有功能，可以登录事先的管理员账户：<font color="red">用户名 （待定）；密码 （待定））</font>
 
 本项目已在 [GitHub](https://github.com/LeoDreamer2004/OICraft) 上开源。
 
@@ -40,34 +37,37 @@ OICraft 所用服务器是 SpringBoot 内置的 Tomcat 服务器（在本机运�
 
 ### 代码评测
 
-本项目是一个在线代码测评网站，用户可以在网站上提交代码，网站会自动编译运行代码，并返回运行结果。目前支持的语言有Java、C、C++、Python（实际上，这里的代码是在本机运行的，所以本机需要有相应的编译器和开发环境）。
+本项目是一个在线代码测评网站，用户可以在网站上提交代码，网站会自动编译运行代码，并返回运行结果。目前支持的语言有 Java、C、C++、Python（实际上，这里的代码是在本机运行的，所以本机需要有相应的编译器和开发环境）。
 
 ### 用户管理
 
-<img src="./img/profile.png" alt="个人档案实例">
-
 依托于 SpringSecurity 框架，本项目实现了用户的注册、登录、登出功能。用户可以在网站上注册账号，登录后可以提交代码，查看提交记录等。对于某些网页，需要登录后才能访问。
+
+我们为用户提供了个性化档案的功能。用户可以在个人档案中查看自己的提交记录，签到记录，积分等。用户还可以设置个性签名和上传自己的头像，头像会显示在个人档案中。
+
+<img src="./img/profile.png" alt="个人档案实例">
 
 我们设置了管理员系统。管理员可以任意编辑问题，查看用户提交记录等。同时，我们还提供了站点管理的操作页面。管理员可以编辑其他用户的权限，或者对用户进行删除。
 
-我们还将用户根据积分分成了若干用户组。从低到高依次为 `BEGINNER`, `INTERMEDIATE`, `ADVANCED`, `EXPERT`
-。积分可以通过每日的签到系统获得，也可以通过提交代码获得。不同用户组的用户名称会被着以不同的颜色。
+我们还将用户根据积分分成了若干用户组。从低到高依次为 `BEGINNER`, `INTERMEDIATE`, `ADVANCED`, `EXPERT`。积分可以通过每日的签到系统获得，也可以通过提交代码获得。不同用户组的用户名称会被着以不同的颜色。
 
-我们还设置了绑定邮箱的功能。用户可以绑定邮箱，绑定邮箱后可以通过邮箱找回密码。通过使用一个公共邮箱，生成一个 UUID
-验证码，发送到用户的邮箱，用户输入验证码即可完成验证或者找回密码。
+我们还设置了绑定邮箱的功能。用户可以绑定邮箱，绑定邮箱后可以通过邮箱找回密码。通过使用一个公共邮箱，生成一个 UUID 验证码，发送到用户的邮箱，用户输入验证码即可完成验证或者找回密码。
 
-### 问题管理
+### 算法测试
 
 在题目列表中陈列着数据库当中所有的问题。我们提供了问题搜索功能，用户可以通过关键字搜索问题。
 
 任何已登录用户都可以上传问题，但只有出题者或管理员可以在网站上编辑和删除问题。问题的内容包括题目描述、输入输出样例、题目难度等。用户可以在网站上查看问题，提交代码，查看提交记录。
 
-> 注：我们对网页端渲染提供了 markdown 和相应的 KaTeX 支持，用户可以在题目描述中使用 markdown 语法。允许用户下载题目的
-> markdown 版本。
-> 
+> 注：我们对网页端渲染提供了 markdown, html 和相应的 KaTeX 支持，用户可以在题目描述中使用 markdown 或 html 语法。允许用户下载题目的 markdown 版本。
+>
 > 我们从 Openjudge 上用爬虫爬取了一百道题左右，不过没有测试点。
 
 关于编辑测试点，我们提供了两种方式。用户可以在网站上上传测试点文件，也可以手动输入测试点。我们还提供了测试点的下载功能，以满足备份等等的需要。文件的具体格式在网页上有详细说明。
+
+### 讨论区
+
+用户可以在讨论区发帖，回帖。帖子的内容包括帖子的标题、内容、作者等。用户可以在网站上查看帖子，回复帖子。与前面一样，我们也提供了对 markdown 和 html 语法的支持。
 
 ---
 
@@ -80,8 +80,7 @@ OICraft 所用服务器是 SpringBoot 内置的 Tomcat 服务器（在本机运�
 - **Model**：模型层，用于定义数据结构，与数据库中的表一一对应。
 - **DAO**：数据访问层，是对 SQL 语言的包装，这里用 JPA 对数据进行增删改查，直接与数据库交互。
 - **Service**：服务层，用于处理业务逻辑，例如测试代码。调用 DAO 层处理数据，并返回结果给 Controller。
-- **Controller**：控制层，是 MVC 架构的重点。用于处理用户请求，调用 Service 和 DAO 层处理业务逻辑，并返回结果给用户。此外，还有拦截器
-  Interceptor 用于拦截请求捕获必要的信息。
+- **Controller**：控制层，是 MVC 架构的重点。用于处理用户请求，调用 Service 和 DAO 层处理业务逻辑，并返回结果给用户。此外，还有拦截器 Interceptor 用于拦截请求捕获必要的信息。
 - **View**：前端页面，包括 HTML、CSS、JavaScript 等文件，依托于 bootstrap 样式和 Thymeleaf 模板引擎，给用户展示页面并直接与用户交互。
 
 Spring 架构提供的 Bean 容器，可以自动扫描并加载这些层次的类，实现了解耦合，提高了代码的可维护性。
@@ -94,25 +93,25 @@ Spring 架构提供的 Bean 容器，可以自动扫描并加载这些层次的�
 
 ### 数据库设计（Model层）
 
-我们设计了五个重要的模型：
+我们设计了几个重要的模型：
 
 - **用户(User)**：用户的信息。包括用户名、密码、邮箱、积分等。
 - **题目(Problem)**：题目的信息。包括题目描述、输入输出样例、题目难度等。
 - **提交(Submission)**：用户提交的代码。包括提交的代码、针对的问题、结果等。
 - **输入输出对(IOPair)**：一个依赖于题目和提交的弱实体。包括输入输出样例、得分等。
 - **测试点(Checkpoint)**：实际上是输入输出对-提交之间的多对多联系。
+- **帖子(Post)**：针对某个问题在讨论区帖子。包括帖子的标题、内容、作者等。
+- **评论(Comment)**：针对某个帖子的评论。包括评论的内容、作者等。
 
 每个模型在数据库都有对应的表，表之间通过外键联系。
 
 ### 数据库访问（DAO层）
 
-为了方便前后端工作的分离，我们把 DAO 层声明为若干个接口。这样，我们就可以在 Service 层或 Controller 层直接调用 DAO
-层的方法，而不用关心具体的实现，就实现了数据访问层的解耦合。
+为了方便前后端工作的分离，我们把 DAO 层声明为若干个接口。这样，我们就可以在 Service 层或 Controller 层直接调用 DAO 层的方法，而不用关心具体的实现，就实现了数据访问层的解耦合。
 
 #### JPA 框架和 Hibernate
 
-我们通过 JPA 框架来操作数据库。通过在模型类上添加注解，可以自动生成数据库表。同时，我们还可以通过在接口中定义方法，自动生成
-SQL 语句，同时也可以定义自己的 SQL 语句对应的方法。
+我们通过 JPA 框架来操作数据库。通过在模型类上添加注解，可以自动生成数据库表。同时，我们还可以通过在接口中定义方法，自动生成 SQL 语句，同时也可以定义自己的 SQL 语句对应的方法。
 
 ```java
 public interface UserRepository extends CrudRepository<User, Integer> {
@@ -121,33 +120,13 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 }
 ```
 
-这样，Hibernate 框架就会自动生成相应的 SQL 语句，我们就可以直接调用继承自 `CrudRepository` 的方法，实现对数据库的基本增删改查。
-同时，这样会自动将 `UserRepository` 定义成一个 Bean，方便我们在 DAO 层进一步封装时使用自动装配。
+这样，Hibernate 框架就会自动生成相应的 SQL 语句，我们就可以直接调用继承自 `CrudRepository` 的方法，实现对数据库的基本增删改查。 同时，这样会自动将 `UserRepository` 定义成一个 Bean，方便我们在 DAO 层进一步封装时使用自动装配。
 
 #### DAO 层的设计
 
-我们把有关用户、题目、提交、测试的操作分别封装在了若干个接口中。这样，我们就可以在 Service 层和 Controller
-层直接调用接口的方法，而不用关心具体的实现。
+我们把有关用户、题目、提交、测试的操作分别封装在了若干个接口中。这样，我们就可以在 Service 层和 Controller 层直接调用接口的方法，而不用关心具体的实现。
 
-作为对 `Repository` 的进一步封装，我们为其它两层的需求实现了更加具体的方法。同时，我们还实现了一些自动化的数据更新，例如
-用户做对一道题目时自动增加积分，用户签到时自动增加积分以及根据用户的积分自动更新用户的级别。
-
-```java
-public User updateUser(User user) {
-    int experience = user.getExperience();
-    if (experience > EXPERT_MIN_EXP) {
-        user.setGrade(User.Grade.EXPERT);
-    } else if (experience > ADVANCED_MIN_EXP) {
-        user.setGrade(User.Grade.ADVANCED);
-    } else if (experience > INTERMEDIATE_MIN_EXP) {
-        user.setGrade(User.Grade.INTERMEDIATE);
-    } else {
-        user.setGrade(User.Grade.BEGINNER);
-    }
-    user = userRepository.save(user);
-    return user;
-}
-```
+作为对 `Repository` 的进一步封装，我们为其它两层的需求实现了更加具体的方法。同时，我们还实现了一些自动化的数据更新，例如 用户做对一道题目时自动增加积分，用户签到时自动增加积分以及根据用户的积分自动更新用户的级别。
 
 同时，由于数据库中的数据约束导致直接删除记录时可能出现异常，我们在实现删除操作时同时避免了直接删除产生的异常。
 
@@ -164,7 +143,7 @@ public void deleteUser(User user) {
     for (Problem problem : problems) {
         problem.setAuthor(null);
     }
-    
+
     problemRepository.saveAll(problems);
     userRepository.delete(user);
 }
@@ -349,8 +328,7 @@ Controller 层是整个项目的入口，用于处理用户请求。我们通过
     }
     ```
 
-此外，我们设计了一个简单的拦截器，用于拦截请求，捕获必要的信息在拦截器中。这里我们在请求前后捕获当前的用户信息，随后把此用户作为
-Object 插入到 `ModelAndView` 中，我们可以通过 `HttpServletRequest` 对象获取请求的信息。
+此外，我们设计了一个简单的拦截器，用于拦截请求，捕获必要的信息在拦截器中。这里我们在请求前后捕获当前的用户信息，随后把此用户作为 Object 插入到 `ModelAndView` 中，我们可以通过 `HttpServletRequest` 对象获取请求的信息。
 
 ```java
 public class UserInfoInterceptor implements HandlerInterceptor {
@@ -371,8 +349,7 @@ public class UserInfoInterceptor implements HandlerInterceptor {
 
 ### 前端页面（View层）
 
-前端页面是用户直接看到的页面，我们使用 Thymeleaf 模板引擎来渲染页面。Thymeleaf 是一个 Java 模板引擎，可以处理
-HTML、XML、JavaScript、CSS、甚至纯文本。
+前端页面是用户直接看到的页面，我们使用 Thymeleaf 模板引擎来渲染页面。Thymeleaf 是一个 Java 模板引擎，可以处理 HTML、XML、JavaScript、CSS、甚至纯文本。
 
 - 在 Controller 层的 ModelAndView 对象中，我们可以通过 `addObject` 方法添加对象，然后在 HTML 页面中通过 `${}` 语法来获取对象的属性。
 
@@ -402,12 +379,12 @@ HTML、XML、JavaScript、CSS、甚至纯文本。
 
 我们使用 Spring Security 6 框架来实现用户的认证和授权。Spring Security 是一个功能强大且高度可定制的身份验证和访问控制框架。
 
-首先要让用户模型实现 `UserDetails` 接口，表明让 Spring Security
-使用这个类作为用户。同时建立一个类实现 `UserDetailsService` 接口，让 Spring Security 能找到对应的用户信息。
+首先要让用户模型实现 `UserDetails` 接口，表明让 Spring Security 使用这个类作为用户。同时建立一个类实现 `UserDetailsService` 接口，让 Spring Security 能找到对应的用户信息。
 
 我们创建一个 Spring Security 配置类，编写其过滤器链，并利用注解将其自动装配在配置用户的认证和授权。
 
 ```java
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -420,8 +397,7 @@ public class WebSecurityConfig {
 这里充分体现了流式编程的设计思想，我们可以通过链式调用的方式，一步一步配置 Spring Security 的功能。
 
 - `authorizeHttpRequests` 配置 URL 的访问权限。例如，对于 `admin/**` 下的 URL，只有管理员才能访问。某些网页，必须登录之后才可访问。
-- `csrf` 配置 CSRF 保护。CSRF（跨站请求伪造）是一种网络攻击方式，Spring Security 提供了 CSRF 保护。可以配置对部分 POST
-  请求忽略保护。
+- `csrf` 配置 CSRF 保护。CSRF（跨站请求伪造）是一种网络攻击方式，Spring Security 提供了 CSRF 保护。可以配置对部分 POST 请求忽略保护。
 - `formLogin` 配置登录页面。可以自定义用户登录页面的 URL。
 - `logout` 配置登出页面。可以自定义用户登出页面的 URL。
 - `rememberMe` 配置记住我功能。利用浏览器的 Cookie 机制，实现用户的自动登录。
@@ -429,9 +405,10 @@ public class WebSecurityConfig {
 另外，考虑到要兼顾数据库的安全性，我们对用户密码进行了加密，使用了 BCrypt 加密算法。
 
 ```java
+
 @Bean
 public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
+  return new BCryptPasswordEncoder();
 }
 ```
 
@@ -441,12 +418,11 @@ public PasswordEncoder passwordEncoder() {
 
 一些可能的扩展和改进：
 
-- 代码评测功能的优化，例如支持更多语言，支持更多测试点，支持更多的编译器和运行环境。一个正在尝试的设计是把运行放在 Docker
-  容器中，这样可以更好地隔离环境。<font color="red">（可能会在提交前实现）</font>
+- 代码评测功能的优化，例如支持更多语言，支持更多测试点，支持更多的编译器和运行环境。一个正在尝试的设计是把运行放在 Docker 容器中，这样可以更好地隔离环境。<font color="red">（可能会在提交前实现）</font>
 - 用户管理功能的优化，例如支持更多的用户操作，支持更多的用户信息。也许可以设计用户关注和私信聊天的功能。
 - 问题管理优化，例如设计题目的标签和分类。
 - 网站的美化，例如设计更多的动画效果，更多的交互效果。当然，这方面属于前端的工作，不是本次 Java 课程设计的重点。
-- 性能优化，例如对数据库的查询进行优化，对代码评测的速度进行优化。这方面需要更多的测试和实验。
+- 性能优化，例如对数据库的查询进行优化，对代码评测的速度进行优化，以及对并发请求的处理等等，这方面需要更多的测试和实验。
 
 ---
 
@@ -460,8 +436,6 @@ public PasswordEncoder passwordEncoder() {
 
 - 我们学习了使用 maven 来管理项目和第三方依赖，合理地调用第三方依赖可以避免重复造轮子，提高代码效率。
 
-- 我们学习了如何使用 Spring Security 来实现用户的认证和授权，如何使用 Thymeleaf 模板引擎来渲染页面，也学习了如何使用 JPA
-  框架来操作数据库。
+- 我们学习了如何使用 Spring Security 来实现用户的认证和授权，如何使用 Thymeleaf 模板引擎来渲染页面，也学习了如何使用 JPA 框架来操作数据库。
 
-总之，这次实习作业让我们对 SpringBoot 框架有了更深入的了解，也让我们对 Java Web 开发有了更多的实践经验。希望我们的 OICraft
-项目能够为大家提供一些参考。
+总之，这次实习作业让我们对 SpringBoot 框架有了更深入的了解，也让我们对 Java Web 开发有了更多的实践经验。希望我们的 OICraft 项目能够为大家提供一些参考。

@@ -19,13 +19,4 @@ public interface CheckpointDao {
      */
     @SuppressWarnings("UnusedReturnValue")
     Checkpoint updateCheckpoint(Checkpoint checkpoint);
-
-    /**
-     * Get all checkpoints corresponding to a submission
-     *
-     * @param id the ID of the submission
-     * @return A list of {@code Checkpoint} classes that correspond to the submission.
-     * If the submission has no checkpoint, an empty list will be returned.
-     */
-    Iterable<Checkpoint> getCheckpointsBySubmissionId(int id);
 }

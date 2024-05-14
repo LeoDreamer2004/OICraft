@@ -26,6 +26,8 @@ public class Submission {
     @OneToMany(mappedBy = "submission", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<Checkpoint> checkpoints;
 
+    private String adviceAI;
+
     protected Submission() {
     }
 

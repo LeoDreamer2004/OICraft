@@ -6,7 +6,6 @@
     <th:block th:replace="~{base :: baseStyle}"></th:block>
     <link th:replace="~{problem/problem :: problemStyle}">
     <th:block th:replace="~{base :: markdown}"></th:block>
-    <th:block th:replace="~{base :: highlight}"></th:block>
 </head>
 <body>
 <div class="header">
@@ -25,14 +24,22 @@
     <div th:replace="~{problem/list :: nav}"></div>
 </div>
 <main role="main" class="container">
-    <h5>讨论区</h5>
+    <h3 class="underlined-title mb-3">讨论区</h3>
     <div th:each="post: ${problem.posts}" class="card mb-3">
 
         <div class="card-header">
-            <a th:text="${post.title}" th:href="${post/post.id}"></a>
+            <a th:unless="${post.author eq null}" th:href="@{/profile/{id}(id=${post.author.id})}" style="text-decoration: none">
+                <img class="avatar" th:src="${post.author.avatarPath}" width="30" height="30" alt="avatar">
+            </a>
+            <a th:unless="${post.author eq null}" th:class="${post.author.gradeString}" th:text="${post.author.name}"
+               th:href="@{/profile/{id}(id=${post.author.id})}"></a>
+            <span th:if="${post.author eq null}" class="DELETED">账户已注销</span>
+            <a th:text="${post.title}" class="ml-3" th:href="@{/post/{id}(id=${post.id})}"></a>
+            <span th:text="${post.createTime}" style="float: right;"></span>
         </div>
-        <div class="card-body" th:utext="${post.content}"></div>
+        <div class="card-body markdown" th:utext="${post.content}"></div>
     </div>
 </main>
+<th:block th:replace="~{base :: runMarkdown}"></th:block>
 </body>
 </html>
