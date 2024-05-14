@@ -104,7 +104,6 @@ public class ProblemController {
         User user = userService.getUserByRequest(request);
         if (user == null)
             return new RedirectView("/login");
-        // FIXME: Limit the length of title
         Problem problem = new Problem(user, title, description, inputFormat, outputFormat,
                 difficultyMap.get(difficulty), timeLimit, memoryLimit * 1024);
         problem = problemDao.createProblem(problem);
@@ -171,7 +170,6 @@ public class ProblemController {
             return new RedirectView("error/404");
         if (!canEdit(problem))
             return new RedirectView("error/403");
-        // FIXME: Limit the length of title
         problem.setTitle(title);
         problem.setDescription(description);
         problem.setInputFormat(inputFormat);

@@ -7,12 +7,13 @@ import org.springframework.lang.Nullable;
 public interface UserService {
 
     /**
-     * Create a new user, with password encoded
+     * Create a new user
      *
-     * @param user The user to create
+     * @param username The name of the user
+     * @param password The raw password of the user
      * @return The created user object
      */
-    User createUser(User user);
+    User createUser(String username, String password);
 
     /**
      * Get user by request

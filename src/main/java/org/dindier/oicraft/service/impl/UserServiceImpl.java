@@ -65,12 +65,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUser(User user) {
-        if (!user.isAdmin()) {
-            user.setGrade(User.Grade.BEGINNER);
-            user.setExperience(0);
-        }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    public User createUser(String username, String password) {
+        User user = new User(username, passwordEncoder.encode(password),
+                User.Role.USER, User.Grade.BEGINNER);
+        user.setExperience(0);
         return userDao.createUser(user);
     }
 
