@@ -199,6 +199,24 @@ public class ProblemController {
         return new RedirectView("/problems");
     }
 
+    @GetMapping("/problem/{id}/posts")
+    public ModelAndView posts(@PathVariable int id) {
+        Problem problem = problemDao.getProblemById(id);
+        if (problem == null)
+            return new ModelAndView("error/404");
+        return new ModelAndView("post/list")
+                .addObject("problem", problem);
+    }
+
+    @GetMapping("/problem/{id}/post/new")
+    public ModelAndView newPost(@PathVariable int id) {
+        Problem problem = problemDao.getProblemById(id);
+        if (problem == null)
+            return new ModelAndView("error/404");
+        return new ModelAndView("post/new")
+                .addObject("problem", problem);
+    }
+
     @GetMapping("/problem/{id}/edit/checkpoints")
     public ModelAndView editCheckpoints(@PathVariable int id) {
         Problem problem = problemDao.getProblemById(id);

@@ -6,7 +6,7 @@
     <th:block th:replace="~{base :: baseStyle}"></th:block>
     <th:block th:replace="~{base :: markdown}"></th:block>
     <th:block th:replace="~{base :: highlight}"></th:block>
-    <link rel="stylesheet" href="/css/problem.css">
+    <link rel="stylesheet" href="/css/problem.css" th:fragment="problemStyle">
 </head>
 <body>
 <div class="header">
@@ -107,6 +107,13 @@
 
                 <a class="iconfont icon-toupiao" th:href="@{/problem/{id}/history(id=${problem.id})}"
                    style="text-decoration: none"> 提交记录</a>
+            </div>
+            <div class="card my-card mt-3">
+                <h5 class="mb-3 underlined-title">讨论区</h5>
+                <div>
+                <a th:href="@{/problem/{id}/posts(id=${problem.id})}" class="mr-2" style="text-decoration: none">查看帖子</a>
+                <a th:href="@{/problem/{id}/post/new(id=${problem.id})}" style="text-decoration: none">发布帖子</a>
+                </div>
             </div>
             <div class="card my-card mt-3" th:if="${canEdit}">
                 <h5 class="mb-3 underlined-title">开发者选项</h5>
