@@ -6,15 +6,18 @@ import org.dindier.oicraft.model.Post;
 public interface PostDao {
     /**
      * Get the post by id
+     *
      * @param id The post id
-     * @return post
+     * @return The post with the given id, or {@code null} if not found
      */
     @Nullable
     Post getPostById(int id);
 
     /**
      * Create a post
+     *
      * @param post The post to create
+     * @return The created post with data updated
      */
-    void createPost(Post post);
+    Post createPost(Post post);
 }

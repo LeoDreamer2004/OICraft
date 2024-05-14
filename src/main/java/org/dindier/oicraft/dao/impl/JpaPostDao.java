@@ -1,29 +1,27 @@
 package org.dindier.oicraft.dao.impl;
 
 import org.dindier.oicraft.dao.PostDao;
+import org.dindier.oicraft.dao.repository.PostRepository;
 import org.dindier.oicraft.model.Post;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository("postDao")
-public class JpaPostDao implements PostDao  {
-    private final JpaProblemDao problemDao;
-    private final JpaUserDao userDao;
+public class JpaPostDao implements PostDao {
+    private final PostRepository postRepository;
 
-    public JpaPostDao(JpaProblemDao problemDao, JpaUserDao userDao) {
-        this.problemDao = problemDao;
-        this.userDao = userDao;
+    @Autowired
+    public JpaPostDao(PostRepository postRepository) {
+        this.postRepository = postRepository;
     }
 
     @Override
     public Post getPostById(int id) {
-        // TODO: Implement this method
-
-        return new Post("你好", "$$ 5 + 3 = 8 $$", problemDao.getProblemById(1),
-                userDao.getUserById(1));
+        return postRepository.findById(id).orElse(null);
     }
 
     @Override
-    public void createPost(Post post) {
-        // TODO: Implement this method
+    public Post createPost(Post post) {
+        return postRepository.save(post);
     }
 }

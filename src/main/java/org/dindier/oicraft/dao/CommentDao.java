@@ -5,7 +5,9 @@ import org.dindier.oicraft.model.Comment;
 public interface CommentDao {
     /**
      * Create a comment
+     *
      * @param comment The comment to create
+     * @return The created comment with data updated
      */
-    void createComment(Comment comment);
+    Comment createComment(Comment comment);
 }

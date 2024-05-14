@@ -100,6 +100,7 @@ public class AIAdapter {
         }
 
         @Override
+        @SuppressWarnings("BusyWait")
         public void run() {
             JSONObject request = generateRequest(question);
             webSocket.send(request.toString());
@@ -163,7 +164,7 @@ public class AIAdapter {
         }
     }
 
-    private class Text {
+    private static class Text {
         String content;
         String role;
     }
@@ -174,6 +175,7 @@ public class AIAdapter {
      * @param question the question to ask
      * @return the answer from the AI service
      */
+    @SuppressWarnings("BusyWait")
     public String requestAI(String question) throws Exception {
         String authUrl = getAuthUrl();
         OkHttpClient client = new OkHttpClient();
