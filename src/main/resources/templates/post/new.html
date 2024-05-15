@@ -22,16 +22,17 @@
 </div>
 <main role="main" class="container">
     <!-- Input code -->
-
-    <form role="form" class="form" th:action="@{/problem/{id}/post/new(id=${problem.id})}" method="post">
-        <label for="title">标题</label>
-        <input id="title" name="title" type="text" class="form-control" maxlength="100" required>
-        <label for="content" class="mt-3">内容</label>
-        <textarea id="content" name="content" type="text" class="form-control"
-                  style="resize: none; height: 400px" maxlength="10000" required></textarea>
-        <button class="btn btn-secondary mt-3" type="reset">重置</button>
-        <button class="btn btn-primary mt-3" type="submit">发布</button>
-    </form>
+    <div class="card my-card">
+        <form role="form" class="form" th:action="@{/problem/{id}/post/new(id=${problem.id})}" method="post">
+            <label for="title">标题</label>
+            <input id="title" name="title" type="text" class="form-control" maxlength="100" required>
+            <label for="content" class="mt-3">内容</label>
+            <textarea id="content" name="content" type="text" class="form-control"
+                      style="resize: none; height: 400px" maxlength="10000" required></textarea>
+            <button class="btn btn-secondary mt-3" type="reset">重置</button>
+            <button class="btn btn-primary mt-3" type="submit">发布</button>
+        </form>
+    </div>
 </main>
 </body>
 </html>

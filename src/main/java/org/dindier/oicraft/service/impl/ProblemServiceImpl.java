@@ -25,7 +25,9 @@ import org.dindier.oicraft.dao.UserDao;
 import org.dindier.oicraft.model.*;
 import org.dindier.oicraft.service.ProblemService;
 import org.dindier.oicraft.util.code.CodeChecker;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -117,7 +119,7 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
-    public int hasPassed(User user, Problem problem) {
+    public int hasPassed(User user, @NotNull Problem problem) {
         if (user == null) return 0;
         if (userDao.getPassedProblemsByUserId(user.getId()).contains(problem)) return 1;
         if (!userDao.getTriedProblemsByUserId(user.getId()).contains(problem)) return 0;
@@ -151,7 +153,7 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
-    public byte[] getProblemMarkdown(Problem problem) {
+    public String getProblemMarkdown(Problem problem) {
         StringBuilder sb = new StringBuilder();
         sb.append("# ").append(problem.getTitle()).append("\n\n")
                 .append("## 题目描述\n\n").append(problem.getDescription()).append("\n\n")
@@ -164,7 +166,7 @@ public class ProblemServiceImpl implements ProblemService {
                     .append("##### 输出\n\n").append("```\n")
                     .append(ioPair.getOutput()).append(("\n```\n\n"));
         }
-        return sb.toString().getBytes();
+        return sb.toString();
     }
 
     @Override
@@ -210,7 +212,7 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
-    public int getHistoryScore(User user, Problem problem) {
+    public int getHistoryScore(User user, @NonNull Problem problem) {
         int score = 0;
         if (user == null) return 0;
         Iterable<Submission> submissions = submissionDao.getSubmissionsByUserId(user.getId());
@@ -222,6 +224,10 @@ public class ProblemServiceImpl implements ProblemService {
         return score;
     }
 
+    @Override
+    public boolean canEdit(User user, @NonNull Problem problem) {
+        return (user != null) && ((user.isAdmin()) || user.equals(problem.getAuthor()));
+    }
     @Autowired
     private void setSubmissionDao(SubmissionDao submissionDao) {
         this.submissionDao = submissionDao;

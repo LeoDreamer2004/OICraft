@@ -73,7 +73,7 @@ public class ProblemController {
                 .addObject("problem", problem)
                 .addObject("samples", problemDao.getSamplesById(id))
                 .addObject("author", problem.getAuthor())
-                .addObject("canEdit", canEdit(problem))
+                .addObject("canEdit", problemService.canEdit(user, problem))
                 .addObject("historyScore", problemService.getHistoryScore(user, problem))
                 .addObject("canSubmit", !problemDao.getTestsById(id).isEmpty());
     }
@@ -112,7 +112,8 @@ public class ProblemController {
         Problem problem = problemDao.getProblemById(id);
         if (problem == null)
             return ResponseEntity.badRequest().body("No such problem");
-        InputStreamSource inputStreamSource = new ByteArrayResource(problemService.getProblemMarkdown(problem));
+        InputStreamSource inputStreamSource =
+                new ByteArrayResource(problemService.getProblemMarkdown(problem).getBytes());
         return ResponseEntity.ok().header("Content-Disposition",
                         "attachment; filename=\"%s.md\"".formatted(problem.getIdString()))
                 .body(inputStreamSource);
@@ -140,8 +141,11 @@ public class ProblemController {
 
     @GetMapping("/problem/{id}/edit")
     public ModelAndView edit(@PathVariable int id) {
+        User user = userService.getUserByRequest(request);
         Problem problem = problemDao.getProblemById(id);
-        if (!canEdit(problem))
+        if (problem == null)
+            return new ModelAndView("error/404");
+        if (!problemService.canEdit(user, problem))
             return new ModelAndView("error/403");
         return new ModelAndView("problem/edit")
                 .addObject("problem", problem);
@@ -156,10 +160,11 @@ public class ProblemController {
                                     @RequestParam("difficulty") String difficulty,
                                     @RequestParam("timeLimit") int timeLimit,
                                     @RequestParam("memoryLimit") int memoryLimit) {
+        User user = userService.getUserByRequest(request);
         Problem problem = problemDao.getProblemById(id);
         if (problem == null)
             return new RedirectView("error/404");
-        if (!canEdit(problem))
+        if (!problemService.canEdit(user, problem))
             return new RedirectView("error/403");
         problem.setTitle(title);
         problem.setDescription(description);
@@ -174,8 +179,11 @@ public class ProblemController {
 
     @GetMapping("/problem/{id}/delete")
     public ModelAndView delete(@PathVariable int id) {
+        User user = userService.getUserByRequest(request);
         Problem problem = problemDao.getProblemById(id);
-        if (!canEdit(problem))
+        if (problem == null)
+            return new ModelAndView("error/404");
+        if (!problemService.canEdit(user, problem))
             return new ModelAndView("error/403");
         return new ModelAndView("/problem/delete").
                 addObject("problem", problem);
@@ -183,8 +191,11 @@ public class ProblemController {
 
     @PostMapping("/problem/{id}/delete")
     public RedirectView deleteConfirm(@PathVariable int id) {
+        User user = userService.getUserByRequest(request);
         Problem problem = problemDao.getProblemById(id);
-        if (!canEdit(problem))
+        if (problem == null)
+            return new RedirectView("error/404");
+        if (!problemService.canEdit(user, problem))
             return new RedirectView("error/403");
         problemDao.deleteProblem(problem);
         return new RedirectView("/problems");
@@ -192,8 +203,11 @@ public class ProblemController {
 
     @GetMapping("/problem/{id}/edit/checkpoints")
     public ModelAndView editCheckpoints(@PathVariable int id) {
+        User user = userService.getUserByRequest(request);
         Problem problem = problemDao.getProblemById(id);
-        if (!canEdit(problem))
+        if (problem == null)
+            return new ModelAndView("error/404");
+        if (!problemService.canEdit(user, problem))
             return new ModelAndView("error/403");
         return new ModelAndView("/problem/editCheckpoints")
                 .addObject("problem", problem);
@@ -202,11 +216,12 @@ public class ProblemController {
     @PostMapping("/problem/{id}/edit/checkpoints/file")
     public ModelAndView editCheckpointsConfirm(@PathVariable int id,
                                                @RequestParam("file") MultipartFile file) {
+        User user = userService.getUserByRequest(request);
         Problem problem = problemDao.getProblemById(id);
-        if (!canEdit(problem))
-            return new ModelAndView("error/403");
         if (problem == null)
             return new ModelAndView("error/404");
+        if (!problemService.canEdit(user, problem))
+            return new ModelAndView("error/403");
         String errorMsg = null;
         try {
             InputStream inputStream = file.getInputStream();
@@ -229,8 +244,11 @@ public class ProblemController {
                                                @RequestParam("output") String output,
                                                @RequestParam("type") String type,
                                                @RequestParam("score") int score) {
+        User user = userService.getUserByRequest(request);
         Problem problem = problemDao.getProblemById(id);
-        if (!canEdit(problem))
+        if (problem == null)
+            return new RedirectView("error/404");
+        if (!problemService.canEdit(user, problem))
             return new RedirectView("error/403");
         Map<String, IOPair.Type> typeMap = Map.of(
                 "sample", IOPair.Type.SAMPLE,
@@ -249,11 +267,6 @@ public class ProblemController {
         inputStream.close();
         return ResponseEntity.ok().header("Content-Disposition",
                 "attachment; filename=\"checkpoints.zip\"").body(bytes);
-    }
-
-    private boolean canEdit(Problem problem) {
-        User user = userService.getUserByRequest(request);
-        return (user != null) && ((user.isAdmin()) || user.equals(problem.getAuthor()));
     }
 
     @Autowired

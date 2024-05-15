@@ -2,6 +2,7 @@ package org.dindier.oicraft.service;
 
 import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.User;
+import org.springframework.lang.NonNull;
 
 import java.util.List;
 import java.util.Map;
@@ -21,15 +22,15 @@ public interface ProblemService {
      * 0 if the user hasn't submitted,
      * -1 if the user hasn't passed
      */
-    int hasPassed(User user, Problem problem);
+    int hasPassed(User user, @NonNull Problem problem);
 
     /**
-     * Return a byte array of the markdown file of the problem
+     * Return a string of the markdown file of the problem
      *
      * @param problem The problem to get the markdown from
-     * @return The byte array of the markdown file
+     * @return The string of the markdown file
      */
-    byte[] getProblemMarkdown(Problem problem);
+    String getProblemMarkdown(Problem problem);
 
     /**
      * Return the highest score of the user's history submission
@@ -38,7 +39,15 @@ public interface ProblemService {
      * @param problem The problem to get the history score from
      * @return The highest score of the user's history submission
      */
-    int getHistoryScore(User user, Problem problem);
+    int getHistoryScore(User user, @NonNull Problem problem);
+
+    /**
+     * Return whether the user can edit the problem
+     * @param user The user to check
+     * @param problem  The problem to check
+     * @return Whether the user can edit the problem
+     */
+    boolean canEdit(User user, @NonNull Problem problem);
 
     /**
      * Get all problems with a certain user's pass info

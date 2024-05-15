@@ -1,5 +1,9 @@
 package org.dindier.oicraft;
 
+/*
+ * OICraft 2024 for Java Programming class in 2024 Spring
+ */
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
