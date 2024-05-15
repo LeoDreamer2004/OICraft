@@ -35,6 +35,7 @@ create table if not exists Problem
     memory_limit  int                             not null,
     submit        int default 0,
     passed        int default 0,
+    adviceai      text,
     author_id     int,
     foreign key (author_id) references User (id)
 );
@@ -55,13 +56,14 @@ create table if not exists IOPair
 
 create table if not exists Submission
 (
-    id         int primary key auto_increment,
-    code       text                                 not null,
-    language   enum ('C', 'CPP', 'JAVA', 'PYTHON')  not null,
-    status     enum ('PASSED', 'FAILED', 'WAITING') not null,
-    user_id    int                                  not null,
-    score      int                                  not null,
-    problem_id int                                  not null,
+    id                  int primary key auto_increment,
+    code                text                                 not null,
+    language            enum ('C', 'CPP', 'JAVA', 'PYTHON')  not null,
+    status              enum ('PASSED', 'FAILED', 'WAITING') not null,
+    user_id             int                                  not null,
+    score               int                                  not null,
+    problem_id          int                                  not null,
+    ai_advice_requested boolean default false,
     foreign key (user_id) references User (id),
     foreign key (problem_id) references Problem (id)
 );

@@ -58,14 +58,16 @@ public class AIAdapter {
     private class GetAIResponseThread extends Thread {
         private final WebSocket webSocket;
         private final String question;
+        private final String prompt;
         boolean closeFlag = false;
 
-        private GetAIResponseThread(WebSocket webSocket, String question) {
+        private GetAIResponseThread(WebSocket webSocket, String prompt, String question) {
             this.webSocket = webSocket;
+            this.prompt = prompt;
             this.question = question;
         }
 
-        private JSONObject generateRequest(String question) {
+        private JSONObject generateRequest(String prompt, String question) {
             JSONObject request = new JSONObject();
 
             JSONObject header = new JSONObject();
@@ -73,23 +75,14 @@ public class AIAdapter {
             header.put("uid", UUID.randomUUID().toString().substring(0, 10));
 
             JSONObject chat = new JSONObject();
-            chat.put("domain", "generalv2");
+            chat.put("domain", "generalv3.5");
             chat.put("temperature", 0.5);
-            chat.put("max_tokens", 4096);
+            chat.put("max_tokens", 2048);
 
             JSONObject parameter = new JSONObject();
             parameter.put("chat", chat);
 
-            JSONArray text = new JSONArray();
-            JSONObject jsonText = new JSONObject();
-            jsonText.put("content", question);
-            jsonText.put("role", "user");
-            text.put(jsonText);
-
-            JSONObject message = new JSONObject();
-            message.put("text", text);
-            JSONObject payload = new JSONObject();
-            payload.put("message", message);
+            JSONObject payload = getPayLoad(prompt, question);
 
             request.put("header", header);
             request.put("parameter", parameter);
@@ -97,10 +90,28 @@ public class AIAdapter {
             return request;
         }
 
+        private static @NotNull JSONObject getPayLoad(String prompt, String question) {
+            JSONArray text = new JSONArray();
+            JSONObject jsonSystemText = new JSONObject();
+            jsonSystemText.put("content", prompt);
+            jsonSystemText.put("role", "system");
+            text.put(jsonSystemText);
+            JSONObject jsonUserText = new JSONObject();
+            jsonUserText.put("content", question);
+            jsonUserText.put("role", "user");
+            text.put(jsonUserText);
+
+            JSONObject message = new JSONObject();
+            message.put("text", text);
+            JSONObject payload = new JSONObject();
+            payload.put("message", message);
+            return payload;
+        }
+
         @Override
         @SuppressWarnings("BusyWait")
         public void run() {
-            JSONObject request = generateRequest(question);
+            JSONObject request = generateRequest(prompt, question);
             webSocket.send(request.toString());
             do {
                 try {
@@ -116,15 +127,17 @@ public class AIAdapter {
     private class AIWebSocketListener extends WebSocketListener {
         final StringBuilder answer = new StringBuilder();
         private final String question;
+        private final String prompt;
         private GetAIResponseThread getAIResponseThread;
 
-        private AIWebSocketListener(String question) {
+        private AIWebSocketListener(String prompt, String question) {
             this.question = question;
+            this.prompt = prompt;
         }
 
         @Override
         public void onOpen(@NotNull WebSocket webSocket, @NotNull Response response) {
-            getAIResponseThread = new GetAIResponseThread(webSocket, question);
+            getAIResponseThread = new GetAIResponseThread(webSocket, prompt, question);
             getAIResponseThread.start();
         }
 
@@ -170,16 +183,17 @@ public class AIAdapter {
     /**
      * Request the AI service
      *
+     * @param prompt   the prompt for AI. It should describe the role and ability of the AI
      * @param question the question to ask
      * @return the answer from the AI service
      */
     @SuppressWarnings("BusyWait")
-    public String requestAI(String question) throws Exception {
+    public String requestAI(String prompt, String question) throws Exception {
         String authUrl = getAuthUrl();
         OkHttpClient client = new OkHttpClient();
         String url = authUrl.replace("http://", "ws://").replace("https://", "wss://");
         Request request = new Request.Builder().url(url).build();
-        AIWebSocketListener listener = new AIWebSocketListener(question);
+        AIWebSocketListener listener = new AIWebSocketListener(prompt, question);
         client.newWebSocket(request, listener);
         while (listener.getAIResponseThread == null || !listener.getAIResponseThread.closeFlag) {
             Thread.sleep(100);  // Wait for the last message to be received

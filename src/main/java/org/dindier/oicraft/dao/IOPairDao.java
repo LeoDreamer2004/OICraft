@@ -11,6 +11,7 @@ public interface IOPairDao {
      * @param ioPair the IOPair to create
      * @return A {@code IOPair} class with the IOPair's ID set.
      */
+    @SuppressWarnings("UnusedReturnValue")
     IOPair createIOPair(IOPair ioPair);
 
     /**
@@ -19,6 +20,7 @@ public interface IOPairDao {
      * @param ioPair the IOPair to update
      * @return A {@code IOPair} class with updated information.
      */
+    @SuppressWarnings("unused")
     IOPair updateIOPair(IOPair ioPair);
 
     /**
@@ -34,6 +36,7 @@ public interface IOPairDao {
      * @param id the ID of the IOPair
      * @return A {@code IOPair} class if the IOPair exists, {@code null} otherwise.
      */
+    @SuppressWarnings("unused")
     IOPair getIOPairById(int id);
 
     /**
@@ -42,6 +45,7 @@ public interface IOPairDao {
      * @param ioPairs the list of IOPairs to add
      * @return A list of {@code IOPair} classes with the IOPair's ID set.
      */
+    @SuppressWarnings("UnusedReturnValue")
     Iterable<IOPair> addIOPairs(List<IOPair> ioPairs);
 
     /**

@@ -19,11 +19,14 @@ public interface PostDao {
      * @param post The post to create
      * @return The created post with data updated
      */
+    @SuppressWarnings("UnusedReturnValue")
     Post createPost(Post post);
 
     /**
      * Delete a post
+     *
      * @param post The post to delete
+     * @implNote This method should also delete all the comments of the post
      */
     void deletePost(Post post);
 }
