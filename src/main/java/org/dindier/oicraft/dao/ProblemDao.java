@@ -55,6 +55,7 @@ public interface ProblemDao {
      * @param problem the problem to update
      * @return the updated problem
      */
+    @SuppressWarnings("UnusedReturnValue")
     Problem updateProblem(Problem problem);
 
     /**
@@ -72,6 +73,7 @@ public interface ProblemDao {
      * @return the list of submissions for the problem,
      * if the problem not exists, return an empty list
      */
+    @SuppressWarnings("unused")
     List<Submission> getAllSubmissions(int problemId);
 
     /**
@@ -81,6 +83,7 @@ public interface ProblemDao {
      * @return the list of passed submissions for the problem,
      * if the problem not exists, return an empty list
      */
+    @SuppressWarnings("unused")
     List<Submission> getPassedSubmissions(int problemId);
 
     /**
@@ -90,6 +93,7 @@ public interface ProblemDao {
      * @return the count of submissions for the problem,
      * if the problem not exists, return 0
      */
+    @SuppressWarnings("unused")
     int getSubmissionCount(int problemId);
 
     /**
@@ -99,5 +103,6 @@ public interface ProblemDao {
      * @return the count of passed submissions for the problem,
      * if the problem not exists, return 0
      */
+    @SuppressWarnings("unused")
     int getPassedSubmissionCount(int problemId);
 }

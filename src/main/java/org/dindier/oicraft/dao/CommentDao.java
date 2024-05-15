@@ -7,6 +7,7 @@ public interface CommentDao {
 
     /**
      * Get the comment by id
+     *
      * @param id The comment id
      * @return The comment with the given id, or {@code null} if not found
      */
@@ -19,6 +20,7 @@ public interface CommentDao {
      * @param comment The comment to create
      * @return The created comment with data updated
      */
+    @SuppressWarnings("UnusedReturnValue")
     Comment createComment(Comment comment);
 
     /**

@@ -13,7 +13,7 @@ public class AITest {
     @Test
     public void testConnection() {
         try {
-            String res = aiAdapter.requestAI("你好");
+            String res = aiAdapter.requestAI("", "你好");
             System.out.println(res);
         } catch (Exception e) {
             throw new RuntimeException(e);

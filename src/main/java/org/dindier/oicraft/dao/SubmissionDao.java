@@ -22,6 +22,7 @@ public interface SubmissionDao {
      * @implNote This method should also update the corresponding problem's passed count
      * and add 10 points to the user's experience if the submission is passed.
      */
+    @SuppressWarnings("UnusedReturnValue")
     Submission updateSubmission(Submission submission);
 
     /**
@@ -48,6 +49,7 @@ public interface SubmissionDao {
      * @return A list of all {@code Submission} classes in the database.
      * If there is no submission, an empty list will be returned.
      */
+    @SuppressWarnings("unused")
     Iterable<Submission> getAllSubmissions();
 
     /**

@@ -11,8 +11,8 @@ values (1, '1 2', '3', 100, 'SAMPLE'),
        (1, '2 3', '5', 100, 'SAMPLE'),
        (1, '5 7', '12', 100, 'TEST');
 
-insert into submission(user_id, problem_id, code, language, status, score)
-values (1, 1, 'a, b = map(input().split())\nprint(a + b)', 'PYTHON', 'PASSED', 100);
+insert into submission(user_id, problem_id, code, language, status, score, ai_advice_requested)
+values (1, 1, 'a, b = map(input().split())\nprint(a + b)', 'PYTHON', 'PASSED', 100, false);
 
 insert into checkpoint(submission_id, io_pair_id, status, used_time, used_memory, info)
 values (1, 1, 'P', 10, 256, 'Accepted'),

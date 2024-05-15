@@ -26,6 +26,8 @@ public class Submission {
     @OneToMany(mappedBy = "submission", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<Checkpoint> checkpoints;
 
+    private boolean aiAdviceRequested;
+
     private String adviceAI;
 
     protected Submission() {
@@ -76,6 +78,7 @@ public class Submission {
         this.code = code;
         this.language = language;
         this.status = Status.WAITING;
+        this.aiAdviceRequested = false;
     }
 
     public int getProblemId() {

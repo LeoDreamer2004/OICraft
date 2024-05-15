@@ -29,6 +29,7 @@ public interface UserDao {
      * @return A {@code User} class with updated information.
      * @implNote The user's grade will be updated according to the user's experience.
      */
+    @SuppressWarnings("UnusedReturnValue")
     User updateUser(User user);
 
     /**
@@ -100,6 +101,7 @@ public interface UserDao {
      * @return A {@code User} class with updated experience.
      * @implNote The user's grade will be updated according to the user's experience.
      */
+    @SuppressWarnings("UnusedReturnValue")
     User addExperience(User user, int experience);
 
 }
