@@ -20,8 +20,7 @@ public interface CommentDao {
      * @param comment The comment to create
      * @return The created comment with data updated
      */
-    @SuppressWarnings("UnusedReturnValue")
-    Comment createComment(Comment comment);
+    Comment saveComment(Comment comment);
 
     /**
      * Delete a comment

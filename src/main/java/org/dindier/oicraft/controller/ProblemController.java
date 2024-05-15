@@ -1,9 +1,6 @@
 package org.dindier.oicraft.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.dindier.oicraft.dao.IOPairDao;
-import org.dindier.oicraft.dao.ProblemDao;
-import org.dindier.oicraft.dao.SubmissionDao;
 import org.dindier.oicraft.model.*;
 import org.dindier.oicraft.service.IOPairService;
 import org.dindier.oicraft.service.ProblemService;
@@ -30,9 +27,6 @@ import java.util.Map;
 
 @Controller
 public class ProblemController {
-    private ProblemDao problemDao;
-    private SubmissionDao submissionDao;
-    private IOPairDao ioPairDao;
     private UserService userService;
     private ProblemService problemService;
     private IOPairService ioPairService;
@@ -69,17 +63,17 @@ public class ProblemController {
 
     @GetMapping("/problem/{id}")
     public ModelAndView problem(@PathVariable int id) {
-        Problem problem = problemDao.getProblemById(id);
+        Problem problem = problemService.getProblemById(id);
         if (problem == null)
             return new ModelAndView("error/404");
         User user = userService.getUserByRequest(request);
         return new ModelAndView("problem/problem")
                 .addObject("problem", problem)
-                .addObject("samples", problemDao.getSamplesById(id))
+                .addObject("samples", problemService.getSamples(problem))
                 .addObject("author", problem.getAuthor())
                 .addObject("canEdit", problemService.canEdit(user, problem))
                 .addObject("historyScore", problemService.getHistoryScore(user, problem))
-                .addObject("canSubmit", !problemDao.getTestsById(id).isEmpty());
+                .addObject("canSubmit", !problemService.getTests(problem).isEmpty());
     }
 
     @GetMapping("/problem/new")
@@ -101,19 +95,19 @@ public class ProblemController {
             return new RedirectView("/login");
         Problem problem = new Problem(user, title, description, inputFormat, outputFormat,
                 Problem.Difficulty.fromString(difficulty), timeLimit, memoryLimit * 1024);
-        problem = problemDao.createProblem(problem);
+        problem = problemService.saveProblem(problem);
         return new RedirectView("/problem/" + problem.getId());
     }
 
     @GetMapping("/problem/{id}/submit")
     public ModelAndView submitCode(@PathVariable int id) {
         return new ModelAndView("problem/submit")
-                .addObject("problem", problemDao.getProblemById(id));
+                .addObject("problem", problemService.getProblemById(id));
     }
 
     @GetMapping("/problem/{id}/download")
     public ResponseEntity<Object> download(@PathVariable int id) {
-        Problem problem = problemDao.getProblemById(id);
+        Problem problem = problemService.getProblemById(id);
         if (problem == null)
             return ResponseEntity.badRequest().body("No such problem");
         InputStreamSource inputStreamSource =
@@ -125,9 +119,11 @@ public class ProblemController {
 
     @GetMapping("/problem/{id}/history")
     public ModelAndView history(@PathVariable int id) {
-        Iterable<Submission> submissions = submissionDao.getSubmissionsByProblemId(id);
+        Problem problem = problemService.getProblemById(id);
+        if (problem == null) return new ModelAndView("error/404");
+        Iterable<Submission> submissions = problem.getSubmissions();
         return new ModelAndView("submission/history")
-                .addObject("problem", problemDao.getProblemById(id))
+                .addObject("problem", problemService.getProblemById(id))
                 .addObject("submissions", submissions);
     }
 
@@ -136,7 +132,7 @@ public class ProblemController {
                                @RequestParam("code") String code,
                                @RequestParam("language") String language,
                                Model model) {
-        Problem problem = problemDao.getProblemById(id);
+        Problem problem = problemService.getProblemById(id);
         model.addAttribute("problem", problem);
 
         int submissionId = problemService.testCode(userService.getUserByRequest(request), problem, code, language);
@@ -146,7 +142,7 @@ public class ProblemController {
     @GetMapping("/problem/{id}/edit")
     public ModelAndView edit(@PathVariable int id) {
         User user = userService.getUserByRequest(request);
-        Problem problem = problemDao.getProblemById(id);
+        Problem problem = problemService.getProblemById(id);
         if (problem == null)
             return new ModelAndView("error/404");
         if (!problemService.canEdit(user, problem))
@@ -165,7 +161,7 @@ public class ProblemController {
                                     @RequestParam("timeLimit") int timeLimit,
                                     @RequestParam("memoryLimit") int memoryLimit) {
         User user = userService.getUserByRequest(request);
-        Problem problem = problemDao.getProblemById(id);
+        Problem problem = problemService.getProblemById(id);
         if (problem == null)
             return new RedirectView("error/404");
         if (!problemService.canEdit(user, problem))
@@ -177,14 +173,14 @@ public class ProblemController {
         problem.setDifficulty(Problem.Difficulty.fromString(difficulty));
         problem.setTimeLimit(timeLimit);
         problem.setMemoryLimit(memoryLimit * 1024);
-        problemDao.updateProblem(problem);
+        problemService.saveProblem(problem);
         return new RedirectView("/problem/" + id);
     }
 
     @GetMapping("/problem/{id}/delete")
     public ModelAndView delete(@PathVariable int id) {
         User user = userService.getUserByRequest(request);
-        Problem problem = problemDao.getProblemById(id);
+        Problem problem = problemService.getProblemById(id);
         if (problem == null)
             return new ModelAndView("error/404");
         if (!problemService.canEdit(user, problem))
@@ -196,19 +192,19 @@ public class ProblemController {
     @PostMapping("/problem/{id}/delete")
     public RedirectView deleteConfirm(@PathVariable int id) {
         User user = userService.getUserByRequest(request);
-        Problem problem = problemDao.getProblemById(id);
+        Problem problem = problemService.getProblemById(id);
         if (problem == null)
             return new RedirectView("error/404");
         if (!problemService.canEdit(user, problem))
             return new RedirectView("error/403");
-        problemDao.deleteProblem(problem);
+        problemService.deleteProblem(problem);
         return new RedirectView("/problems");
     }
 
     @GetMapping("/problem/{id}/edit/checkpoints")
     public ModelAndView editCheckpoints(@PathVariable int id) {
         User user = userService.getUserByRequest(request);
-        Problem problem = problemDao.getProblemById(id);
+        Problem problem = problemService.getProblemById(id);
         if (problem == null)
             return new ModelAndView("error/404");
         if (!problemService.canEdit(user, problem))
@@ -221,7 +217,7 @@ public class ProblemController {
     public ModelAndView editCheckpointsConfirm(@PathVariable int id,
                                                @RequestParam("file") MultipartFile file) {
         User user = userService.getUserByRequest(request);
-        Problem problem = problemDao.getProblemById(id);
+        Problem problem = problemService.getProblemById(id);
         if (problem == null)
             return new ModelAndView("error/404");
         if (!problemService.canEdit(user, problem))
@@ -249,7 +245,7 @@ public class ProblemController {
                                                @RequestParam("type") String type,
                                                @RequestParam("score") int score) {
         User user = userService.getUserByRequest(request);
-        Problem problem = problemDao.getProblemById(id);
+        Problem problem = problemService.getProblemById(id);
         if (problem == null)
             return new RedirectView("error/404");
         if (!problemService.canEdit(user, problem))
@@ -259,7 +255,7 @@ public class ProblemController {
                 "test", IOPair.Type.TEST
         );
         IOPair ioPair = new IOPair(problem, input, output, typeMap.get(type), score);
-        ioPairDao.createIOPair(ioPair);
+        ioPairService.saveIOPair(ioPair);
         return new RedirectView("/problem/" + id);
     }
 
@@ -271,21 +267,6 @@ public class ProblemController {
         inputStream.close();
         return ResponseEntity.ok().header("Content-Disposition",
                 "attachment; filename=\"checkpoints.zip\"").body(bytes);
-    }
-
-    @Autowired
-    public void setProblemDao(ProblemDao problemDao) {
-        this.problemDao = problemDao;
-    }
-
-    @Autowired
-    public void setSubmissionDao(SubmissionDao submissionDao) {
-        this.submissionDao = submissionDao;
-    }
-
-    @Autowired
-    public void setIOPairDao(IOPairDao ioPairDao) {
-        this.ioPairDao = ioPairDao;
     }
 
     @Autowired

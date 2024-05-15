@@ -1,10 +1,14 @@
 package org.dindier.oicraft.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.dindier.oicraft.dao.ProblemDao;
 import org.dindier.oicraft.dao.SubmissionDao;
 import org.dindier.oicraft.model.Checkpoint;
+import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.Submission;
+import org.dindier.oicraft.model.User;
 import org.dindier.oicraft.service.SubmissionService;
+import org.dindier.oicraft.service.UserService;
 import org.dindier.oicraft.util.ai.AIAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +37,47 @@ public class SubmissionServiceImpl implements SubmissionService {
             2. 错误代码：一段无法通过测试的代码
             3. 错误信息：测试平台对这段代码产生的错误信息，可能是 Compile Error, Runtime Error, Time Limit Exceeded, Memory Limit Exceeded, Wrong Answer 等。
             你的回答只应该包括错误分析和修改建议两部分。""";
+    private UserService userService;
+    private ProblemDao problemDao;
+
+    @Override
+    public Submission getSubmissionById(int id) {
+        return submissionDao.getSubmissionById(id);
+    }
+
+    @Override
+    public Submission saveSubmission(Submission submission) {
+        User user = submission.getUser();
+        Problem problem = submission.getProblem();
+        Submission historySubmission = getSubmissionById(submission.getId());
+
+        boolean check = true;
+        if (!submission.getStatus().equals(Submission.Status.PASSED)) {
+            check = false;
+        } else if (historySubmission != null && historySubmission.getStatus().equals(Submission.Status.PASSED)) {
+            check = false;
+        }
+        if (historySubmission == null) {
+            problem.setSubmit(problem.getSubmit() + 1);
+        }
+        if (check) {
+            problem.setPassed(problem.getPassed() + 1);
+            // add experience if the submission is passed and the user has not passed the problem
+            if (!user.getSubmissions()
+                    .stream()
+                    .filter(s -> s.getStatus().equals(Submission.Status.PASSED))
+                    .map(Submission::getProblemId)
+                    .toList().
+                    contains(submission.getProblemId())) {
+                user.setExperience(user.getExperience() + 10);
+                userService.updateUser(user);
+            }
+        }
+
+        problemDao.saveProblem(problem);
+        log.info("Submission {} saved", submission.getId());
+        return submissionDao.saveSubmission(submission);
+    }
 
     @Override
     public void getAIAdvice(Submission submission) {
@@ -78,7 +123,7 @@ public class SubmissionServiceImpl implements SubmissionService {
                 errorMessage);
 
         submission.setAiAdviceRequested(true);
-        submission = submissionDao.updateSubmission(submission);
+        submission = saveSubmission(submission);
 
         try {
             Submission finalSubmission = submission;
@@ -90,7 +135,7 @@ public class SubmissionServiceImpl implements SubmissionService {
                     waitingSubmissions.add(finalSubmission);
                     String advice = aiAdapter.requestAI(prompt, question);
                     finalSubmission.setAdviceAI(advice);
-                    submissionDao.updateSubmission(finalSubmission);
+                    saveSubmission(finalSubmission);
                     waitingSubmissions.remove(finalSubmission);
                 } catch (Exception e) {
                     log.error("Submission {} AI advice request failed: {}", finalSubmission.getId(),
@@ -111,5 +156,15 @@ public class SubmissionServiceImpl implements SubmissionService {
     @Autowired
     public void setAiAdapter(AIAdapter aiAdapter) {
         this.aiAdapter = aiAdapter;
+    }
+
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    @Autowired
+    public void setProblemDao(ProblemDao problemDao) {
+        this.problemDao = problemDao;
     }
 }

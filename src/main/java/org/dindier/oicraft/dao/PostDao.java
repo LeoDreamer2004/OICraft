@@ -14,13 +14,12 @@ public interface PostDao {
     Post getPostById(int id);
 
     /**
-     * Create a post
+     * Save a post
      *
-     * @param post The post to create
-     * @return The created post with data updated
+     * @param post The post to save
+     * @return The saved post with data updated
      */
-    @SuppressWarnings("UnusedReturnValue")
-    Post createPost(Post post);
+    Post savePost(Post post);
 
     /**
      * Delete a post

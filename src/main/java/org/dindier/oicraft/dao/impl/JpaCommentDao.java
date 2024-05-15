@@ -18,14 +18,12 @@ public class JpaCommentDao implements CommentDao {
     }
 
     @Override
-    public Comment createComment(Comment comment) {
-        log.info("User {} commented on post {}", comment.getAuthor().getName(), comment.getPost().getId());
+    public Comment saveComment(Comment comment) {
         return commentRepository.save(comment);
     }
 
     @Override
     public void deleteComment(Comment comment) {
-        log.info("Deleted a comment on post {}", comment.getPost().getId());
         commentRepository.delete(comment);
     }
 

@@ -22,10 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Date;
-import java.util.Calendar;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -37,6 +34,10 @@ public class UserServiceImpl implements UserService {
     private JavaMailSender mailSender;
     private final Map<Pair<String, String>, VerificationCode> verificationCodes = new ConcurrentHashMap<>();
     private static final long VALID_TIME = TimeUnit.MINUTES.toMillis(5);
+    private static final int INTERMEDIATE_MIN_EXP = 100;
+    private static final int ADVANCED_MIN_EXP = 200;
+    private static final int EXPERT_MIN_EXP = 300;
+
 
     @Getter
     public static class VerificationCode {
@@ -65,11 +66,52 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserById(int id) {
+        return userDao.getUserById(id);
+    }
+
+    @Override
+    public User getUserByUsername(String name) {
+        return userDao.getUserByUsername(name);
+    }
+
+    @Override
     public User createUser(String username, String password) {
         User user = new User(username, passwordEncoder.encode(password),
                 User.Role.USER, User.Grade.BEGINNER);
         user.setExperience(0);
-        return userDao.createUser(user);
+        return userDao.saveUser(user);
+    }
+
+    @Override
+    public void deleteUser(User user) {
+        log.info("Deleting user {}", user.getUsername());
+        userDao.deleteUser(user);
+    }
+
+    @Override
+    public boolean existsUser(String username) {
+        return userDao.existsUser(username);
+    }
+
+    @Override
+    public User updateUser(User user) {
+        int experience = user.getExperience();
+        if (experience > EXPERT_MIN_EXP) {
+            user.setGrade(User.Grade.EXPERT);
+        } else if (experience > ADVANCED_MIN_EXP) {
+            user.setGrade(User.Grade.ADVANCED);
+        } else if (experience > INTERMEDIATE_MIN_EXP) {
+            user.setGrade(User.Grade.INTERMEDIATE);
+        } else {
+            user.setGrade(User.Grade.BEGINNER);
+        }
+        return userDao.saveUser(user);
+    }
+
+    @Override
+    public Iterable<User> getAllUsers() {
+        return userDao.getAllUsers();
     }
 
     @Override
@@ -101,9 +143,9 @@ public class UserServiceImpl implements UserService {
         Date tomorrow = getTomorrow();
         if (lastCheckin == null || lastCheckin.before(tomorrow)) {
             log.info("User {} checked in today", user.getUsername());
-            userDao.addExperience(user, 1);
+            user.setExperience(user.getExperience() + 1);
             user.setLast_checkin(tomorrow);
-            userDao.updateUser(user);
+            updateUser(user);
         }
     }
 

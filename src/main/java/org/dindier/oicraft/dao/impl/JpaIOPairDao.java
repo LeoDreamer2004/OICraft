@@ -29,23 +29,13 @@ public class JpaIOPairDao implements IOPairDao {
     }
 
     @Override
-    public IOPair createIOPair(IOPair ioPair) {
-        ioPair = ioPairRepository.save(ioPair);
-        log.info("Create IOPair: {}", ioPair.getId());
-        return ioPair;
-    }
-
-    @Override
-    public IOPair updateIOPair(IOPair ioPair) {
-        ioPair = ioPairRepository.save(ioPair);
-        log.info("Update IOPair: {}", ioPair.getId());
-        return ioPair;
+    public IOPair saveIOPair(IOPair ioPair) {
+        return ioPairRepository.save(ioPair);
     }
 
     @Override
     public void deleteIOPair(IOPair ioPair) {
         ioPairRepository.delete(ioPair);
-        log.info("Delete IOPair: {}", ioPair.getId());
     }
 
     @Override

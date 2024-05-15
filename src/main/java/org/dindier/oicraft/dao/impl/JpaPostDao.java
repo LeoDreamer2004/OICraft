@@ -29,8 +29,7 @@ public class JpaPostDao implements PostDao {
     }
 
     @Override
-    public Post createPost(Post post) {
-        log.info("User {} created a post on problem {}", post.getAuthor().getName(), post.getProblem().getId());
+    public Post savePost(Post post) {
         return postRepository.save(post);
     }
 
@@ -39,6 +38,5 @@ public class JpaPostDao implements PostDao {
         List<Comment> comments = post.getComments();
         commentRepository.deleteAll(comments);
         postRepository.delete(post);
-        log.info("Deleted a post on problem {}", post.getProblem().getId());
     }
 }

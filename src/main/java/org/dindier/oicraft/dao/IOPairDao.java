@@ -6,22 +6,12 @@ import java.util.List;
 
 public interface IOPairDao {
     /**
-     * Create a new IOPair in the database
+     * Save a IOPair to the database
      *
      * @param ioPair the IOPair to create
      * @return A {@code IOPair} class with the IOPair's ID set.
      */
-    @SuppressWarnings("UnusedReturnValue")
-    IOPair createIOPair(IOPair ioPair);
-
-    /**
-     * Update a IOPair in the database
-     *
-     * @param ioPair the IOPair to update
-     * @return A {@code IOPair} class with updated information.
-     */
-    @SuppressWarnings("unused")
-    IOPair updateIOPair(IOPair ioPair);
+    IOPair saveIOPair(IOPair ioPair);
 
     /**
      * Delete a IOPair from the database

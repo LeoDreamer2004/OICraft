@@ -2,7 +2,6 @@ package org.dindier.oicraft.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.websocket.server.PathParam;
-import org.dindier.oicraft.dao.UserDao;
 import org.dindier.oicraft.model.User;
 import org.dindier.oicraft.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,6 @@ import org.springframework.web.servlet.view.RedirectView;
 @Controller
 public class AccountController {
 
-    private UserDao userDao;
     private UserService userService;
     private HttpServletRequest request;
 
@@ -40,7 +38,7 @@ public class AccountController {
     @PostMapping("/register")
     public RedirectView register(@RequestParam("username") String username,
                                  @RequestParam("password") String password) {
-        if (userDao.existsUser(username))
+        if (userService.existsUser(username))
             return new RedirectView("/register?error");
         User user = userService.createUser(username, password);
         return new RedirectView("/register/success/" + user.getId());
@@ -49,7 +47,7 @@ public class AccountController {
     @GetMapping("/register/success/{id}")
     public ModelAndView registerSuccess(@PathVariable int id) {
         return new ModelAndView("user/registerSuccess")
-                .addObject("user", userDao.getUserById(id));
+                .addObject("user", userService.getUserById(id));
     }
 
     @GetMapping("/email")
@@ -64,7 +62,7 @@ public class AccountController {
         if (user == null || !userService.verifyEmail(user, email, code))
             return new RedirectView("/email?error");
         user.setEmail(email);
-        userDao.updateUser(user);
+        userService.updateUser(user);
         return new ModelAndView("user/emailSuccess");
     }
 
@@ -79,7 +77,7 @@ public class AccountController {
 
     @GetMapping("/email/verification/reset")
     public Object getVerificationForReset(@PathParam("username") String username) {
-        User user = userDao.getUserByUsername(username);
+        User user = userService.getUserByUsername(username);
         if (user == null || user.getEmail() == null)
             return ResponseEntity.badRequest().body("User or email not found");
         userService.sendVerificationCode(user, user.getEmail());
@@ -95,7 +93,7 @@ public class AccountController {
     public Object forgetPassword(
             @RequestParam("username") String username,
             @RequestParam("code") String code) {
-        User user = userDao.getUserByUsername(username);
+        User user = userService.getUserByUsername(username);
         if (user == null || !userService.verifyEmail(user, user.getEmail(), code)) {
             return new RedirectView("/password/forget?error");
         }
@@ -111,12 +109,12 @@ public class AccountController {
             @PathParam("password") String password,
             @PathParam("originalPassword") String originalPassword) {
         // The original password parameter is from forget page, which served as a key
-        User user = userDao.getUserByUsername(username);
+        User user = userService.getUserByUsername(username);
         if (user == null || !user.getPassword().equals(originalPassword))
             // illegal access
             return ResponseEntity.badRequest().body("Illegal access");
         user.setPassword(userService.encodePassword(password));
-        userDao.updateUser(user);
+        userService.updateUser(user);
         return ResponseEntity.ok().body("Password reset");
     }
 
@@ -128,11 +126,6 @@ public class AccountController {
     @GetMapping("/logout")
     public ModelAndView logout() {
         return new ModelAndView("user/logout");
-    }
-
-    @Autowired
-    public void setUserDao(UserDao userDao) {
-        this.userDao = userDao;
     }
 
     @Autowired
