@@ -137,6 +137,16 @@ public class JpaProblemDao implements ProblemDao {
                 .orElse(0);
     }
 
+    @Override
+    public int getProblemCount() {
+        return (int) problemRepository.count();
+    }
+
+    @Override
+    public List<Problem> getProblemInRange(int start, int number) {
+        return problemRepository.findProblemInRange(start, number);
+    }
+
     @Autowired
     public void setSubmissionRepository(SubmissionRepository submissionRepository) {
         this.submissionRepository = submissionRepository;

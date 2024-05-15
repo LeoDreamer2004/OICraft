@@ -105,4 +105,20 @@ public interface ProblemDao {
      */
     @SuppressWarnings("unused")
     int getPassedSubmissionCount(int problemId);
+
+    /**
+     * Get the count of problems in the database
+     *
+     * @return the count of problems in the database
+     */
+    int getProblemCount();
+
+    /**
+     * Find problems in a range
+     *
+     * @param start  the start index
+     * @param number the number of problems to find
+     * @return a list of problems in the range
+     */
+    List<Problem> getProblemInRange(int start, int number);
 }
