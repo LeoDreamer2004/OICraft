@@ -42,6 +42,8 @@ public class ProblemServiceImpl implements ProblemService {
     private static final int WAITING_QUEUE_SIZE = 10000;
     private static final int MAX_SEARCH_RESULT = 100;
 
+    private static final int RECORDS_PER_PAGE = 20;
+
     private SubmissionDao submissionDao;
     private ProblemDao problemDao;
     private CheckpointDao checkpointDao;
@@ -126,18 +128,18 @@ public class ProblemServiceImpl implements ProblemService {
         return -1;
     }
 
-    private Map<Problem, Integer> getAllProblemWithPassInfo(User user) {
+    @Override
+    public Map<Problem, Integer> getProblemPageWithPassInfo(User user, int page) {
+        List<Problem> problems = problemDao.getProblemInRange((page - 1) * RECORDS_PER_PAGE, RECORDS_PER_PAGE);
         if (user == null) {
             TreeMap<Problem, Integer> map = new TreeMap<>();
-            for (Problem problem : problemDao.getProblemList()) {
+            for (Problem problem : problems) {
                 map.put(problem, 0);
             }
             return map;
         }
-
         List<Problem> passedProblems = userDao.getPassedProblemsByUserId(user.getId());
         List<Problem> failedProblems = userDao.getNotPassedProblemsByUserId(user.getId());
-        Iterable<Problem> problems = problemDao.getProblemList();
         Map<Problem, Integer> map = new TreeMap<>();
         for (Problem problem : problems) {
             if (passedProblems.contains(problem)) {
@@ -149,20 +151,12 @@ public class ProblemServiceImpl implements ProblemService {
             }
         }
         return map;
-    }
-
-    @Override
-    public Map<Problem, Integer> getProblemPageWithPassInfo(User user, int page) {
-        // TODO: Implement this method
-
-        return getAllProblemWithPassInfo(user);
+//        return getAllProblemWithPassInfo(user);
     }
 
     @Override
     public int getProblemPages() {
-        // TODO: Implement this method
-
-        return 5;
+        return (int) Math.ceil(problemDao.getProblemCount() / (double) RECORDS_PER_PAGE);
     }
 
     @Override
