@@ -90,12 +90,13 @@
 
     <div th:if="${isAuthor && submission.status.displayName == 'failed'}">
         <h4 class="underlined-title pt-5">AI帮助</h4>
-        <form th:action="@{/submission/ai}" method="post" class="mt-3" th:if="${submission.adviceAI eq null}">
+        <form th:action="@{/submission/ai}" method="post" class="mt-3" th:if="${submission.adviceAI eq null && !submission.aiAdviceRequested}">
             <input type="hidden" name="submissionId" th:value="${submission.id}">
             <p>本AI来源于科大讯飞（的白嫖的 2M Tokens）提供的官方 Java 接口。<br />
                 申请帮助后，可能需要等待一段时间，之后进行刷新即可得到回应。</p>
             <button type="submit" class="btn btn-danger">我需要AI帮助</button>
         </form>
+        <div th:if="${submission.adviceAI eq null && submission.aiAdviceRequested}">正在等待回应中，请稍后...</div>
         <div class="markdown" th:unless="${submission.adviceAI eq null}" th:utext="${submission.adviceAI}"></div>
     </div>
 </main>

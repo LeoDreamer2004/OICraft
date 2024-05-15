@@ -80,7 +80,7 @@ OICraft 所用服务器是 SpringBoot 内置的 Tomcat 服务器（在本机运�
 - **Model**：模型层，用于定义数据结构，与数据库中的表一一对应。
 - **DAO**：数据访问层，是对 SQL 语言的包装，这里用 JPA 对数据进行增删改查，直接与数据库交互。
 - **Service**：服务层，用于处理业务逻辑，例如测试代码。调用 DAO 层处理数据，并返回结果给 Controller。
-- **Controller**：控制层，是 MVC 架构的重点。用于处理用户请求，调用 Service 和 DAO 层处理业务逻辑，并返回结果给用户。此外，还有拦截器 Interceptor 用于拦截请求捕获必要的信息。
+- **Controller**：控制层，是 MVC 架构的重点。用于处理用户请求，调用 Service 层处理业务逻辑，并返回结果给用户。此外，还有拦截器 Interceptor 用于拦截请求捕获必要的信息。
 - **View**：前端页面，包括 HTML、CSS、JavaScript 等文件，依托于 bootstrap 样式和 Thymeleaf 模板引擎，给用户展示页面并直接与用户交互。
 
 Spring 架构提供的 Bean 容器，可以自动扫描并加载这些层次的类，实现了解耦合，提高了代码的可维护性。
@@ -123,6 +123,8 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 这样，Hibernate 框架就会自动生成相应的 SQL 语句，我们就可以直接调用继承自 `CrudRepository` 的方法，实现对数据库的基本增删改查。 同时，这样会自动将 `UserRepository` 定义成一个 Bean，方便我们在 DAO 层进一步封装时使用自动装配。
 
 #### DAO 层的设计
+
+<font color="red"> 有所修改，下面的这些需要改掉一部分 </font>
 
 我们把有关用户、题目、提交、测试的操作分别封装在了若干个接口中。这样，我们就可以在 Service 层和 Controller 层直接调用接口的方法，而不用关心具体的实现。
 
