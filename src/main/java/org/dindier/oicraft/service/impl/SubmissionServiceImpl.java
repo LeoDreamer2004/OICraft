@@ -77,19 +77,23 @@ public class SubmissionServiceImpl implements SubmissionService {
                 submission.getCode(),
                 errorMessage);
 
+        submission.setAiAdviceRequested(true);
+        submission = submissionDao.updateSubmission(submission);
+
         try {
+            Submission finalSubmission = submission;
             executorService.execute(() -> {
                 // get the advice from AI
                 try {
-                    if (waitingSubmissions.contains(submission))
+                    if (waitingSubmissions.contains(finalSubmission))
                         return;
-                    waitingSubmissions.add(submission);
+                    waitingSubmissions.add(finalSubmission);
                     String advice = aiAdapter.requestAI(prompt, question);
-                    submission.setAdviceAI(advice);
-                    submissionDao.updateSubmission(submission);
-                    waitingSubmissions.remove(submission);
+                    finalSubmission.setAdviceAI(advice);
+                    submissionDao.updateSubmission(finalSubmission);
+                    waitingSubmissions.remove(finalSubmission);
                 } catch (Exception e) {
-                    log.error("Submission {} AI advice request failed: {}", submission.getId(),
+                    log.error("Submission {} AI advice request failed: {}", finalSubmission.getId(),
                             e.getMessage());
                 }
             });
