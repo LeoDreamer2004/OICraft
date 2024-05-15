@@ -31,18 +31,22 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 @Service("problemService")
 @Slf4j
 public class ProblemServiceImpl implements ProblemService {
+    private static final int POOL_SIZE = 16;
+    private static final int WAITING_QUEUE_SIZE = 10000;
+    private static final int MAX_SEARCH_RESULT = 100;
+
     private SubmissionDao submissionDao;
     private ProblemDao problemDao;
     private CheckpointDao checkpointDao;
     private UserDao userDao;
-    private final ExecutorService executorService = Executors.newCachedThreadPool();
-    private static final int MAX_SEARCH_RESULT = 100;
+
+    private final ExecutorService executorService = new ThreadPoolExecutor(POOL_SIZE, POOL_SIZE,
+            0L, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(WAITING_QUEUE_SIZE));
     private static final Map<String, Float> boosts = new HashMap<>();
 
     static {
@@ -58,50 +62,57 @@ public class ProblemServiceImpl implements ProblemService {
         final int id = submission.getId();
         final Iterable<IOPair> ioPairs = problemDao.getTestsById(problem.getId());
 
-        executorService.execute(() -> {
-            log.info("Start testing code for submission {}", id);
+        try {
+            executorService.execute(() -> {
+                log.info("Start testing code for submission {}", id);
 
-            int score = 0;
-            boolean passed = true;
+                int score = 0;
+                boolean passed = true;
 
-            Iterator<IOPair> iterator = ioPairs.iterator();
-            while (iterator.hasNext()) {
-                IOPair ioPair = iterator.next();
-                Checkpoint checkpoint = new Checkpoint(submission, ioPair);
-                checkpoint = checkpointDao.createCheckpoint(checkpoint);
-                CodeChecker codeChecker = new CodeChecker();
+                Iterator<IOPair> iterator = ioPairs.iterator();
+                while (iterator.hasNext()) {
+                    IOPair ioPair = iterator.next();
+                    Checkpoint checkpoint = new Checkpoint(submission, ioPair);
+                    checkpoint = checkpointDao.createCheckpoint(checkpoint);
+                    CodeChecker codeChecker = new CodeChecker();
 
-                // test the code
-                try {
-                    // do not delete the files until the last test
-                    codeChecker.setIO(code, language, ioPair.getInput(), ioPair.getOutput(), id)
-                            .setLimit(problem.getTimeLimit(), problem.getMemoryLimit())
-                            .test(!iterator.hasNext());
-                } catch (IOException | InterruptedException e) {
-                    log.warn("CodeChecker encounter exception: {}", e.getMessage());
-                    submission.setStatus(Submission.Status.FAILED);
-                    submissionDao.updateSubmission(submission);
+                    // test the code
+                    try {
+                        // do not delete the files until the last test
+                        codeChecker.setIO(code, language, ioPair.getInput(), ioPair.getOutput(), id)
+                                .setLimit(problem.getTimeLimit(), problem.getMemoryLimit())
+                                .test(!iterator.hasNext());
+                    } catch (IOException | InterruptedException e) {
+                        log.warn("CodeChecker encounter exception: {}", e.getMessage());
+                        submission.setStatus(Submission.Status.FAILED);
+                        submissionDao.updateSubmission(submission);
+                    }
+
+                    // read the result
+                    checkpoint.setStatus(Checkpoint.Status.fromString(codeChecker.getStatus()));
+                    checkpoint.setUsedTime(codeChecker.getUsedTime());
+                    checkpoint.setUsedMemory(codeChecker.getUsedMemory());
+                    checkpoint.setInfo(codeChecker.getInfo());
+                    checkpointDao.updateCheckpoint(checkpoint);
+                    if (codeChecker.getStatus().equals("AC")) {
+                        score += ioPair.getScore();
+                    } else {
+                        passed = false;
+                    }
                 }
 
-                // read the result
-                checkpoint.setStatus(Checkpoint.Status.fromString(codeChecker.getStatus()));
-                checkpoint.setUsedTime(codeChecker.getUsedTime());
-                checkpoint.setUsedMemory(codeChecker.getUsedMemory());
-                checkpoint.setInfo(codeChecker.getInfo());
-                checkpointDao.updateCheckpoint(checkpoint);
-                if (codeChecker.getStatus().equals("AC")) {
-                    score += ioPair.getScore();
-                } else {
-                    passed = false;
-                }
-            }
-
-            // update the submission
-            submission.setScore(score);
-            submission.setStatus(passed ?
-                    Submission.Status.PASSED : Submission.Status.FAILED);
+                // update the submission
+                submission.setScore(score);
+                submission.setStatus(passed ?
+                        Submission.Status.PASSED : Submission.Status.FAILED);
+                submissionDao.updateSubmission(submission);
+            });
+        } catch (RejectedExecutionException e) {
+            log.error("Executor rejected task for submission {}: {}", id, e.getMessage());
+            submission.setStatus(Submission.Status.WAITING);
             submissionDao.updateSubmission(submission);
-        });
+        }
+
         return id;
     }
 
