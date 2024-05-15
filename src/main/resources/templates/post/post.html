@@ -6,6 +6,7 @@
     <th:block th:replace="~{base :: baseStyle}"></th:block>
     <link th:replace="~{problem/problem :: problemStyle}">
     <th:block th:replace="~{base :: markdown}"></th:block>
+    <link rel="stylesheet" href="/css/post.css">
 </head>
 <body>
 <div class="header">
@@ -34,7 +35,11 @@
     <span th:text="${post.createTime}"></span>
     <div class="card mb-3 mt-3">
         <div class="card-header">
-            <h4 th:text="${post.title}" class="mt-3"></h4>
+            <span class="m-0"><b th:text="${post.title}" style="font-size: larger"></b></span>
+            <form style="float: right" th:action="@{/post/delete}" method="post" th:if="${canDeletePost}">
+                <input type="hidden" name="postId" th:value="${post.id}">
+                <button type="submit" class="delete-link">删帖</button>
+            </form>
         </div>
         <div class="card-body markdown" th:utext="${post.content}"></div>
     </div>
@@ -48,7 +53,7 @@
             <textarea class="form-control" id="comment" name="content" rows="3" maxlength="1000" placeholder="说点什么吧"></textarea>
         </div>
     </form>
-    <div class="card mb-3" th:each="comment: ${post.comments}" th:unless="${post.comments.isEmpty()}">
+    <div class="card mb-3" th:each="comment, stat: ${post.comments}" th:unless="${post.comments.isEmpty()}">
         <div class="card-header">
             <a th:unless="${comment.author eq null}" th:href="@{/profile/{id}(id=${comment.author.id})}">
                 <img class="avatar" th:src="${comment.author.avatarPath}" width="30" height="30" alt="avatar">
@@ -57,6 +62,10 @@
                th:href="@{/profile/{id}(id=${comment.author.id})}"></a>
             <span th:text="${comment.createTime}"></span>
             <span th:if="${comment.author eq null}" class="DELETED">账户已注销</span>
+            <form style="float: right" th:action="@{/post/comment/delete}" method="post" th:if="${canDeleteComment[stat.index]}">
+                <input type="hidden" name="commentId" th:value="${comment.id}">
+                <button type="submit" class="delete-link">删除</button>
+            </form>
         </div>
         <div class="card-body markdown" th:text="${comment.content}"></div>
     </div>

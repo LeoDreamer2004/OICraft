@@ -88,7 +88,7 @@ public class JpaProblemDao implements ProblemDao {
         checkpointRepository.deleteAll(checkpoints);
         submissionRepository.deleteAll(submissions);
         ioPairRepository.deleteAll(problem.getIoPairs());
-        this.problemRepository.delete(problem);
+        problemRepository.delete(problem);
         log.info("Delete problem: {}", problem.getId());
     }
 

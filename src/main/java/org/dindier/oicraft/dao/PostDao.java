@@ -20,4 +20,10 @@ public interface PostDao {
      * @return The created post with data updated
      */
     Post createPost(Post post);
+
+    /**
+     * Delete a post
+     * @param post The post to delete
+     */
+    void deletePost(Post post);
 }

@@ -12,14 +12,25 @@ import org.springframework.stereotype.Repository;
 public class JpaCommentDao implements CommentDao {
     private final CommentRepository commentRepository;
 
-    @Autowired
-    public JpaCommentDao(CommentRepository commentRepository) {
-        this.commentRepository = commentRepository;
+    @Override
+    public Comment getCommentById(int id) {
+        return commentRepository.findById(id).orElse(null);
     }
 
     @Override
     public Comment createComment(Comment comment) {
         log.info("User {} commented on post {}", comment.getAuthor().getName(), comment.getPost().getId());
         return commentRepository.save(comment);
+    }
+
+    @Override
+    public void deleteComment(Comment comment) {
+        log.info("Deleted a comment on post {}", comment.getPost().getId());
+        commentRepository.delete(comment);
+    }
+
+    @Autowired
+    public JpaCommentDao(CommentRepository commentRepository) {
+        this.commentRepository = commentRepository;
     }
 }

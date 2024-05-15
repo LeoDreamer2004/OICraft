@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.*;
 
 @Service("submissionService")
@@ -18,6 +17,7 @@ import java.util.concurrent.*;
 public class SubmissionServiceImpl implements SubmissionService {
     private SubmissionDao submissionDao;
     private AIAdapter aiAdapter;
+    private ProblemServiceImpl problemService;
 
     private static final int POOL_SIZE = 16;
     private static final int WAITING_QUEUE_SIZE = 10000;
@@ -25,52 +25,53 @@ public class SubmissionServiceImpl implements SubmissionService {
     private final ExecutorService executorService = new ThreadPoolExecutor(POOL_SIZE, POOL_SIZE,
             0L, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(WAITING_QUEUE_SIZE));
 
+    private final List<Submission> waitingSubmissions = new CopyOnWriteArrayList<>();
+
     @Override
     public void getAIAdvice(Submission submission) {
-        if (submission.getStatus() != Submission.Status.FAILED)
+        if (submission.getStatus() != Submission.Status.FAILED
+                || submission.getAdviceAI() != null)
             return;
         log.info("Submission {} requested for AI advice", submission.getId());
 
-        final List<Checkpoint> checkpoints = submission.getCheckpoints();
+        List<Checkpoint> checkpoints = submission.getCheckpoints();
+        Checkpoint.Status status;
+        // get the wrong info
+        status = checkpoints.stream().filter(checkpoint -> checkpoint.getStatus() != Checkpoint.Status.AC &&
+                checkpoint.getStatus() != Checkpoint.Status.P).findFirst().
+                map(Checkpoint::getStatus).orElse(null);
+
+        // build the question
+        String prompt = null;
+        if (status == null) {
+            return;
+        } else if (status.equals(Checkpoint.Status.WA)) {
+            prompt = "下面这段代码的输出是错误的,请检查代码逻辑,并给出出现错误的原因";
+        } else if (status.equals(Checkpoint.Status.TLE)) {
+            prompt = "下面这段代码运行超时,请检查代码逻辑,并给出优化建议";
+        } else if (status.equals(Checkpoint.Status.MLE)) {
+            prompt = "下面这段代码运行内存超出限制,请检查代码逻辑,并给出优化建议";
+        } else if (status.equals(Checkpoint.Status.RE)) {
+            prompt = "下面这段代码运行出现运行时错误,请检查代码,并给出错误原因";
+        } else if (status.equals(Checkpoint.Status.CE)) {
+            prompt = "下面这段代码编译出现错误,请检查代码,并给出错误原因";
+        }
+
+        final String question = "这是一道编程问题，问题是这样的：" + "\n" +
+                problemService.getProblemMarkdown(submission.getProblem()) +
+                "\n" + prompt + "\n" + submission.getCode();
+
         try {
             executorService.execute(() -> {
-                StringBuilder question = new StringBuilder();
-                String status = "";
-                String prompt = "";
-                //get the wrong info
-                for (Checkpoint checkpoint : checkpoints) {
-                    if (checkpoint.getStatus() != Checkpoint.Status.AC && checkpoint.getStatus() != Checkpoint.Status.P) {
-                        status = checkpoint.getStatus().toString();
-                        break;
-                    }
-                }
-
-                //build the question
-                if (Objects.equals(status, "WA")) {
-                    prompt = "下面这段代码的输出是错误的,请检查代码逻辑,并给出出现错误的原因";
-                } else if (Objects.equals(status, "TLE")) {
-                    prompt = "下面这段代码运行超时,请检查代码逻辑,并给出优化建议";
-                } else if (Objects.equals(status, "MLE")) {
-                    prompt = "下面这段代码运行内存超出限制,请检查代码逻辑,并给出优化建议";
-                } else if (Objects.equals(status, "RE")) {
-                    prompt = "下面这段代码运行出现运行时错误,请检查代码,并给出错误原因";
-                } else if (Objects.equals(status, "CE")) {
-                    prompt = "下面这段代码编译出现错误,请检查代码,并给出错误原因";
-                }
-
-                question.append("这是一道编程问题，问题描述是：");
-                question.append("\n");
-                question.append(submission.getProblem().getDescription());
-                question.append("\n");
-                question.append(prompt);
-                question.append("\n");
-                question.append(submission.getCode());
-
-                //get the advice from AI
+                // get the advice from AI
                 try {
-                    String advice = aiAdapter.requestAI(question.toString());
+                    if (waitingSubmissions.contains(submission))
+                        return;
+                    waitingSubmissions.add(submission);
+                    String advice = aiAdapter.requestAI(question);
                     submission.setAdviceAI(advice);
                     submissionDao.updateSubmission(submission);
+                    waitingSubmissions.remove(submission);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -89,5 +90,10 @@ public class SubmissionServiceImpl implements SubmissionService {
     @Autowired
     public void setAiAdapter(AIAdapter aiAdapter) {
         this.aiAdapter = aiAdapter;
+    }
+
+    @Autowired
+    public void setProblemService(ProblemServiceImpl problemService) {
+        this.problemService = problemService;
     }
 }
