@@ -50,13 +50,18 @@ public interface ProblemService {
     boolean canEdit(User user, @NonNull Problem problem);
 
     /**
-     * Get all problems with a certain user's pass info
-     *
+     * Get a page of problems with a certain user's pass info
      * @param user the user logged in
+     * @param page the page number
      * @return A map of problems and the user's pass info
-     *         If the user not exists, return an empty map
      */
-    Map<Problem, Integer> getAllProblemWithPassInfo(User user);
+    Map<Problem, Integer> getProblemPageWithPassInfo(User user, int page);
+
+    /**
+     * Get the number of pages of problems
+     * @return The number of pages of problems
+     */
+    int getProblemPages();
 
     /**
      * Get the list of problems by keyword
