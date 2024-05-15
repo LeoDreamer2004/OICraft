@@ -1,8 +1,8 @@
 package org.dindier.oicraft.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.dindier.oicraft.dao.UserDao;
 import org.dindier.oicraft.model.User;
+import org.dindier.oicraft.service.ProblemService;
 import org.dindier.oicraft.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +20,8 @@ import java.io.IOException;
 @Controller
 public class ProfileController {
 
-    private UserDao userDao;
     private UserService userService;
+    private ProblemService problemService;
     private HttpServletRequest request;
 
 
@@ -36,13 +36,13 @@ public class ProfileController {
 
     @GetMapping("/profile/{id}")
     public ModelAndView profile(@PathVariable int id) {
-        User user = userDao.getUserById(id);
+        User user = userService.getUserById(id);
         if (user == null)
             return new ModelAndView("error/404");
         // use 'seeUser' in case of conflict with 'user' in the interceptor
         return new ModelAndView("user/profile", "seeUser", user)
-                .addObject("passed", userDao.getPassedProblemsByUserId(user.getId()))
-                .addObject("toSolve", userDao.getNotPassedProblemsByUserId(user.getId()))
+                .addObject("passed", problemService.getPassedProblems(user))
+                .addObject("toSolve", problemService.getNotPassedProblems(user))
                 .addObject("hasCheckedIn", userService.hasCheckedInToday(user));
     }
 
@@ -91,7 +91,7 @@ public class ProfileController {
         if (user == null) return new RedirectView("/login");
         if (signature.length() <= 200) {
             user.setSignature(signature);
-            userDao.updateUser(user);
+            userService.updateUser(user);
         }
         return new RedirectView("/profile");
     }
@@ -103,18 +103,17 @@ public class ProfileController {
     }
 
     @Autowired
-    public void setUserDao(UserDao userDao) {
-        this.userDao = userDao;
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 
     @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
+    public void setProblemService(ProblemService problemService) {
+        this.problemService = problemService;
     }
 
     @Autowired
     public void setRequest(HttpServletRequest request) {
         this.request = request;
     }
-
 }

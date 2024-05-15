@@ -41,7 +41,7 @@
     </form>
     <div class="card my-card p-3">
         <nav>
-            <ul class="pagination justify-content-center">
+            <ul class="pagination justify-content-center" th:unless="${page eq null}">
                 <li class="page-item" th:classappend="${page == 1} ? 'disabled'">
                     <a class="page-link" th:href="@{/problems(page=1)}">首页</a>
                 </li>

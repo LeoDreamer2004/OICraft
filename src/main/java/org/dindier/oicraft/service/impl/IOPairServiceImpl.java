@@ -1,5 +1,6 @@
 package org.dindier.oicraft.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.dindier.oicraft.dao.IOPairDao;
 import org.dindier.oicraft.dao.ProblemDao;
 import org.dindier.oicraft.model.IOPair;
@@ -21,6 +22,7 @@ import java.util.Comparator;
 import java.util.zip.ZipOutputStream;
 
 @Service("IOPairService")
+@Slf4j
 public class IOPairServiceImpl implements IOPairService {
     private IOPairDao ioPairDao;
     private ProblemDao problemDao;
@@ -35,6 +37,12 @@ public class IOPairServiceImpl implements IOPairService {
     @Autowired
     public void setIOPairDao(IOPairDao ioPairDao) {
         this.ioPairDao = ioPairDao;
+    }
+
+    @Override
+    public IOPair saveIOPair(IOPair ioPair) {
+        log.info("Save IOPair: {}", ioPair);
+        return ioPairDao.saveIOPair(ioPair);
     }
 
     @Override

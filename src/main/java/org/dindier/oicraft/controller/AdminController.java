@@ -1,7 +1,6 @@
 package org.dindier.oicraft.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.dindier.oicraft.dao.UserDao;
 import org.dindier.oicraft.model.User;
 import org.dindier.oicraft.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,19 +14,18 @@ import org.springframework.web.servlet.view.RedirectView;
 @Controller
 public class AdminController {
 
-    private UserDao userDao;
     private UserService userService;
     private HttpServletRequest request;
 
     @GetMapping("/admin")
     public ModelAndView admin() {
         return new ModelAndView("admin/admin")
-                .addObject("users", userDao.getAllUsers());
+                .addObject("users", userService.getAllUsers());
     }
 
     @GetMapping("/admin/delete/{id}")
     public ModelAndView deleteUser(@PathVariable int id) {
-        User user = userDao.getUserById(id);
+        User user = userService.getUserById(id);
         String error = canEditUser(user);
         if (error != null)
             return new ModelAndView("admin/error")
@@ -38,18 +36,18 @@ public class AdminController {
 
     @PostMapping("/admin/delete/{id}")
     public Object deleteUserConfirm(@PathVariable int id) {
-        User user = userDao.getUserById(id);
+        User user = userService.getUserById(id);
         String error = canEditUser(user);
         if (error != null)
             return new ModelAndView("admin/error")
                     .addObject("error", error);
-        userDao.deleteUser(user);
+        userService.deleteUser(user);
         return new RedirectView("/admin");
     }
 
     @GetMapping("admin/upgrade/{id}")
     public ModelAndView upgradeUser(@PathVariable int id) {
-        User user = userDao.getUserById(id);
+        User user = userService.getUserById(id);
         String error = canEditUser(user);
         if (error != null)
             return new ModelAndView("admin/error")
@@ -60,19 +58,19 @@ public class AdminController {
 
     @PostMapping("admin/upgrade/{id}")
     public Object upgradeUserConfirm(@PathVariable int id) {
-        User user = userDao.getUserById(id);
+        User user = userService.getUserById(id);
         String error = canEditUser(user);
         if (error != null || user == null)
             return new ModelAndView("admin/error")
                     .addObject("error", error);
         user.setRole(User.Role.ADMIN);
-        userDao.updateUser(user);
+        userService.updateUser(user);
         return new RedirectView("/admin");
     }
 
     @GetMapping("admin/downgrade/{id}")
     public ModelAndView downgradeUser(@PathVariable int id) {
-        User user = userDao.getUserById(id);
+        User user = userService.getUserById(id);
         String error = canEditUser(user);
         if (error != null)
             return new ModelAndView("admin/error")
@@ -83,13 +81,13 @@ public class AdminController {
 
     @PostMapping("admin/downgrade/{id}")
     public Object downgradeUserConfirm(@PathVariable int id) {
-        User user = userDao.getUserById(id);
+        User user = userService.getUserById(id);
         String error = canEditUser(user);
         if (error != null || user == null)
             return new ModelAndView("admin/error")
                     .addObject("error", error);
         user.setRole(User.Role.USER);
-        userDao.updateUser(user);
+        userService.updateUser(user);
         return new RedirectView("/admin");
     }
 
@@ -103,11 +101,6 @@ public class AdminController {
         if (currentUser.equals(user))
             return "不能修改自己的账户";
         return null;
-    }
-
-    @Autowired
-    public void setUserDao(UserDao userDao) {
-        this.userDao = userDao;
     }
 
     @Autowired

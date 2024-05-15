@@ -1,19 +1,16 @@
 package org.dindier.oicraft.dao;
 
-import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.User;
 import org.springframework.lang.Nullable;
 
-import java.util.List;
-
 public interface UserDao {
     /**
-     * Create a new user in database
+     * Save the user to database
      *
-     * @param user the user to create
+     * @param user the user to save
      * @return A {@code User} class with the user's ID set.
      */
-    User createUser(User user);
+    User saveUser(User user);
 
     /**
      * Get all users from database
@@ -21,16 +18,6 @@ public interface UserDao {
      * @return An iterable object of {@code User} classes.
      */
     Iterable<User> getAllUsers();
-
-    /**
-     * Update user's information in database
-     *
-     * @param user the user to update
-     * @return A {@code User} class with updated information.
-     * @implNote The user's grade will be updated according to the user's experience.
-     */
-    @SuppressWarnings("UnusedReturnValue")
-    User updateUser(User user);
 
     /**
      * Delete a user from database
@@ -65,43 +52,4 @@ public interface UserDao {
      */
     @Nullable
     User getUserByUsername(String username);
-
-    /**
-     * Get all problems that a user has submitted
-     *
-     * @param userId the user's ID
-     * @return A list of {@code Problem} classes that the user has submitted.
-     * If the user has not submitted any problem, an empty list will be returned.
-     */
-    List<Problem> getTriedProblemsByUserId(int userId);
-
-    /**
-     * Get all problems that a user has passed
-     *
-     * @param userId the user's ID
-     * @return A list of {@code Problem} classes that the user has passed.
-     * If the user has not passed any problem, an empty list will be returned.
-     */
-    List<Problem> getPassedProblemsByUserId(int userId);
-
-    /**
-     * Get all problems that a user has not passed
-     *
-     * @param userId the user's ID
-     * @return A list of {@code Problem} classes that the user has not passed.
-     * If the user has passed all problems, an empty list will be returned.
-     */
-    List<Problem> getNotPassedProblemsByUserId(int userId);
-
-    /**
-     * Add experience to a user
-     *
-     * @param user       the user to add experience
-     * @param experience the experience to add
-     * @return A {@code User} class with updated experience.
-     * @implNote The user's grade will be updated according to the user's experience.
-     */
-    @SuppressWarnings("UnusedReturnValue")
-    User addExperience(User user, int experience);
-
 }

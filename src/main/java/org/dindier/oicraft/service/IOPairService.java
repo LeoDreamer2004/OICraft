@@ -1,9 +1,19 @@
 package org.dindier.oicraft.service;
 
+import org.dindier.oicraft.model.IOPair;
+
 import java.io.IOException;
 import java.io.InputStream;
 
 public interface IOPairService {
+
+    /**
+     * Save a IOPair to the database
+     *
+     * @param ioPair the IOPair to create
+     * @return A {@code IOPair} class with the IOPair's ID set.
+     */
+    IOPair saveIOPair(IOPair ioPair);
 
     /**
      * Add IOPair from zip file uploaded by user

@@ -1,6 +1,5 @@
 package org.dindier.oicraft.dao;
 
-import org.dindier.oicraft.model.IOPair;
 import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.Submission;
 import org.springframework.lang.Nullable;
@@ -10,9 +9,11 @@ import java.util.List;
 public interface ProblemDao {
 
     /**
-     * Create a new problem into the database
+     * save a problem to the database
+     *
+     * @param problem the problem to save
      */
-    Problem createProblem(Problem problem);
+    Problem saveProblem(Problem problem);
 
     /**
      * Get a problem by its ID
@@ -30,33 +31,6 @@ public interface ProblemDao {
      * If there is no problem, an empty list will be returned.
      */
     Iterable<Problem> getProblemList();
-
-    /**
-     * Get all sample I/O pairs of a problem
-     *
-     * @param id the ID of the problem
-     * @return a list of all sample I/O pairs of the problem
-     * If there is no sample I/O pair, an empty list will be returned.
-     */
-    List<IOPair> getSamplesById(int id);
-
-    /**
-     * Get all test I/O pairs of a problem
-     *
-     * @param id the ID of the problem
-     * @return a list of all test I/O pairs of the problem
-     * If there is no test I/O pair, an empty list will be returned.
-     */
-    List<IOPair> getTestsById(int id);
-
-    /**
-     * Update a problem in the database
-     *
-     * @param problem the problem to update
-     * @return the updated problem
-     */
-    @SuppressWarnings("UnusedReturnValue")
-    Problem updateProblem(Problem problem);
 
     /**
      * Delete a problem from the database
@@ -85,26 +59,6 @@ public interface ProblemDao {
      */
     @SuppressWarnings("unused")
     List<Submission> getPassedSubmissions(int problemId);
-
-    /**
-     * Get the count of submissions for a problem
-     *
-     * @param problemId the id of the problem
-     * @return the count of submissions for the problem,
-     * if the problem not exists, return 0
-     */
-    @SuppressWarnings("unused")
-    int getSubmissionCount(int problemId);
-
-    /**
-     * Get the count of passed submissions for a problem
-     *
-     * @param problemId the id of the problem
-     * @return the count of passed submissions for the problem,
-     * if the problem not exists, return 0
-     */
-    @SuppressWarnings("unused")
-    int getPassedSubmissionCount(int problemId);
 
     /**
      * Get the count of problems in the database

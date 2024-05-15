@@ -5,25 +5,12 @@ import org.springframework.lang.Nullable;
 
 public interface SubmissionDao {
     /**
-     * Create a new submission in the database
+     * Save a submission in the database
      *
-     * @param submission the submission to create
-     * @return A {@code Submission} class with the submission's ID set.
-     * @implNote This method should also update the corresponding problem's submit count and passed
-     * count and add 10 points to the user's experience if the submission is passed.
+     * @param submission the submission to save
+     * @return A saved {@code Submission} class
      */
-    Submission createSubmission(Submission submission);
-
-    /**
-     * Update a submission in the database
-     *
-     * @param submission the submission to update
-     * @return A {@code Submission} class with updated information.
-     * @implNote This method should also update the corresponding problem's passed count
-     * and add 10 points to the user's experience if the submission is passed.
-     */
-    @SuppressWarnings("UnusedReturnValue")
-    Submission updateSubmission(Submission submission);
+    Submission saveSubmission(Submission submission);
 
     /**
      * Get a submission by ID
@@ -35,15 +22,6 @@ public interface SubmissionDao {
     Submission getSubmissionById(int id);
 
     /**
-     * Get all submissions corresponding to a problem
-     *
-     * @param problemId the ID of the problem
-     * @return A list of {@code Submission} classes that correspond to the problem.
-     * If the problem has no submission, an empty list will be returned.
-     */
-    Iterable<Submission> getSubmissionsByProblemId(int problemId);
-
-    /**
      * Get all submissions in the database
      *
      * @return A list of all {@code Submission} classes in the database.
@@ -51,13 +29,4 @@ public interface SubmissionDao {
      */
     @SuppressWarnings("unused")
     Iterable<Submission> getAllSubmissions();
-
-    /**
-     * Get all submissions corresponding to a user
-     *
-     * @param userId id of the user
-     * @return A list of {@code Submission} classes that correspond to the user.
-     * If the user has no submission or the user does not exist, an empty list will be returned.
-     */
-    Iterable<Submission> getSubmissionsByUserId(int userId);
 }

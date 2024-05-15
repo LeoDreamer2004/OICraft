@@ -8,17 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.Comparator;
 import java.util.List;
 
 @Repository("userDao")
+
 public class JpaUserDao implements UserDao {
     private UserRepository userRepository;
     private final Logger logger = LoggerFactory.getLogger(JpaUserDao.class);
-
-    private static final int INTERMEDIATE_MIN_EXP = 100;
-    private static final int ADVANCED_MIN_EXP = 200;
-    private static final int EXPERT_MIN_EXP = 300;
     private CheckpointRepository checkpointRepository;
     private SubmissionRepository submissionRepository;
     private ProblemRepository problemRepository;
@@ -31,32 +27,13 @@ public class JpaUserDao implements UserDao {
     }
 
     @Override
-    public User createUser(User user) {
-        user = userRepository.save(user);
-        logger.info("Create user: {} (id: {})", user.getName(), user.getId());
-        return user;
+    public User saveUser(User user) {
+       return userRepository.save(user);
     }
 
     @Override
     public Iterable<User> getAllUsers() {
         return userRepository.findAll();
-    }
-
-    @Override
-    public User updateUser(User user) {
-        int experience = user.getExperience();
-        if (experience > EXPERT_MIN_EXP) {
-            user.setGrade(User.Grade.EXPERT);
-        } else if (experience > ADVANCED_MIN_EXP) {
-            user.setGrade(User.Grade.ADVANCED);
-        } else if (experience > INTERMEDIATE_MIN_EXP) {
-            user.setGrade(User.Grade.INTERMEDIATE);
-        } else {
-            user.setGrade(User.Grade.BEGINNER);
-        }
-        user = userRepository.save(user);
-        logger.info("Update user: {} (id: {})", user.getName(), user.getId());
-        return user;
     }
 
     @Override
@@ -108,72 +85,6 @@ public class JpaUserDao implements UserDao {
     public User getUserByUsername(String username) {
         List<User> users = userRepository.findByName(username);
         return users.isEmpty() ? null : users.get(0);
-    }
-
-    @Override
-    public List<Problem> getTriedProblemsByUserId(int userId) {
-        return userRepository
-                .findById(userId)
-                .map(User::getSubmissions)
-                .map(submissions -> submissions
-                        .stream()
-                        .map(Submission::getProblem)
-                )
-                .map(problems -> problems.distinct()
-                        .sorted(Comparator.comparingInt(Problem::getId)).toList())
-                .orElse(List.of());
-    }
-
-    @Override
-    public List<Problem> getPassedProblemsByUserId(int userId) {
-        return userRepository
-                .findById(userId)
-                .map(User::getSubmissions)
-                .map(submissions -> submissions
-                        .stream()
-                        .filter(submission -> submission.getStatus() == Submission.Status.PASSED)
-                        .map(Submission::getProblem)
-                )
-                .map(problems -> problems.distinct()
-                        .sorted(Comparator.comparingInt(Problem::getId)).toList())
-                .orElse(List.of());
-    }
-
-    @Override
-    public List<Problem> getNotPassedProblemsByUserId(int userId) {
-        List<Problem> passedProblems = getPassedProblemsByUserId(userId);
-
-        return userRepository
-                .findById(userId)
-                .map(User::getSubmissions)
-                .map(submissions -> submissions
-                        .stream()
-                        .filter(submission -> submission.getStatus() != Submission.Status.PASSED)
-                        .map(Submission::getProblem)
-                        .filter(problem -> !passedProblems.contains(problem))
-                )
-                .map(problems -> problems.distinct()
-                        .sorted(Comparator.comparingInt(Problem::getId)).toList())
-                .orElse(List.of());
-    }
-
-    @Override
-    public User addExperience(User user, int experience) {
-        user.setExperience(user.getExperience() + experience);
-        int newExperience = user.getExperience();
-        if (newExperience > EXPERT_MIN_EXP) {
-            logger.info("User {} (id: {}) has reached expert level", user.getName(), user.getId());
-            user.setGrade(User.Grade.EXPERT);
-        } else if (newExperience > ADVANCED_MIN_EXP) {
-            logger.info("User {} (id: {}) has reached advanced level", user.getName(), user.getId());
-            user.setGrade(User.Grade.ADVANCED);
-        } else if (newExperience > INTERMEDIATE_MIN_EXP) {
-            logger.info("User {} (id: {}) has reached intermediate level", user.getName(), user.getId());
-            user.setGrade(User.Grade.INTERMEDIATE);
-        } else {
-            user.setGrade(User.Grade.BEGINNER);
-        }
-        return userRepository.save(user);
     }
 
     @Autowired

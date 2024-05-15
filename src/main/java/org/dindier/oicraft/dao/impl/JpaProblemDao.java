@@ -7,7 +7,6 @@ import org.dindier.oicraft.dao.repository.IOPairRepository;
 import org.dindier.oicraft.dao.repository.ProblemRepository;
 import org.dindier.oicraft.dao.repository.SubmissionRepository;
 import org.dindier.oicraft.model.Checkpoint;
-import org.dindier.oicraft.model.IOPair;
 import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.Submission;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +34,8 @@ public class JpaProblemDao implements ProblemDao {
     }
 
     @Override
-    public Problem createProblem(Problem problem) {
+    public Problem saveProblem(Problem problem) {
         problem = problemRepository.save(problem);
-        log.info("Create problem: {}", problem.getId());
         return problem;
     }
 
@@ -49,31 +47,6 @@ public class JpaProblemDao implements ProblemDao {
     @Override
     public Iterable<Problem> getProblemList() {
         return problemRepository.findAll();
-    }
-
-    @Override
-    public List<IOPair> getSamplesById(int id) {
-        List<IOPair> ioPairs = problemRepository.findById(id).map(Problem::getIoPairs).orElse(null);
-        if (ioPairs == null) {
-            return List.of();
-        }
-        return ioPairs.stream().filter(ioPair -> ioPair.getType().equals(IOPair.Type.SAMPLE)).toList();
-    }
-
-    @Override
-    public List<IOPair> getTestsById(int id) {
-        List<IOPair> ioPairs = problemRepository.findById(id).map(Problem::getIoPairs).orElse(null);
-        if (ioPairs == null) {
-            return List.of();
-        }
-        return ioPairs.stream().filter(ioPair -> ioPair.getType().equals(IOPair.Type.TEST)).toList();
-    }
-
-    @Override
-    public Problem updateProblem(Problem problem) {
-        problem = this.problemRepository.save(problem);
-        log.info("Update problem: {}", problem.getId());
-        return problem;
     }
 
     @Override
@@ -119,22 +92,6 @@ public class JpaProblemDao implements ProblemDao {
                         .toList()
                 )
                 .orElse(List.of());
-    }
-
-    @Override
-    public int getSubmissionCount(int problemId) {
-        return problemRepository
-                .findById(problemId)
-                .map(Problem::getSubmit)
-                .orElse(0);
-    }
-
-    @Override
-    public int getPassedSubmissionCount(int problemId) {
-        return problemRepository
-                .findById(problemId)
-                .map(Problem::getPassed)
-                .orElse(0);
     }
 
     @Override

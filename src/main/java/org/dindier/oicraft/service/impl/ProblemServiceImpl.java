@@ -20,12 +20,10 @@ import org.apache.lucene.store.ByteBuffersDirectory;
 import org.apache.lucene.store.Directory;
 import org.dindier.oicraft.dao.CheckpointDao;
 import org.dindier.oicraft.dao.ProblemDao;
-import org.dindier.oicraft.dao.SubmissionDao;
-import org.dindier.oicraft.dao.UserDao;
 import org.dindier.oicraft.model.*;
 import org.dindier.oicraft.service.ProblemService;
+import org.dindier.oicraft.service.SubmissionService;
 import org.dindier.oicraft.util.code.CodeChecker;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
@@ -44,10 +42,9 @@ public class ProblemServiceImpl implements ProblemService {
 
     private static final int RECORDS_PER_PAGE = 20;
 
-    private SubmissionDao submissionDao;
     private ProblemDao problemDao;
     private CheckpointDao checkpointDao;
-    private UserDao userDao;
+    private SubmissionService submissionService;
 
     private final ExecutorService executorService = new ThreadPoolExecutor(POOL_SIZE, POOL_SIZE,
             0L, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(WAITING_QUEUE_SIZE));
@@ -59,12 +56,71 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
+    public Problem getProblemById(int id) {
+        return problemDao.getProblemById(id);
+    }
+
+    @Override
+    public Problem saveProblem(Problem problem) {
+        log.info("Save problem: {}", problem.getId());
+        return problemDao.saveProblem(problem);
+    }
+
+    @Override
+    public void deleteProblem(Problem problem) {
+        log.info("Delete problem: {}", problem.getId());
+        problemDao.deleteProblem(problem);
+    }
+
+    @Override
+    public List<IOPair> getSamples(@NonNull Problem problem) {
+        List<IOPair> ioPairs = problem.getIoPairs();
+        if (ioPairs == null) {
+            return List.of();
+        }
+        return ioPairs.stream().filter(ioPair -> ioPair.getType().equals(IOPair.Type.SAMPLE)).toList();
+    }
+
+    @Override
+    public List<IOPair> getTests(@NonNull Problem problem) {
+        List<IOPair> ioPairs = problem.getIoPairs();
+        if (ioPairs == null) {
+            return List.of();
+        }
+        return ioPairs.stream().filter(ioPair -> ioPair.getType().equals(IOPair.Type.TEST)).toList();
+    }
+
+
+    @Override
+    public List<Problem> getTriedProblems(User user) {
+        if (user == null) return List.of();
+        return user.getSubmissions().stream().map(Submission::getProblem)
+                .distinct().sorted(Comparator.comparingInt(Problem::getId)).toList();
+    }
+
+    @Override
+    public List<Problem> getPassedProblems(User user) {
+        if (user == null) return List.of();
+        return user.getSubmissions().stream()
+                .filter(submission -> submission.getStatus() == Submission.Status.PASSED)
+                .map(Submission::getProblem)
+                .distinct().sorted(Comparator.comparingInt(Problem::getId)).toList();
+    }
+
+    @Override
+    public List<Problem> getNotPassedProblems(User user) {
+        return getTriedProblems(user).stream()
+                .filter(problem -> !getPassedProblems(user).contains(problem))
+                .toList();
+    }
+
+    @Override
     public int testCode(User user, Problem problem, String code, String language) {
         Submission temp = new Submission(user, problem, code,
                 Submission.Language.fromString(language));
-        final Submission submission = submissionDao.createSubmission(temp);
+        final Submission submission = submissionService.saveSubmission(temp);
         final int id = submission.getId();
-        final Iterable<IOPair> ioPairs = problemDao.getTestsById(problem.getId());
+        final Iterable<IOPair> ioPairs = getTests(problem);
 
         try {
             executorService.execute(() -> {
@@ -89,7 +145,7 @@ public class ProblemServiceImpl implements ProblemService {
                     } catch (IOException | InterruptedException e) {
                         log.warn("CodeChecker encounter exception: {}", e.getMessage());
                         submission.setStatus(Submission.Status.FAILED);
-                        submissionDao.updateSubmission(submission);
+                        submissionService.saveSubmission(submission);
                     }
 
                     // read the result
@@ -109,22 +165,22 @@ public class ProblemServiceImpl implements ProblemService {
                 submission.setScore(score);
                 submission.setStatus(passed ?
                         Submission.Status.PASSED : Submission.Status.FAILED);
-                submissionDao.updateSubmission(submission);
+                submissionService.saveSubmission(submission);
             });
         } catch (RejectedExecutionException e) {
             log.error("Executor rejected task for submission {}: {}", id, e.getMessage());
             submission.setStatus(Submission.Status.WAITING);
-            submissionDao.updateSubmission(submission);
+            submissionService.saveSubmission(submission);
         }
 
         return id;
     }
 
     @Override
-    public int hasPassed(User user, @NotNull Problem problem) {
+    public int hasPassed(User user, @NonNull Problem problem) {
         if (user == null) return 0;
-        if (userDao.getPassedProblemsByUserId(user.getId()).contains(problem)) return 1;
-        if (!userDao.getTriedProblemsByUserId(user.getId()).contains(problem)) return 0;
+        if (getPassedProblems(user).contains(problem)) return 1;
+        if (!getTriedProblems(user).contains(problem)) return 0;
         return -1;
     }
 
@@ -138,8 +194,8 @@ public class ProblemServiceImpl implements ProblemService {
             }
             return map;
         }
-        List<Problem> passedProblems = userDao.getPassedProblemsByUserId(user.getId());
-        List<Problem> failedProblems = userDao.getNotPassedProblemsByUserId(user.getId());
+        List<Problem> passedProblems = getPassedProblems(user);
+        List<Problem> failedProblems = getNotPassedProblems(user);
         Map<Problem, Integer> map = new TreeMap<>();
         for (Problem problem : problems) {
             if (passedProblems.contains(problem)) {
@@ -167,7 +223,7 @@ public class ProblemServiceImpl implements ProblemService {
                 .append("## 输入格式\n\n").append(problem.getInputFormat()).append("\n\n")
                 .append("## 输出格式\n\n").append(problem.getOutputFormat()).append("\n\n")
                 .append("## 样例\n\n");
-        for (IOPair ioPair : problemDao.getSamplesById(problem.getId())) {
+        for (IOPair ioPair : getSamples(problem)) {
             sb.append("##### 输入\n\n").append("```\n")
                     .append(ioPair.getInput()).append(("\n```\n\n"))
                     .append("##### 输出\n\n").append("```\n")
@@ -222,7 +278,7 @@ public class ProblemServiceImpl implements ProblemService {
     public int getHistoryScore(User user, @NonNull Problem problem) {
         int score = 0;
         if (user == null) return 0;
-        Iterable<Submission> submissions = submissionDao.getSubmissionsByUserId(user.getId());
+        Iterable<Submission> submissions = user.getSubmissions();
         for (Submission submission : submissions) {
             if (submission.getProblemId() == problem.getId()) {
                 score = Math.max(score, submission.getScore());
@@ -237,11 +293,6 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Autowired
-    private void setSubmissionDao(SubmissionDao submissionDao) {
-        this.submissionDao = submissionDao;
-    }
-
-    @Autowired
     private void setProblemDao(ProblemDao problemDao) {
         this.problemDao = problemDao;
     }
@@ -252,7 +303,7 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Autowired
-    private void setUserDao(UserDao userDao) {
-        this.userDao = userDao;
+    public void setSubmissionService(SubmissionService submissionService) {
+        this.submissionService = submissionService;
     }
 }

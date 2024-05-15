@@ -1,7 +1,6 @@
 package org.dindier.oicraft.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.dindier.oicraft.dao.SubmissionDao;
 import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.Submission;
 import org.dindier.oicraft.model.User;
@@ -19,15 +18,14 @@ import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 public class SubmissionController {
-    private SubmissionDao submissionDao;
     private UserService userService;
     private ProblemService problemService;
-    private HttpServletRequest request;
     private SubmissionService submissionService;
+    private HttpServletRequest request;
 
     @GetMapping("/submission/{id}")
     public ModelAndView submission(@PathVariable int id) {
-        Submission submission = submissionDao.getSubmissionById(id);
+        Submission submission = submissionService.getSubmissionById(id);
         User user = userService.getUserByRequest(request);
         if (user == null) return null; // Actually, this page has been protected by interceptor
         if (submission == null) return new ModelAndView("error/404");
@@ -49,7 +47,7 @@ public class SubmissionController {
 
     @PostMapping("submission/ai")
     public RedirectView AIAdvice(@RequestParam("submissionId") int id) {
-        Submission submission = submissionDao.getSubmissionById(id);
+        Submission submission = submissionService.getSubmissionById(id);
         User user = userService.getUserByRequest(request);
 
         if (submission == null || user == null || !user.equals(submission.getUser()))
@@ -57,11 +55,6 @@ public class SubmissionController {
 
         submissionService.getAIAdvice(submission);
         return new RedirectView("/submission/" + id);
-    }
-
-    @Autowired
-    public void setSubmissionDao(SubmissionDao submissionDao) {
-        this.submissionDao = submissionDao;
     }
 
     @Autowired

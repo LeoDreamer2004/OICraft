@@ -7,6 +7,15 @@ import org.springframework.lang.Nullable;
 public interface UserService {
 
     /**
+     * Get user by id
+     * @param id The id of the user
+     * @return The user with the id
+     */
+    User getUserById(int id);
+
+    User getUserByUsername(String name);
+
+    /**
      * Create a new user
      *
      * @param username The name of the user
@@ -14,6 +23,35 @@ public interface UserService {
      * @return The created user object
      */
     User createUser(String username, String password);
+
+    /**
+     * Update the user
+     * @param user The user to update
+     * @return The updated user
+     */
+    User updateUser(User user);
+
+    /**
+     * Delete a user
+     *
+     * @param user The user to delete
+     */
+    void deleteUser(User user);
+
+    /**
+     * Check if the user exists
+     *
+     * @param username The username to check
+     * @return Whether the user exists
+     */
+    boolean existsUser(String username);
+
+    /**
+     * Get all users from database
+     *
+     * @return An iterable object of {@code User} classes.
+     */
+    Iterable<User> getAllUsers();
 
     /**
      * Get user by request
@@ -70,9 +108,9 @@ public interface UserService {
     /**
      * Save the avatar of the user
      * If avatar is null, the avatar will be deleted
+     *
      * @param user The user to save the avatar to
      * @return if the avatar is saved successfully
      */
     int saveUserAvatar(User user, byte[] avatar);
-
 }
