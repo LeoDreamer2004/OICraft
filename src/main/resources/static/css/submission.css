@@ -19,13 +19,13 @@
     position: absolute;
     background-color: #222222;
     font-family: consolas, monospace;
-    max-width: 100px;
+    width: 200px;
+    text-align: center;
     top: 5px;
     left: 50%;
     transform: translate(-50%, 0);
     padding: 2px;
     font-size: 12px;
-    white-space: nowrap;
     box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
     opacity: 0;
     transition: opacity 0.3s ease-out;
@@ -55,7 +55,7 @@
 }
 
 .ce-box {
-    background-color: #aaaa22;
+    background-color: rgb(170, 170, 34);
 }
 
 .re-box {

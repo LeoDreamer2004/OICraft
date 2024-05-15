@@ -41,11 +41,15 @@ public class ProblemController {
     @GetMapping("/problems")
     public ModelAndView problems() {
         User user = userService.getUserByRequest(request);
+        String pageStr = request.getParameter("page");
+        int page = pageStr == null ? 1 : Integer.parseInt(pageStr);
         // Do NOT use problemService.hasPassed() here for optimization
-        Map<Problem, Integer> problemMap = problemService.getAllProblemWithPassInfo(user);
+        Map<Problem, Integer> problemMap = problemService.getProblemPageWithPassInfo(user, page);
         return new ModelAndView("problem/list")
                 .addObject("problems", problemMap.keySet())
-                .addObject("hasPassed", problemMap.values());
+                .addObject("hasPassed", problemMap.values())
+                .addObject("page", page)
+                .addObject("totalPages", problemService.getProblemPages());
     }
 
     @GetMapping("/problems/search")

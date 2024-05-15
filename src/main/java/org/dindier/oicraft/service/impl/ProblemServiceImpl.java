@@ -126,8 +126,7 @@ public class ProblemServiceImpl implements ProblemService {
         return -1;
     }
 
-    @Override
-    public Map<Problem, Integer> getAllProblemWithPassInfo(User user) {
+    private Map<Problem, Integer> getAllProblemWithPassInfo(User user) {
         if (user == null) {
             TreeMap<Problem, Integer> map = new TreeMap<>();
             for (Problem problem : problemDao.getProblemList()) {
@@ -150,6 +149,20 @@ public class ProblemServiceImpl implements ProblemService {
             }
         }
         return map;
+    }
+
+    @Override
+    public Map<Problem, Integer> getProblemPageWithPassInfo(User user, int page) {
+        // TODO: Implement this method
+
+        return getAllProblemWithPassInfo(user);
+    }
+
+    @Override
+    public int getProblemPages() {
+        // TODO: Implement this method
+
+        return 5;
     }
 
     @Override
@@ -228,6 +241,7 @@ public class ProblemServiceImpl implements ProblemService {
     public boolean canEdit(User user, @NonNull Problem problem) {
         return (user != null) && ((user.isAdmin()) || user.equals(problem.getAuthor()));
     }
+
     @Autowired
     private void setSubmissionDao(SubmissionDao submissionDao) {
         this.submissionDao = submissionDao;

@@ -27,7 +27,10 @@
 
             <tr th:each="user_, stat : ${users}">
                 <td>
-                    <a th:text="${user_.name}" th:class="${user_.getGradeString()}"
+                    <a th:unless="${user_ eq null}" th:href="@{/profile/{id}(id=${user_.id})}">
+                        <img class="avatar" th:src="${user_.avatarPath}" width="30" height="30" alt="avatar">
+                    </a>
+                    <a th:unless="${user_ eq null}" th:class="${user_.gradeString}" th:text="${user_.name}"
                        th:href="@{/profile/{id}(id=${user_.id})}"></a>
                 </td>
                 <td th:text="${user_.id}"></td>

@@ -25,7 +25,7 @@
         </div>
         <div th:unless="${user} eq null">
             <a class="user-item" th:href="@{/profile/{id}(id=${user.id})}">
-            <img class="avatar" th:src="${user.avatarPath}" width="30" height="30" alt="avatar">
+                <img class="avatar" th:src="${user.avatarPath}" width="30" height="30" alt="avatar">
             </a>
             <a class="user-item" th:text="${user.name}" th:href="@{/profile}"></a>
             <a class="user-item" th:href="@{/logout}">登出</a>
@@ -40,6 +40,24 @@
         <button type="submit" class="iconfont icon-sousuo search-icon"></button>
     </form>
     <div class="card my-card p-3">
+        <nav>
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${page == 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/problems(page=1)}">首页</a>
+                </li>
+                <li class="page-item" th:classappend="${page == 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/problems(page=${page - 1})}">上一页</a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${i == page} ? 'active'">
+                    <a class="page-link" th:href="@{/problems(page=${i})}" th:text="${i}"></a>
+                <li class="page-item" th:classappend="${page == totalPages} ? 'disabled'">
+                    <a class="page-link" th:href="@{/problems(page=${page + 1})}">下一页</a>
+                </li>
+                <li class="page-item" th:classappend="${page == totalPages} ? 'disabled'">
+                    <a class="page-link" th:href="@{/problems(page=${totalPages})}">尾页</a>
+                </li>
+            </ul>
+        </nav>
         <table class="table">
             <tr>
                 <th>状态</th>
