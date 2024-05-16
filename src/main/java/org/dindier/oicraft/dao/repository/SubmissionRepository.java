@@ -7,7 +7,8 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 
 public interface SubmissionRepository extends CrudRepository<Submission, Integer> {
-    @Query(value = "select * from submission where problem_id = ?1 limit ?2, ?3", nativeQuery = true)
+    @Query(value = "select * from submission where problem_id = ?1 order by id desc limit ?2, ?3",
+            nativeQuery = true)
     List<Submission> findSubmissionInRangeByProblemId(int problemId, int start, int count);
 
     @Query(value = "select count(*) from submission where problem_id = ?1", nativeQuery = true)
