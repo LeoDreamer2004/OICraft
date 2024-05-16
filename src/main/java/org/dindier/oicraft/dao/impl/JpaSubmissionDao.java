@@ -7,8 +7,6 @@ import org.dindier.oicraft.model.Submission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository("submissionDao")
 @Slf4j
 public class JpaSubmissionDao implements SubmissionDao {

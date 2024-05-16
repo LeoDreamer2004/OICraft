@@ -24,6 +24,28 @@
     <h3 th:text="${problem.title}"
         style="margin-bottom: 2rem; padding: 1rem; border-bottom: gray 1px solid"></h3>
     <div class="card my-card p-3">
+        <ul class="pagination justify-content-center" th:unless="${page eq null}">
+            <li class="page-item" th:classappend="${page == 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/problem/{id}/history(page=1, id=${problem.id})}">首页</a>
+            </li>
+            <li class="page-item" th:classappend="${page == 1} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/problem/{id}/history(page=${page - 1}, id=${problem.id})}">上一页</a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"
+                th:classappend="${i == page} ? 'active'">
+                <a class="page-link" th:href="@{/problem/{id}/history(page=${i}, id=${problem.id})}"
+                   th:text="${i}"></a>
+            <li class="page-item" th:classappend="${page == totalPages} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/problem/{id}/history(page=${page + 1}, id=${problem.id})}">下一页</a>
+            </li>
+            <li class="page-item" th:classappend="${page == totalPages} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/problem/{id}/history(page=${totalPages}, id=${problem.id})}">尾页</a>
+            </li>
+        </ul>
+
         <table class="table">
             <tr>
                 <th></th>
@@ -49,7 +71,8 @@
                 </td>
                 <td>
                     <a th:href="@{/profile/{id}(id=${submission.user.id})}">
-                        <img class="avatar mr-2" th:src="${submission.user.avatarPath}" width="30" height="30" alt="avatar">
+                        <img class="avatar mr-2" th:src="${submission.user.avatarPath}" width="30" height="30"
+                             alt="avatar">
                     </a>
                     <a th:href="@{/profile/{id}(id=${submission.user.id})}" th:text="${submission.user.name}"
                        th:class="${submission.user.getGradeString()}"></a>

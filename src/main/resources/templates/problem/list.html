@@ -40,24 +40,23 @@
         <button type="submit" class="iconfont icon-sousuo search-icon"></button>
     </form>
     <div class="card my-card p-3">
-        <nav>
-            <ul class="pagination justify-content-center" th:unless="${page eq null}">
-                <li class="page-item" th:classappend="${page == 1} ? 'disabled'">
-                    <a class="page-link" th:href="@{/problems(page=1)}">首页</a>
-                </li>
-                <li class="page-item" th:classappend="${page == 1} ? 'disabled'">
-                    <a class="page-link" th:href="@{/problems(page=${page - 1})}">上一页</a>
-                </li>
-                <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${i == page} ? 'active'">
-                    <a class="page-link" th:href="@{/problems(page=${i})}" th:text="${i}"></a>
-                <li class="page-item" th:classappend="${page == totalPages} ? 'disabled'">
-                    <a class="page-link" th:href="@{/problems(page=${page + 1})}">下一页</a>
-                </li>
-                <li class="page-item" th:classappend="${page == totalPages} ? 'disabled'">
-                    <a class="page-link" th:href="@{/problems(page=${totalPages})}">尾页</a>
-                </li>
-            </ul>
-        </nav>
+        <ul class="pagination justify-content-center" th:unless="${page eq null}">
+            <li class="page-item" th:classappend="${page == 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/problems(page=1)}">首页</a>
+            </li>
+            <li class="page-item" th:classappend="${page == 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/problems(page=${page - 1})}">上一页</a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"
+                th:classappend="${i == page} ? 'active'">
+                <a class="page-link" th:href="@{/problems(page=${i})}" th:text="${i}"></a>
+            <li class="page-item" th:classappend="${page == totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{/problems(page=${page + 1})}">下一页</a>
+            </li>
+            <li class="page-item" th:classappend="${page == totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{/problems(page=${totalPages})}">尾页</a>
+            </li>
+        </ul>
         <table class="table">
             <tr>
                 <th>状态</th>

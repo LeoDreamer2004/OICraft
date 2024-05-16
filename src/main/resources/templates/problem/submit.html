@@ -24,9 +24,9 @@
 <main role="main" class="container">
     <!-- Input code -->
 
-    <form role="form" class="form" th:action="@{result}" method="post">
+    <form role="form" class="form" th:action="@{/problem/result}" method="post">
+        <input type="hidden" name="problemId" th:value="${problem.id}">
         <div class="lr-container">
-
             <label class="form-inline">
                 <span>代码语言</span>
                 <select name="language" class="form-control form-control-placeholder mb-3 ml-3 mt-3">

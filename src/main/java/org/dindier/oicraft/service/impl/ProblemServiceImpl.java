@@ -52,7 +52,6 @@ public class ProblemServiceImpl implements ProblemService {
 
     static {
         boosts.put("title", 4.0f);
-        boosts.put("description", 1.0f);
     }
 
     @Override
@@ -207,7 +206,6 @@ public class ProblemServiceImpl implements ProblemService {
             }
         }
         return map;
-//        return getAllProblemWithPassInfo(user);
     }
 
     @Override
@@ -251,7 +249,8 @@ public class ProblemServiceImpl implements ProblemService {
             indexWriter.close();
 
             // parse the query
-            MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[]{"title"}, new SmartChineseAnalyzer(), boosts);
+            MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[]{"title"},
+                    new SmartChineseAnalyzer(), boosts);
             Query query;
             try {
                 query = parser.parse(keyword);
@@ -282,6 +281,8 @@ public class ProblemServiceImpl implements ProblemService {
         for (Submission submission : submissions) {
             if (submission.getProblemId() == problem.getId()) {
                 score = Math.max(score, submission.getScore());
+                if (submission.getStatus().equals(Submission.Status.PASSED))
+                    break;  // a simple optimization
             }
         }
         return score;

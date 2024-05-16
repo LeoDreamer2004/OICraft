@@ -19,14 +19,17 @@ import java.util.concurrent.*;
 @Service("submissionService")
 @Slf4j
 public class SubmissionServiceImpl implements SubmissionService {
+    private ProblemDao problemDao;
     private SubmissionDao submissionDao;
+    private UserService userService;
     private AIAdapter aiAdapter;
 
     private static final int POOL_SIZE = 16;
     private static final int WAITING_QUEUE_SIZE = 10000;
-
     private final ExecutorService executorService = new ThreadPoolExecutor(POOL_SIZE, POOL_SIZE,
             0L, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(WAITING_QUEUE_SIZE));
+
+    private static final int RECORD_PER_PAGE = 20;
 
     private final List<Submission> waitingSubmissions = new CopyOnWriteArrayList<>();
 
@@ -37,12 +40,28 @@ public class SubmissionServiceImpl implements SubmissionService {
             2. 错误代码：一段无法通过测试的代码
             3. 错误信息：测试平台对这段代码产生的错误信息，可能是 Compile Error, Runtime Error, Time Limit Exceeded, Memory Limit Exceeded, Wrong Answer 等。
             你的回答只应该包括错误分析和修改建议两部分。""";
-    private UserService userService;
-    private ProblemDao problemDao;
 
     @Override
     public Submission getSubmissionById(int id) {
         return submissionDao.getSubmissionById(id);
+    }
+
+    @Override
+    public List<Submission> getSubmissionsInPage(Problem problem, int page) {
+        // TODO: Optimize this method
+
+        List<Submission> submissions = problem.getSubmissions();
+        int from = (page - 1) * RECORD_PER_PAGE;
+        if (from < 0) return List.of();
+        int to = Math.min(page * RECORD_PER_PAGE, submissions.size());
+        return submissions.subList(from, to);
+    }
+
+    @Override
+    public int getSubmissionPages(Problem problem) {
+        // TODO: Optimize this method
+
+        return (int) Math.ceil((double) problem.getSubmissions().size() / RECORD_PER_PAGE);
     }
 
     @Override

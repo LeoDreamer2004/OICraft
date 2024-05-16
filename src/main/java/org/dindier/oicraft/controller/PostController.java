@@ -58,8 +58,8 @@ public class PostController {
                 .addObject("problem", problem);
     }
 
-    @PostMapping("/problem/{id}/post/new")
-    public RedirectView createPost(@PathVariable int id,
+    @PostMapping("/post/new")
+    public RedirectView createPost(@RequestParam("problemId") int id,
                                    @RequestParam("title") String title,
                                    @RequestParam("content") String content) {
         Problem problem = problemService.getProblemById(id);

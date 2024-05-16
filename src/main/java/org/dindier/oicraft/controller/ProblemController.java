@@ -117,18 +117,8 @@ public class ProblemController {
                 .body(inputStreamSource);
     }
 
-    @GetMapping("/problem/{id}/history")
-    public ModelAndView history(@PathVariable int id) {
-        Problem problem = problemService.getProblemById(id);
-        if (problem == null) return new ModelAndView("error/404");
-        Iterable<Submission> submissions = problem.getSubmissions();
-        return new ModelAndView("submission/history")
-                .addObject("problem", problemService.getProblemById(id))
-                .addObject("submissions", submissions);
-    }
-
-    @PostMapping("/problem/{id}/result")
-    public RedirectView handIn(@PathVariable int id,
+    @PostMapping("/problem/result")
+    public RedirectView handIn(@RequestParam("problemId") int id,
                                @RequestParam("code") String code,
                                @RequestParam("language") String language,
                                Model model) {
@@ -151,8 +141,8 @@ public class ProblemController {
                 .addObject("problem", problem);
     }
 
-    @PostMapping("/problem/{id}/edit")
-    public RedirectView editConfirm(@PathVariable int id,
+    @PostMapping("/problem/edit")
+    public RedirectView editConfirm(@RequestParam("problemId") int id,
                                     @RequestParam("title") String title,
                                     @RequestParam("description") String description,
                                     @RequestParam("inputFormat") String inputFormat,
@@ -189,8 +179,8 @@ public class ProblemController {
                 addObject("problem", problem);
     }
 
-    @PostMapping("/problem/{id}/delete")
-    public RedirectView deleteConfirm(@PathVariable int id) {
+    @PostMapping("/problem/delete")
+    public RedirectView deleteConfirm(@RequestParam("problemId") int id) {
         User user = userService.getUserByRequest(request);
         Problem problem = problemService.getProblemById(id);
         if (problem == null)

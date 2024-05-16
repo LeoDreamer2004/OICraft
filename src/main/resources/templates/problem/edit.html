@@ -24,7 +24,8 @@
 </div>
 <main role="main" class="container">
     <div class="card my-card p-3">
-        <form th:action="@{/problem/{id}/edit(id=${problem.id})}" method="post">
+        <form th:action="@{/problem/edit}" method="post">
+            <input type="hidden" name="problemId" th:value="${problem.id}">
             <div class="form-group">
                 <label for="title">题目名称</label>
                 <input type="text" class="form-control" id="title" name="title" th:value="${problem.title}" maxlength="20" required>

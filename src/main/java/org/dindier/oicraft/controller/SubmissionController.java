@@ -16,12 +16,28 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.List;
+
 @Controller
 public class SubmissionController {
     private UserService userService;
     private ProblemService problemService;
     private SubmissionService submissionService;
     private HttpServletRequest request;
+
+    @GetMapping("/problem/{id}/history")
+    public ModelAndView history(@PathVariable int id) {
+        Problem problem = problemService.getProblemById(id);
+        String pageStr = request.getParameter("page");
+        int page = pageStr == null ? 1 : Integer.parseInt(pageStr);
+        if (problem == null) return new ModelAndView("error/404");
+        List<Submission> submissions = submissionService.getSubmissionsInPage(problem, page);
+        return new ModelAndView("submission/history")
+                .addObject("problem", problem)
+                .addObject("submissions", submissions)
+                .addObject("page", page)
+                .addObject("totalPages", submissionService.getSubmissionPages(problem));
+    }
 
     @GetMapping("/submission/{id}")
     public ModelAndView submission(@PathVariable int id) {
