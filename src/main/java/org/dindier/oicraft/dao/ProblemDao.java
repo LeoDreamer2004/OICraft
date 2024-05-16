@@ -70,9 +70,9 @@ public interface ProblemDao {
     /**
      * Find problems in a range
      *
-     * @param start  the start index
-     * @param number the number of problems to find
+     * @param start the start index
+     * @param count the count of problems to find
      * @return a list of problems in the range
      */
-    List<Problem> getProblemInRange(int start, int number);
+    List<Problem> getProblemInRange(int start, int count);
 }
