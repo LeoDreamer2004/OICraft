@@ -23,7 +23,8 @@
 <main role="main" class="container">
     <!-- Input code -->
     <div class="card my-card">
-        <form role="form" class="form" th:action="@{/problem/{id}/post/new(id=${problem.id})}" method="post">
+        <form role="form" class="form" th:action="@{/post/new}" method="post">
+            <input type="hidden" name="problemId" th:value="${problem.id}">
             <label for="title">标题</label>
             <input id="title" name="title" type="text" class="form-control" maxlength="100" required>
             <label for="content" class="mt-3">内容</label>

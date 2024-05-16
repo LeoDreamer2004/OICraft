@@ -26,13 +26,13 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post savePost(Post post) {
-        log.info("Save post: {}", post);
+        log.info("Save post: {}", post.getTitle());
         return postDao.savePost(post);
     }
 
     @Override
     public void deletePost(Post post) {
-        log.info("Delete post: {}", post);
+        log.info("Delete post: {}", post.getTitle());
         postDao.deletePost(post);
     }
 

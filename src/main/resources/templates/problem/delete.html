@@ -24,7 +24,8 @@
 </div>
 <main role="main" class="container">
     <div class="card my-card">
-        <form th:action="@{/problem/{id}/delete(id=${problem.id})}" method="post">
+        <form th:action="@{/problem/delete}" method="post">
+            <input type="hidden" name="problemId" th:value="${problem.id}">
             <h2 style="text-align: center; padding-bottom: 10px">您确定要删除此题吗？</h2>
             <div class="lr-container">
                 <button type="submit" class="btn btn-danger ml-auto mr-4">确认删除</button>
