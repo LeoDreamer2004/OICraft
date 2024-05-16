@@ -100,8 +100,8 @@ public class JpaProblemDao implements ProblemDao {
     }
 
     @Override
-    public List<Problem> getProblemInRange(int start, int number) {
-        return problemRepository.findProblemInRange(start, number);
+    public List<Problem> getProblemInRange(int start, int count) {
+        return problemRepository.findProblemInRange(start, count);
     }
 
     @Autowired

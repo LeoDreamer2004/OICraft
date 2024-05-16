@@ -48,20 +48,13 @@ public class SubmissionServiceImpl implements SubmissionService {
 
     @Override
     public List<Submission> getSubmissionsInPage(Problem problem, int page) {
-        // TODO: Optimize this method
-
-        List<Submission> submissions = problem.getSubmissions();
-        int from = (page - 1) * RECORD_PER_PAGE;
-        if (from < 0) return List.of();
-        int to = Math.min(page * RECORD_PER_PAGE, submissions.size());
-        return submissions.subList(from, to);
+        return submissionDao.getSubmissionsInRangeByProblemId(problem.getId(),
+                (page - 1) * RECORD_PER_PAGE, RECORD_PER_PAGE);
     }
 
     @Override
     public int getSubmissionPages(Problem problem) {
-        // TODO: Optimize this method
-
-        return (int) Math.ceil((double) problem.getSubmissions().size() / RECORD_PER_PAGE);
+        return (int) Math.ceil(submissionDao.countByProblemId(problem.getId()) / (double) RECORD_PER_PAGE);
     }
 
     @Override

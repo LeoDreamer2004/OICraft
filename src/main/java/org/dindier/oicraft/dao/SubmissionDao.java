@@ -3,6 +3,8 @@ package org.dindier.oicraft.dao;
 import org.dindier.oicraft.model.Submission;
 import org.springframework.lang.Nullable;
 
+import java.util.List;
+
 public interface SubmissionDao {
     /**
      * Save a submission in the database
@@ -29,4 +31,22 @@ public interface SubmissionDao {
      */
     @SuppressWarnings("unused")
     Iterable<Submission> getAllSubmissions();
+
+    /**
+     * Get all submissions in the database in a page by problem ID
+     *
+     * @param problemId the ID of the problem
+     * @param start     the start index of the submissions
+     * @param count     the number of submissions to get
+     * @return A list of all {@code Submission} classes in the page.
+     */
+    List<Submission> getSubmissionsInRangeByProblemId(int problemId, int start, int count);
+
+    /**
+     * Get the number of submissions by problem ID
+     *
+     * @param problemId the ID of the problem
+     * @return The number of submissions
+     */
+    int countByProblemId(int problemId);
 }
