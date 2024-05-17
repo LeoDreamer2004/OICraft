@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class PostServiceImpl implements PostService {
     private PostDao postDao;
     private CommentDao commentDao;
+    private UserServiceImpl userService;
 
     @Nullable
     @Override
@@ -27,6 +28,12 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post savePost(Post post) {
         log.info("Save post: {}", post.getTitle());
+        if (post.getId() == 0) {
+            // A new post
+            User user = post.getAuthor();
+            user.setExperience(user.getExperience() + 3);
+            userService.updateUser(user);
+        }
         return postDao.savePost(post);
     }
 
@@ -44,6 +51,12 @@ public class PostServiceImpl implements PostService {
     @Override
     public Comment saveComment(Comment comment) {
         log.info("User {} commented on post {}", comment.getAuthor().getName(), comment.getPost().getId());
+        if (comment.getId() == 0) {
+            // A new comment
+            User user = comment.getAuthor();
+            user.setExperience(user.getExperience() + 1);
+            userService.updateUser(user);
+        }
         return commentDao.saveComment(comment);
     }
 
@@ -72,5 +85,10 @@ public class PostServiceImpl implements PostService {
     @Autowired
     public void setCommentDao(CommentDao commentDao) {
         this.commentDao = commentDao;
+    }
+
+    @Autowired
+    public void setUserService(UserServiceImpl userService) {
+        this.userService = userService;
     }
 }

@@ -12,42 +12,45 @@
 <!--/*@thymesVar id="user" type="org.dindier.oicraft.model.User"*/-->
 <div th:fragment="nav">
     <nav class="navbar navbar-expand-md navbar-light" style="background-color: rgba(255,255,255,0.5); border:none;">
-        <a class="navbar-brand" th:href="@{/}">𒀭OICraft</a>
+        <a class="navbar-brand" href="/">𒀭OICraft</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
                 aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span
                 class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a th:href="@{/}" class="nav-link">首页</a>
+                    <a href="/" class="nav-link">首页</a>
                 </li>
                 <li class="nav-item">
-                    <a th:href="@{/problems}" class="nav-link">题目清单</a>
+                    <a href="/problems" class="nav-link">题目清单</a>
                 </li>
                 <li class="nav-item" th:unless="${user eq null}">
-                    <a th:href="@{/profile}" class="nav-link">个人主页</a>
+                    <a href="/profile" class="nav-link">个人主页</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/ide" class="nav-link">在线IDE</a>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto" th:if="${user} eq null">
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/register}">注册</a>
+                    <a class="nav-link" href="/register">注册</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/login}">登录</a>
+                    <a class="nav-link" href="/login">登录</a>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto" th:unless="${user} eq null">
                 <li class="nav-item">
-                        <span class="navbar-text"
-                              style="text-decoration: none; color:rgba(0,0,0,0.5); ">欢迎 &nbsp;</span>
+                        <span class="navbar-text no-dec"
+                              style="color:rgba(0,0,0,0.5); ">欢迎 &nbsp;</span>
                 </li>
                 <li class="nav-item">
                     <div class="dropdown">
-                        <a class="drop-btn nav-link pr-3 pl-0" th:text="${user.name}" th:href="@{/profile}"></a>
+                        <a class="drop-btn nav-link pr-3 pl-0" th:text="${user.name}" href="/profile"></a>
                         <div class="dropdown-content" style="right: 0">
-                            <a th:href="@{/profile}">个人主页</a>
-                            <a th:if="${user.isAdmin()}" th:href="@{/admin}">站点管理</a>
-                            <a th:href="@{/logout}">登出</a>
+                            <a href="/profile">个人主页</a>
+                            <a th:if="${user.isAdmin()}" href="/admin">站点管理</a>
+                            <a href="/logout">登出</a>
                         </div>
                     </div>
                 </li>
@@ -69,7 +72,7 @@
     </div>
     <div id="start-arrow-container">
         <div id="start-arrow">
-            <a class="iconfont icon-icon_xiangxia_" style="text-decoration: none" th:href="@{/problems}"></a>
+            <a class="iconfont icon-icon_xiangxia_ no-dec" href="/problems"></a>
         </div>
     </div>
 

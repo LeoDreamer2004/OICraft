@@ -51,7 +51,7 @@
         <div class="problem-main mb-5">
             <div class="card my-card">
                 <a th:href="@{/problem/{id}/download(id=${problem.id})}"
-                style="position: absolute; right: 20px; text-decoration: none">
+                style="position: absolute; right: 20px;" class="no-dec">
                     <span class="iconfont icon-markdown"></span>
                     下载Markdown
                 </a>
@@ -89,7 +89,7 @@
                     <p>出题人</p>
                     <a th:unless="${author eq null}" th:text="${author.name}"
                        th:href="@{/profile/{id}(id=${author.id})}"
-                       th:class="${author.getGradeString()}">
+                       th:class="${author.gradeString}">
                     </a>
                     <span th:if="${author eq null}" class="DELETED">账户已注销</span>
                 </div>
@@ -104,14 +104,13 @@
                     <p th:text="${historyScore}"></p>
                 </div>
 
-                <a class="iconfont icon-toupiao" th:href="@{/problem/{id}/history(id=${problem.id})}"
-                   style="text-decoration: none"> 提交记录</a>
+                <a class="iconfont icon-toupiao no-dec" th:href="@{/problem/{id}/history(id=${problem.id})}"> 提交记录</a>
             </div>
             <div class="card my-card mt-3">
                 <h5 class="mb-3 underlined-title">讨论区</h5>
                 <div>
-                <a th:href="@{/problem/{id}/posts(id=${problem.id})}" class="mr-2" style="text-decoration: none">查看帖子</a>
-                <a th:href="@{/problem/{id}/post/new(id=${problem.id})}" style="text-decoration: none">发布帖子</a>
+                <a th:href="@{/problem/{id}/posts(id=${problem.id})}" class="mr-2 no-dec">查看帖子</a>
+                <a th:href="@{/problem/{id}/post/new(id=${problem.id})}" class="no-dec">发布帖子</a>
                 </div>
             </div>
             <div class="card my-card mt-3" th:if="${canEdit}">
@@ -119,7 +118,7 @@
                 <div>
                     <a class="btn btn-primary" style="width:auto"
                        th:href="@{/problem/{id}/edit(id=${problem.id})}">编辑题目</a>
-                    <a class="btn btn-primary" style="width:auto"
+                    <a class="btn btn-primary" style="width:auto" th:classappend="${!canEditCheckpoints} ? disabled"
                        th:href="@{/problem/{id}/edit/checkpoints(id=${problem.id})}">编辑测试点</a>
                     <a class="btn btn-danger" style="width:auto"
                        th:href="@{/problem/{id}/delete(id=${problem.id})}">删除题目</a>

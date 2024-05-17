@@ -96,6 +96,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(User user) {
+        checkExperience(user);
+        return userDao.saveUser(user);
+    }
+
+    private void checkExperience(User user) {
         int experience = user.getExperience();
         if (experience > EXPERT_MIN_EXP) {
             user.setGrade(User.Grade.EXPERT);
@@ -106,7 +111,6 @@ public class UserServiceImpl implements UserService {
         } else {
             user.setGrade(User.Grade.BEGINNER);
         }
-        return userDao.saveUser(user);
     }
 
     @Override

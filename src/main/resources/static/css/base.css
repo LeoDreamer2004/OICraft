@@ -149,3 +149,17 @@ main {
 .table td {
     vertical-align: middle;
 }
+
+.no-dec {
+    text-decoration: none !important;
+}
+
+.input-code * {
+    font-family: Consolas, monospace !important;
+    font-size: 20px;
+}
+
+.CodeMirror-hints {
+    font-family: Consolas, monospace !important;
+    font-size: 17px;
+}

@@ -24,8 +24,8 @@ public class PostController {
 
     private UserService userService;
     private ProblemService problemService;
-    private HttpServletRequest request;
     private PostService postService;
+    private HttpServletRequest request;
 
     @GetMapping("/post/{id}")
     public ModelAndView getPost(@PathVariable int id) {

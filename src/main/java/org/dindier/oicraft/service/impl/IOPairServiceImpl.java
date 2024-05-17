@@ -41,7 +41,7 @@ public class IOPairServiceImpl implements IOPairService {
 
     @Override
     public IOPair saveIOPair(IOPair ioPair) {
-        log.info("Save IOPair: {}", ioPair);
+        log.info("Save IOPair: {}", ioPair.getId());
         return ioPairDao.saveIOPair(ioPair);
     }
 

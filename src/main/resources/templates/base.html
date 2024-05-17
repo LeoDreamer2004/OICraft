@@ -57,6 +57,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
         <script>hljs.highlightAll();</script>
     </th:block>
+
     <th:block th:fragment="runMarkdown">
         <script>
             var elements = document.getElementsByClassName('markdown');
@@ -64,6 +65,25 @@
                 elements[i].innerHTML = marked.parse(elements[i].innerHTML);
             }
         </script>
+    </th:block>
+
+    <th:block th:fragment="codeMirror">
+    <link rel="stylesheet" href="/plugins/codemirror/lib/codemirror.css">
+    <script src="/plugins/codemirror/lib/codemirror.js"></script>
+    <link rel="stylesheet" href="/plugins/codemirror/theme/eclipse.css">
+
+    <script src="/plugins/codemirror/mode/clike/clike.js"></script>
+    <script src="/plugins/codemirror/mode/python/python.js"></script>
+    <link rel="stylesheet" href="/plugins/codemirror/addon/hint/show-hint.css">
+    <script src="/plugins/codemirror/addon/hint/show-hint.js"></script>
+    <script src="/plugins/codemirror/addon/hint/anyword-hint.js"></script>
+    <script src="/plugins/codemirror/addon/edit/matchbrackets.js"></script>
+
+    <link rel="stylesheet" href="/plugins/codemirror/addon/fold/foldgutter.css"/>
+    <script src="/plugins/codemirror/addon/fold/foldcode.js"></script>
+    <script src="/plugins/codemirror/addon/fold/foldgutter.js"></script>
+    <script src="/plugins/codemirror/addon/fold/brace-fold.js"></script>
+    <script src="/plugins/codemirror/addon/fold/comment-fold.js"></script>
     </th:block>
 </head>
 <body>
