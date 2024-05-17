@@ -10,9 +10,9 @@
 <body>
 <div class="header">
     <p class="link">
-        <a th:href="@{/}">首页</a>
+        <a href="/">首页</a>
         <span>></span>
-        <a th:href="@{/problems}">题目清单</a>
+        <a href="/problems">题目清单</a>
         <span>></span>
         <a th:href="@{/problem/{id}(id=${problem.id})}" th:text="${problem.title}"></a>
         <span>></span>
@@ -97,9 +97,14 @@
             <button type="submit" class="btn btn-danger">我需要AI帮助</button>
         </form>
         <div th:if="${submission.adviceAI eq null && submission.aiAdviceRequested}">正在等待回应中，请稍后...</div>
-        <div class="markdown" th:unless="${submission.adviceAI eq null}" th:utext="${submission.adviceAI}"></div>
+        <div class="markdown" th:unless="${submission.adviceAI eq null}" th:text="${submission.adviceAI}"></div>
     </div>
 </main>
 <th:block th:replace="~{base :: runMarkdown}"></th:block>
+<script>
+    document.querySelector('form').addEventListener('submit', function () {
+        document.querySelector('button').disabled = true;
+    });
+</script>
 </body>
 </html>

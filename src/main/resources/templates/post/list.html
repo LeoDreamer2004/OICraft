@@ -28,7 +28,7 @@
     <div th:each="post: ${problem.posts}" class="card mb-3">
 
         <div class="card-header">
-            <a th:unless="${post.author eq null}" th:href="@{/profile/{id}(id=${post.author.id})}" style="text-decoration: none">
+            <a th:unless="${post.author eq null}" th:href="@{/profile/{id}(id=${post.author.id})}" class="no-dec">
                 <img class="avatar" th:src="${post.author.avatarPath}" width="30" height="30" alt="avatar">
             </a>
             <a th:unless="${post.author eq null}" th:class="${post.author.gradeString}" th:text="${post.author.name}"

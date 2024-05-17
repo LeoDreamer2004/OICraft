@@ -1,0 +1,21 @@
+.ide-wrapper {
+
+}
+
+.io-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.io {
+    resize: none;
+    overflow: hidden;
+    width: 100%;
+}
+
+.input-container,
+.output-container {
+    width: 90%;
+    height: 100%;
+}

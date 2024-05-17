@@ -124,8 +124,6 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 
 #### DAO 层的设计
 
-<font color="red"> 有所修改，下面的这些需要改掉一部分 </font>
-
 我们把有关用户、题目、提交、测试的操作分别封装在了若干个接口中。这样，我们就可以在 Service 层和 Controller 层直接调用接口的方法，而不用关心具体的实现。
 
 作为对 `Repository` 的进一步封装，我们为其它两层的需求实现了更加具体的方法。同时，我们还实现了一些自动化的数据更新，例如 用户做对一道题目时自动增加积分，用户签到时自动增加积分以及根据用户的积分自动更新用户的级别。
@@ -187,9 +185,7 @@ public int testCode(User user, Problem problem, String code, String language) {
     executorService.execute(() -> {
         CodeChecker codeChecker = new CodeChecker();
         // 测试代码
-        codeChecker.setIO(code, language, ioPair.getInput(), ioPair.getOutput(), id)
-                .setLimit(problem.getTimeLimit(), problem.getMemoryLimit())
-                .test(!iterator.hasNext());
+        codeChecker.setIO(...).setLimit(...).test();
         ... // 处理结果
     }
 }
@@ -231,13 +227,13 @@ String verificationCode = UUID.randomUUID().toString();
 public int addIOPairByZip(InputStream fileStream, int problemId) throws IOException;
 ```
 
-此方法接收一个zip文件流，首先将其存放在本地。然后解压文件，按照扩展名将IOPair的数据读取出来，存入数据库，最后清除临时文件。
+此方法接收一个 zip 文件流，首先将其存放在本地。然后解压文件，按照扩展名将 IOPair 的数据读取出来，存入数据库，最后清除临时文件。
 
 ```java
 public InputStream getIOPairsStream(int problemId) throws IOException;
 ```
 
-此方法接收一个问题的id，将该问题的所有测试点数据打包成zip文件流，返回给用户。
+此方法接收一个问题的 id ，将该问题的所有测试点数据打包成 zip 文件流，返回给用户。
 
 #### 签到
 
@@ -247,7 +243,7 @@ public InputStream getIOPairsStream(int problemId) throws IOException;
 public void checkIn(User user);
 ```
 
-此方法接收一个用户对象，调用相关DAO在数据库中将该用户的签到状态设置为已签到，并增加积分，同时更新用户的签到时间。
+此方法接收一个用户对象，调用相关 DAO 在数据库中将该用户的签到状态设置为已签到，并增加积分，同时更新用户的签到时间。
 
 ```java
 public boolean hasCheckedInToday(User user);
@@ -257,7 +253,7 @@ public boolean hasCheckedInToday(User user);
 
 #### 问题搜索
 
-为了完成对题目清单中问题的模糊搜索，我们使用`lucene`库中的相关方法对问题进行索引，并对用户输入的查询进行分词。对二者进行匹配后按照标题权重大于描述的顺序将符合要求的题目返回。
+为了完成对题目清单中问题的模糊搜索，我们使用 `lucene` 库中的相关方法对问题进行索引，并对用户输入的查询进行分词。对二者进行匹配后按照标题权重大于描述的顺序将符合要求的题目返回。
 
 ```java
 public List<Problem> searchProblems(String keyword) {
@@ -267,8 +263,7 @@ public List<Problem> searchProblems(String keyword) {
     Iterable<Problem> problems = problemDao.getProblemList();
     ...
     // 分解关键字
-    MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[]{"title",
-            "description"}, new SmartChineseAnalyzer(), boosts);
+    MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[]{"title"}, new SmartChineseAnalyzer(), boosts);
     ...
     query = parser.parse(keyword);
     ...
@@ -278,6 +273,10 @@ public List<Problem> searchProblems(String keyword) {
     ...
 }
 ```
+
+#### AI查错
+
+<font color="red"> 待完成！ </font>
 
 ### 控制层（Controller层）
 

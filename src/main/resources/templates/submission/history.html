@@ -23,7 +23,8 @@
 <main role="main" class="container">
     <h3 th:text="${problem.title}"
         style="margin-bottom: 2rem; padding: 1rem; border-bottom: gray 1px solid"></h3>
-    <div class="card my-card p-3">
+    <p th:if="${submissions.isEmpty()}">暂无提交记录</p>
+    <div class="card my-card p-3" th:unless="${submissions.isEmpty()}">
         <ul class="pagination justify-content-center" th:unless="${page eq null}">
             <li class="page-item" th:classappend="${page == 1} ? 'disabled'">
                 <a class="page-link" th:href="@{/problem/{id}/history(page=1, id=${problem.id})}">首页</a>
@@ -75,7 +76,7 @@
                              alt="avatar">
                     </a>
                     <a th:href="@{/profile/{id}(id=${submission.user.id})}" th:text="${submission.user.name}"
-                       th:class="${submission.user.getGradeString()}"></a>
+                       th:class="${submission.user.gradeString}"></a>
                 </td>
                 <td>
                     <span th:text="${submission.languageDisplayName}"></span>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>在线IDE</title>
+    <link th:replace="~{base :: baseStyle}">
+    <link th:replace="~{base :: codeMirror}">
+    <link rel="stylesheet" href="/css/ide.css">
+</head>
+<body>
+
+<div class="header">
+    <p class="link">
+        <a href="/">首页</a>
+        <span>></span>
+        <span>在线IDE</span>
+    </p>
+    <div th:replace="~{problem/list :: nav}"></div>
+    <h2>在线IDE</h2>
+    <!--/*@thymesVar id="user" type="org.dindier.oicraft.model.User"*/-->
+    <a class="btn btn-secondary mb-3" href="/">返回主页</a>
+</div>
+<main class="container">
+    <form role="form" class="form" th:action="@{/problem/result}" method="post">
+        <div class="lr-container">
+            <label class="form-inline">
+                <span>代码语言</span>
+                <select name="language" id="language" class="form-control form-control-placeholder mb-3 ml-3 mt-3">
+                    <option value="Python">Python</option>
+                    <option value="Java">Java</option>
+                    <option value="C++">C++</option>
+                    <option value="C">C</option>
+                </select>
+            </label>
+            <label>
+                <input class="btn btn-primary mt-3" type="submit" value="运行" style="float: right">
+            </label>
+        </div>
+        <div class="ide-wrapper">
+            <div class="input-code">
+                <textarea id="code"></textarea>
+            </div>
+            <div class="io-container">
+                <div class="input-container">
+                    <div class="input-title">Input</div>
+                    <textarea id="input" class="io form-control"></textarea>
+                </div>
+                <div class="output-container">
+                    <div class="output-title">Output</div>
+                    <textarea id="output" class="io form-control"></textarea>
+                </div>
+            </div>
+        </div>
+    </form>
+</main>
+</body>
+<script type="text/javascript">
+    var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+        mode: "text/x-java",
+        lineNumbers: true,
+        theme: "eclipse",
+        lineWrapping: false,
+        foldGutter: true,
+        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+        matchBrackets: true,
+        extraKeys: {"Ctrl-Space": "autocomplete"}
+    });
+    editor.setSize('100%', '450px')
+</script>
+
+</html>

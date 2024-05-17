@@ -33,10 +33,13 @@ public class ProblemController {
     private HttpServletRequest request;
 
     @GetMapping("/problems")
-    public ModelAndView problems() {
+    public Object problems() {
         User user = userService.getUserByRequest(request);
         String pageStr = request.getParameter("page");
-        int page = pageStr == null ? 1 : Integer.parseInt(pageStr);
+        if (pageStr == null) {
+            return new RedirectView("/problems?page=1");
+        }
+        int page = Integer.parseInt(pageStr);
         // Do NOT use problemService.hasPassed() here for optimization
         Map<Problem, Integer> problemMap = problemService.getProblemPageWithPassInfo(user, page);
         return new ModelAndView("problem/list")
@@ -72,6 +75,7 @@ public class ProblemController {
                 .addObject("samples", problemService.getSamples(problem))
                 .addObject("author", problem.getAuthor())
                 .addObject("canEdit", problemService.canEdit(user, problem))
+                .addObject("canEditCheckpoints", problem.getSubmissions().isEmpty())
                 .addObject("historyScore", problemService.getHistoryScore(user, problem))
                 .addObject("canSubmit", !problemService.getTests(problem).isEmpty());
     }
@@ -195,7 +199,7 @@ public class ProblemController {
     public ModelAndView editCheckpoints(@PathVariable int id) {
         User user = userService.getUserByRequest(request);
         Problem problem = problemService.getProblemById(id);
-        if (problem == null)
+        if (problem == null || !problem.getSubmissions().isEmpty())
             return new ModelAndView("error/404");
         if (!problemService.canEdit(user, problem))
             return new ModelAndView("error/403");
@@ -204,11 +208,11 @@ public class ProblemController {
     }
 
     @PostMapping("/problem/{id}/edit/checkpoints/file")
-    public ModelAndView editCheckpointsConfirm(@PathVariable int id,
+    public Object editCheckpointsConfirm(@PathVariable int id,
                                                @RequestParam("file") MultipartFile file) {
         User user = userService.getUserByRequest(request);
         Problem problem = problemService.getProblemById(id);
-        if (problem == null)
+        if (problem == null || !problem.getSubmissions().isEmpty())
             return new ModelAndView("error/404");
         if (!problemService.canEdit(user, problem))
             return new ModelAndView("error/403");
@@ -222,7 +226,7 @@ public class ProblemController {
         }
 
         if (errorMsg == null)
-            return new ModelAndView("problem/list");
+            return new RedirectView("/problems");
         return new ModelAndView("problem/editCheckpoints")
                 .addObject("problem", problem)
                 .addObject("errorMsg", errorMsg);
@@ -236,7 +240,7 @@ public class ProblemController {
                                                @RequestParam("score") int score) {
         User user = userService.getUserByRequest(request);
         Problem problem = problemService.getProblemById(id);
-        if (problem == null)
+        if (problem == null || !problem.getSubmissions().isEmpty())
             return new RedirectView("error/404");
         if (!problemService.canEdit(user, problem))
             return new RedirectView("error/403");
