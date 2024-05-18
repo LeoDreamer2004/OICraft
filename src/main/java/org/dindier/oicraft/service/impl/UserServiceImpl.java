@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.misc.Pair;
 import org.dindier.oicraft.model.User;
 import org.dindier.oicraft.service.UserService;
+import org.dindier.oicraft.util.code.CodeChecker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -231,7 +232,9 @@ public class UserServiceImpl implements UserService {
 
         // make the directory first
         String userFolder = usersFolder + "/" + user.getName();
-        if (userFolder.startsWith("/")) userFolder = userFolder.substring(1);
+        if (userFolder.startsWith("/") && System.getProperty("os.name").toLowerCase().contains("windows")) {
+            userFolder = userFolder.substring(1);
+        }
         try {
             Files.createDirectories(Paths.get(userFolder));
         } catch (IOException ex) {

@@ -29,6 +29,7 @@ public interface UserService {
      * @param user The user to update
      * @return The updated user
      */
+    @SuppressWarnings("UnusedReturnValue")
     User updateUser(User user);
 
     /**

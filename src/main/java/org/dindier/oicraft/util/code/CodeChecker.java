@@ -6,9 +6,7 @@ import org.apache.tomcat.jni.LibraryNotFoundError;
 
 import java.io.*;
 import java.net.URL;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 @Slf4j
 public class CodeChecker {
@@ -320,8 +318,7 @@ public class CodeChecker {
 
     private void clearFiles() {
         if (workingDirectory.exists()) {
-            String osName = System.getProperty("os.name");
-            if (osName.contains("Windows")) {
+            if (platform.equals("Windows")) {
                 // delete the folder after 5 seconds because on Windows,
                 // if a process encounters runtime error, it may not exit immediately
                 // It's not a good idea, but I don't have a better solution

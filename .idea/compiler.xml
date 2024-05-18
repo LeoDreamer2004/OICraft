@@ -10,9 +10,13 @@
         <module name="OICraft" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="AutoChecker" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="AutoChecker" options="" />
       <module name="OICraft" options="-parameters" />
     </option>
   </component>
