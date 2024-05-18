@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="AutoChecker:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/AutoChecker_jar</output-path>
+    <root id="archive" name="AutoChecker.jar">
+      <element id="module-output" name="AutoChecker" />
+    </root>
+  </artifact>
+</component>

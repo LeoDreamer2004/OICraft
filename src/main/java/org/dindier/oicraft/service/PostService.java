@@ -23,6 +23,7 @@ public interface PostService {
      * @param post The post to save
      * @return The saved post with data updated
      */
+    @SuppressWarnings("UnusedReturnValue")
     Post savePost(Post post);
 
     /**
@@ -47,6 +48,7 @@ public interface PostService {
      * @param comment The comment to save
      * @return The saved comment with data updated
      */
+    @SuppressWarnings("UnusedReturnValue")
     Comment saveComment(Comment comment);
 
     /**

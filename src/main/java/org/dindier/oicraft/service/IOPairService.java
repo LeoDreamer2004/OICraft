@@ -13,6 +13,7 @@ public interface IOPairService {
      * @param ioPair the IOPair to create
      * @return A {@code IOPair} class with the IOPair's ID set.
      */
+    @SuppressWarnings("UnusedReturnValue")
     IOPair saveIOPair(IOPair ioPair);
 
     /**
