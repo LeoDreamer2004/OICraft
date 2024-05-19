@@ -39,11 +39,11 @@
     </div>
     <div class="ide-wrapper">
         <div class="input-code">
-            <textarea name="code" id="code"></textarea>
+            <label for="code"></label><textarea name="code" id="code"></textarea>
         </div>
         <div class="io-container">
             <div class="input-container">
-                <div class="io-title">输入</div>
+                <label for="input" class="io-title">输入</label>
                 <textarea id="input" name="input" class="io form-control"></textarea>
             </div>
             <div class="output-container">
@@ -64,6 +64,7 @@
         theme: "eclipse",
         lineWrapping: true,
         foldGutter: true,
+        indentUnit: 4,
         gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
         matchBrackets: true,
         extraKeys: {"Ctrl-Space": "autocomplete"}
@@ -72,7 +73,7 @@
 
     // Change the mode of the editor based on the selected language
     document.getElementById("language").addEventListener("change", function() {
-        var language = document.getElementById("language").value;
+        const language = document.getElementById("language").value;
         if (language === "Python") {
             editor.setOption("mode", "text/x-python");
         } else if (language === "Java") {
@@ -93,8 +94,8 @@
         function () {
             submit.disabled = true
             const code = encodeURIComponent(editor.getValue());
-            const input = document.getElementById("input").value;
-            const language = document.getElementById("language").value;
+            const input = encodeURIComponent(document.getElementById("input").value);
+            const language = encodeURIComponent(document.getElementById("language").value);
             fetch("/ide/run", {
                 method: "POST",
                 headers: {

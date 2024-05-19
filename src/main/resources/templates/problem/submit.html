@@ -53,6 +53,7 @@
     const editor = CodeMirror.fromTextArea(document.getElementById("code"), {
         mode: "text/x-python",
         lineNumbers: true,
+        indentUnit: 4,
         theme: "eclipse",
         lineWrapping: true,
         foldGutter: true,
@@ -64,7 +65,7 @@
 
     // Change the mode of the editor based on the selected language
     document.getElementById("language").addEventListener("change", function() {
-        var language = document.getElementById("language").value;
+        const language = document.getElementById("language").value;
         if (language === "Python") {
             editor.setOption("mode", "text/x-python");
         } else if (language === "Java") {
