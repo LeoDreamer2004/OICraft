@@ -30,6 +30,8 @@ public class CodeChecker {
             "Python", "py"
     );
     @Getter
+    private String output;
+    @Getter
     private int usedTime = 0;
     @Getter
     private int usedMemory = 0;
@@ -269,7 +271,7 @@ public class CodeChecker {
     /* Check the answer */
     private void checkAnswer() throws IOException {
         InputStream inputStream = process.getInputStream();
-        String output = new String(inputStream.readAllBytes()).stripTrailing();
+        output = new String(inputStream.readAllBytes()).stripTrailing();
 
         if (output.equals(expectedOutput)) {
             status = "AC";
