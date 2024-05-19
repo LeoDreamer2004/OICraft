@@ -2,6 +2,7 @@ package org.dindier.oicraft.service;
 
 import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.Submission;
+import org.springframework.lang.Nullable;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ public interface SubmissionService {
      * @param id The id of the submission
      * @return The submission
      */
+    @Nullable
     Submission getSubmissionById(int id);
 
     /**
@@ -48,6 +50,7 @@ public interface SubmissionService {
      * Use a thread to get the AI advice and do not block the procedure
      *
      * @param submission The submission to be given advice
+     * @return The submission with the advice
      */
-    void getAIAdvice(Submission submission);
+    Submission getAIAdvice(Submission submission);
 }

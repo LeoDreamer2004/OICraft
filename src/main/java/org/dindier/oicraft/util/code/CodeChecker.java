@@ -88,7 +88,7 @@ public class CodeChecker {
         // code
         String extension = extensionsMap.get(language);
         if (extension == null)
-            throw new IllegalArgumentException("Unsupported language: " + language);
+            log.error("Unsupported language: {}", language);
         this.codePath = workingDirectory.getPath() + "/Main." + extension;
         File codeFile = new File(codePath);
         codeFile.createNewFile();

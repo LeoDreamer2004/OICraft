@@ -24,22 +24,9 @@ public class SubmissionServiceImpl implements SubmissionService {
     private UserService userService;
     private AIAdapter aiAdapter;
 
-    private static final int POOL_SIZE = 16;
-    private static final int WAITING_QUEUE_SIZE = 10000;
-    private final ExecutorService executorService = new ThreadPoolExecutor(POOL_SIZE, POOL_SIZE,
-            0L, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(WAITING_QUEUE_SIZE));
-
     private static final int RECORD_PER_PAGE = 20;
 
-    private final List<Submission> waitingSubmissions = new CopyOnWriteArrayList<>();
-
-    private final String prompt = """
-            你是一个信息竞赛专家，你要为错误代码提供错误分析修改建议。
-            你收到的问题包含以下几个部分：
-            1. 问题描述：一个信息竞赛的题目
-            2. 错误代码：一段无法通过测试的代码
-            3. 错误信息：测试平台对这段代码产生的错误信息，可能是 Compile Error, Runtime Error, Time Limit Exceeded, Memory Limit Exceeded, Wrong Answer 等。
-            你的回答只应该包括错误分析和修改建议两部分。""";
+    private final List<Integer> waitingSubmissions = new CopyOnWriteArrayList<>();
 
     @Override
     public Submission getSubmissionById(int id) {
@@ -92,14 +79,16 @@ public class SubmissionServiceImpl implements SubmissionService {
     }
 
     @Override
-    public void getAIAdvice(Submission submission) {
+    public Submission getAIAdvice(Submission submission) {
         if (submission.getStatus() != Submission.Status.FAILED
-                || submission.getAdviceAI() != null)
-            return;
+                || submission.getAdviceAI() != null
+                || waitingSubmissions.contains(submission.getId()))
+            return submission;
         log.info("Submission {} requested for AI advice", submission.getId());
 
         List<Checkpoint> checkpoints = submission.getCheckpoints();
         Checkpoint.Status status;
+
         // get the wrong info
         status = checkpoints.stream()
                 .filter(checkpoint -> checkpoint.getStatus() != Checkpoint.Status.AC &&
@@ -111,9 +100,10 @@ public class SubmissionServiceImpl implements SubmissionService {
         // build the question
         String errorMessage;
         if (status == null) {
-            return;
+            return submission;
         }
 
+        waitingSubmissions.add(submission.getId());
         errorMessage = switch (status) {
             case WA -> "Wrong Answer";
             case TLE -> "Time Limit Exceeded";
@@ -134,30 +124,25 @@ public class SubmissionServiceImpl implements SubmissionService {
                 submission.getCode(),
                 errorMessage);
 
-        submission.setAiAdviceRequested(true);
-        submission = saveSubmission(submission);
-
+        // get the advice from AI
         try {
-            Submission finalSubmission = submission;
-            executorService.execute(() -> {
-                // get the advice from AI
-                try {
-                    if (waitingSubmissions.contains(finalSubmission))
-                        return;
-                    waitingSubmissions.add(finalSubmission);
-                    String advice = aiAdapter.requestAI(prompt, question);
-                    finalSubmission.setAdviceAI(advice);
-                    saveSubmission(finalSubmission);
-                    waitingSubmissions.remove(finalSubmission);
-                } catch (Exception e) {
-                    log.error("Submission {} AI advice request failed: {}", finalSubmission.getId(),
-                            e.getMessage());
-                }
-            });
-        } catch (RejectedExecutionException e) {
-            log.error("Submission {} AI advice request rejected: {}", submission.getId(),
+            String prompt = """
+                    你是一个信息竞赛专家，你要为错误代码提供错误分析修改建议。
+                    你收到的问题包含以下几个部分：
+                    1. 问题描述：一个信息竞赛的题目
+                    2. 错误代码：一段无法通过测试的代码
+                    3. 错误信息：测试平台对这段代码产生的错误信息，可能是 Compile Error, Runtime Error, Time Limit Exceeded, Memory Limit Exceeded, Wrong Answer 等。
+                    你的回答只应该包括错误分析和修改建议两部分。""";
+            String advice = aiAdapter.requestAI(prompt, question);
+            submission.setAdviceAI(advice);
+        } catch (Exception e) {
+            log.error("Submission {} AI advice request failed: {}", submission.getId(),
                     e.getMessage());
         }
+
+        saveSubmission(submission);
+        waitingSubmissions.remove(Integer.valueOf(submission.getId()));
+        return submission;
     }
 
     @Autowired

@@ -8,13 +8,13 @@ import org.dindier.oicraft.service.ProblemService;
 import org.dindier.oicraft.service.SubmissionService;
 import org.dindier.oicraft.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
 
@@ -61,16 +61,24 @@ public class SubmissionController {
                 .addObject("isAuthor", user.equals(submission.getUser()));
     }
 
-    @PostMapping("submission/ai")
-    public RedirectView AIAdvice(@RequestParam("submissionId") int id) {
+    @GetMapping("/submission/ai")
+    public ResponseEntity<String> getAIAdvice(@RequestParam("submission") int id) {
         Submission submission = submissionService.getSubmissionById(id);
         User user = userService.getUserByRequest(request);
-
         if (submission == null || user == null || !user.equals(submission.getUser()))
-            return new RedirectView("error/404");
+            return ResponseEntity.badRequest().body("Invalid request for AI token");
+        String content = submission.getAdviceAI();
+        return ResponseEntity.ok(content);
+    }
 
-        submissionService.getAIAdvice(submission);
-        return new RedirectView("/submission/" + id);
+    @PostMapping("/submission/ai")
+    public ResponseEntity<String> postAIAdvice(@RequestParam("submission") int id) {
+        Submission submission = submissionService.getSubmissionById(id);
+        User user = userService.getUserByRequest(request);
+        if (submission == null || user == null || !user.equals(submission.getUser()))
+            return ResponseEntity.badRequest().body("Invalid request for AI token");
+        String content = submissionService.getAIAdvice(submission).getAdviceAI();
+        return ResponseEntity.ok(content);
     }
 
     @Autowired
