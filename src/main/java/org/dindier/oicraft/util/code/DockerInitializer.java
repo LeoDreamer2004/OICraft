@@ -1,6 +1,5 @@
 package org.dindier.oicraft.util.code;
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -11,13 +10,11 @@ import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
-public class DockerAdapter {
-    private static boolean useDocker = false;
-    @Getter
-    private static final String platform;
+public class DockerInitializer {
+    static boolean useDocker = false;
+    static final String platform;
 
-
-    private static final Map<String, String> dockerImages = Map.of(
+    static final Map<String, String> dockerImages = Map.of(
             "Java", "code-checker-java",
             "C", "code-checker-c",
             "Cpp", "code-checker-cpp",
@@ -45,21 +42,6 @@ public class DockerAdapter {
      * @return Whether the image is built successfully
      */
     private static boolean buildDockerImage(File dockerFilePath, String imageName) {
-        // Check if the docker image is already built
-        Process checkProcess;
-        try {
-            checkProcess =
-                    new ProcessBuilder("docker", "image inspect " + imageName).start();
-            checkProcess.waitFor();
-        } catch (IOException | InterruptedException e) {
-            log.error("Failed to check docker image {}", imageName);
-            return false;
-        }
-        if (checkProcess.exitValue() == 0) {
-            log.info("Docker image {} already exists", imageName);
-            return true;
-        }
-
         Process process;
         try {
             process =
@@ -102,6 +84,11 @@ public class DockerAdapter {
      * If docker is not installed or not running, use local environment instead
      */
     public static void initDocker() {
+        // Read if we should use docker from the environment variable
+        if (System.getenv("USE_DOCKER") != null && System.getenv("USE_DOCKER").equals("false")) {
+            log.warn("USE_DOCKER is set to false, use local environment instead");
+            return;
+        }
         useDocker = detectDocker();
         if (!useDocker) {
             log.warn("Docker is not installed or not running, use local environment instead");
