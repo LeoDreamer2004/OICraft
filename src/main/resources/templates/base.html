@@ -5,10 +5,11 @@
 
     <!-- Base Styles -->
     <th:block th:fragment="baseStyle">
+        <meta type="hidden" name="_csrf" th:content="${_csrf.token}"/>
         <link rel="stylesheet" href="/plugins/bootstrap-4.6.2-dist/css/bootstrap.min.css"/>
         <link rel="stylesheet" href="/css/base.css"/>
         <link rel="shortcut icon" href="/img/favicon.ico">
-        <link rel="stylesheet" href="//at.alicdn.com/t/c/font_4514574_si9d6rozqtq.css">
+        <link rel="stylesheet" href="//at.alicdn.com/t/c/font_4514574_70s0bnl4o1v.css">
     </th:block>
 
     <!-- MathJax and Markdown Support -->
