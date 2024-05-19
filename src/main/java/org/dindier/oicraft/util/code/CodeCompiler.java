@@ -1,11 +1,14 @@
 package org.dindier.oicraft.util.code;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.File;
 
 /**
  * Code compiler for compiled language such as C/C++, Java, Rust, etc.
  * This class is used to compile source code file.
  */
+@Slf4j
 public enum CodeCompiler {
     JAVA("javac"),
     CPP("g++", "-o", "main", "-O2"),
@@ -34,7 +37,7 @@ public enum CodeCompiler {
     public String compile(File sourceFile, File workingDirectory) {
         try {
             if (!workingDirectory.exists() && !workingDirectory.mkdir()) {
-                throw new RuntimeException("Error when making new file folder for " + sourceFile);
+                log.error("Failed to create new file folder for {}", sourceFile);
             }
             String[] args = new String[compileOption.length + 2];
             args[0] = compiler;
@@ -48,7 +51,7 @@ public enum CodeCompiler {
                 return new String(p.getErrorStream().readAllBytes());
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.error("Failed to compile {}", sourceFile);
         }
         return null;
     }

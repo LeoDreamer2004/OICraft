@@ -1,18 +1,18 @@
 package org.dindier.oicraft.util.crawl;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Slf4j
 public class WebUtil {
-    static Logger logger = Logger.getLogger(WebUtil.class.getName());
-
     public static boolean SHOW_PROCESS = true;
 
     /* Set the header of the http connection here */
@@ -28,29 +28,31 @@ public class WebUtil {
 
     /**
      * Get the content from the url
-     * @param strUrl The url
+     *
+     * @param strUrl   The url
      * @param charCode The charset of the content
      * @return The content from the url
      */
     public static String getContentFromUrl(String strUrl, String charCode) {
         if (SHOW_PROCESS)
-            logger.info("==============> Crawling：" + strUrl);
+            log.info("==============> Crawling: {}", strUrl);
         try {
             HttpURLConnection urlConnection = getHttpURLConnection(strUrl);
             InputStream stream = urlConnection.getInputStream();
             return readAll(stream, charCode);
         } catch (MalformedURLException e) {
-            logger.warning("URL format is wrong");
+            log.warn("URL format is wrong");
         } catch (IOException ioe) {
-            logger.warning("IO exception, maybe the website is down or the request is denied");
+            log.warn("IO exception, maybe the website is down or the request is denied");
         }
         return "";
     }
 
     /**
      * Save the content to the file
+     *
      * @param content The content
-     * @param path The path of the file
+     * @param path    The path of the file
      */
     public static void saveToFile(String content, String path) {
         try {
@@ -58,7 +60,7 @@ public class WebUtil {
             writer.write(content);
             writer.close();
         } catch (IOException e) {
-            logger.info("Cannot save the content to the file " + path);
+            log.info("Cannot save the content to the file {}", path);
         }
     }
 
@@ -75,8 +77,9 @@ public class WebUtil {
 
     /**
      * Find the pattern in the string
-     * @param string The string
-     * @param pattern The pattern
+     *
+     * @param string     The string
+     * @param pattern    The pattern
      * @param groupIndex The index of the group
      * @return The matched string
      */
@@ -90,8 +93,9 @@ public class WebUtil {
 
     /**
      * Find all the patterns in the string
-     * @param string The string
-     * @param pattern The pattern
+     *
+     * @param string     The string
+     * @param pattern    The pattern
      * @param groupIndex The index of the group
      * @return The matched strings
      */
@@ -103,10 +107,11 @@ public class WebUtil {
 
     /**
      * Download files from the urls to the paths, using multiple threads
-     * @param urls The urls
+     *
+     * @param urls  The urls
      * @param paths The paths
      */
-    public static void downloadFiles(String[] urls, String[] paths)  {
+    public static void downloadFiles(String[] urls, String[] paths) {
         assert urls.length == paths.length;
         CountDownLatch latch = new CountDownLatch(urls.length);
 
@@ -116,7 +121,7 @@ public class WebUtil {
                 try {
                     download(urls[idx], paths[idx]);
                 } catch (Exception ex) {
-                    logger.warning("Error occurs when downloading from" + urls[idx]);
+                    log.warn("Error occurs when downloading from{}", urls[idx]);
                 } finally {
                     latch.countDown();
                 }
@@ -125,13 +130,13 @@ public class WebUtil {
         try {
             latch.await();
         } catch (InterruptedException e) {
-            logger.warning("Error occurs when waiting for the download threads");
+            log.warn("Error occurs when waiting for the download threads");
         }
     }
 
     private static void download(String url, String path) throws Exception {
         if (SHOW_PROCESS)
-            logger.info("==============> Downloading：" + url);
+            log.info("==============> Downloading: {}", url);
         InputStream input = getHttpURLConnection(url).getInputStream();
 
         try (OutputStream output = new FileOutputStream(path)) {

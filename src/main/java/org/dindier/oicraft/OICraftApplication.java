@@ -4,8 +4,7 @@ package org.dindier.oicraft;
  * OICraft 2024 for Java Programming class in 2024 Spring
  */
 
-import org.dindier.oicraft.util.code.CodeChecker;
-import org.dindier.oicraft.util.code.DockerAdapter;
+import org.dindier.oicraft.util.code.DockerInitializer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -14,6 +13,6 @@ public class OICraftApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(OICraftApplication.class, args);
-        DockerAdapter.initDocker();
+        DockerInitializer.initDocker();
     }
 }
