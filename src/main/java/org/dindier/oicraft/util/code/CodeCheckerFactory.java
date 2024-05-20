@@ -5,7 +5,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class CodeCheckerFactory {
     public static CodeChecker getCodeChecker() {
-        // TODO: Docker detect
+        if (DockerInitializer.useDocker) {
+            return getDockerCodeChecker();
+        }
         return getLocalCodeChecker();
     }
 

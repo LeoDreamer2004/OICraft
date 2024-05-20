@@ -1,9 +1,14 @@
-#!/usr/bin/sh
+#!/usr/bin/bash
 
 # Run the project
 # Limit the run time to given number of seconds
+# shellcheck disable=SC2039
 ulimit -v "$2"
-timeout "$1" /uer/bin/time -v python Main.py < input.txt > output.txt
+START=$(date +%s.%N)
+timeout "$1s" /usr/bin/time -f "Memory Usage: %M" python Main.py < input.txt > output.txt
+echo "Exit code: $?"
+END=$(date +%s.%N)
 
-# Check if the run was successful
-echo $? > exit_code.txt
+# Calculate the execution time
+ELAPSED=$(echo "$END - $START" | bc)
+echo "Used time: $ELAPSED"

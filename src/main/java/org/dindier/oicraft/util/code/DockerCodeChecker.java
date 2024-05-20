@@ -8,33 +8,45 @@ import java.io.FileReader;
 import java.io.IOException;
 
 @Slf4j
-public class DockerCodeChecker extends CodeChecker {
+class DockerCodeChecker extends CodeChecker {
     private static final int TLE_EXIT_CODE = 124;
-    private static final int MLE_EXIT_CODE = 137;
-    /**
-     * Set the code, language, input and expected output
-     *
-     * @implNote This method will create a new docker container.
-     */
+
+    private boolean containerCreated = false;
+
     @Override
     public DockerCodeChecker setIO(String code, String language, String input,
                                    @Nullable String output) throws IOException {
+        input = (input + "\n").replace("\r", "");
+        output = output == null ? "" : output.replace("\r", "");
         super.setIO(code, language, input, output);
-        codePath = FOLDER + id + "/Main." + extensionsMap.get(language);
-        String inputPath = FOLDER + id + "/input.txt";
+        workingDirectory = new File(FOLDER + id + "/");
+        if (!workingDirectory.exists() && !workingDirectory.mkdirs()) {
+            log.error("Fail to create working dictionary");
+            return this;
+        }
+        codePath = workingDirectory.getAbsolutePath() + "/Main." + extensionsMap.get(language);
+        String inputFilePath = workingDirectory.getPath() + "/input.txt";
 
         File file = createAndWriteToFile(codePath, code);
-        File inputFile = createAndWriteToFile(inputPath, input);
+        File inputFile = createAndWriteToFile(inputFilePath, input);
         if (file == null || inputFile == null) {
             return this;
         }
 
-        // create docker container
-        try {
-            Process process = Runtime.getRuntime().exec("docker run -d --name " + id + " " + DockerInitializer.dockerImages.get(language));
-            process.waitFor();
-        } catch (IOException | InterruptedException e) {
-            log.error("Error occurred while creating docker container", e);
+        if (!containerCreated) {
+            // create docker container
+            try {
+                if (language.equals("C++")) {
+                    language = "Cpp";
+                }
+                String command = "docker run --name " + id + " -d -it "
+                        + DockerInitializer.dockerImages.get(language) + " /bin/bash";
+                Process process = Runtime.getRuntime().exec(command);
+                process.waitFor();
+                containerCreated = process.exitValue() == 0;
+            } catch (IOException | InterruptedException e) {
+                log.error("Error occurred while creating docker container", e);
+            }
         }
 
         String container = String.valueOf(id);
@@ -52,7 +64,6 @@ public class DockerCodeChecker extends CodeChecker {
             process.waitFor();
             return process.exitValue() == 0;
         } catch (IOException | InterruptedException e) {
-            log.error("Error occurred while copying file to docker", e);
             return false;
         }
     }
@@ -64,23 +75,24 @@ public class DockerCodeChecker extends CodeChecker {
             process.waitFor();
             return process.exitValue() == 0;
         } catch (IOException | InterruptedException e) {
-            log.error("Error occurred while copying file from docker", e);
             return false;
         }
     }
 
     private static boolean removeDockerContainer(String container) {
         try {
-            Process process = Runtime.getRuntime().exec("docker rm " + container);
+            Process process = Runtime.getRuntime().exec("docker rm " + container + " -f");
             process.waitFor();
             return process.exitValue() == 0;
         } catch (IOException | InterruptedException e) {
-            log.error("Error occurred while removing docker container", e);
             return false;
         }
     }
 
     private boolean compile() {
+        if (compiled) {
+            return true;
+        }
         DockerCodeCompiler compiler = switch (language) {
             case "Java" -> DockerCodeCompiler.JAVA;
             case "C" -> DockerCodeCompiler.C;
@@ -95,39 +107,111 @@ public class DockerCodeChecker extends CodeChecker {
                 return false;
             }
         }
+        compiled = true;
         return true;
     }
 
     public void test(boolean clearFile) throws IOException, InterruptedException {
+        // if the code is already compiled, skip the compile step
+        if (this.status.equals("CE")) {
+            clear(clearFile);
+            return;
+        }
+        this.status = "P";
+        this.info = "Pending";
         if (!compile()) {
+            clear(clearFile);
             return;
         }
-        Process runProcess =
-                Runtime.getRuntime().exec("docker exec " + id + " ./run.sh " + timeLimit + "ms " + memoryLimit);
+
+        // run the code
+        String command =
+                "docker exec " + id + " ./run.sh " + timeLimit / 1000.0 + " " + memoryLimit * 100;
+        Process runProcess = Runtime.getRuntime().exec(command);
         runProcess.waitFor();
-        int exitCode = runProcess.exitValue();
-        if (exitCode == TLE_EXIT_CODE) {
-            this.status = "TLE";
-            return;
-        }
-        if (exitCode == MLE_EXIT_CODE) {
+
+        // get the output and error stream
+        String stdout = new String(runProcess.getInputStream().readAllBytes());
+        String stderr = new String(runProcess.getErrorStream().readAllBytes());
+        setUsedTimeAndMemory(stdout, stderr);
+        if (this.usedMemory > this.memoryLimit) {
             this.status = "MLE";
+            this.info = "Memory Limit Exceeded";
+            clear(clearFile);
             return;
         }
-        if (exitCode != 0) {
+        if (status.equals("TLE") || status.equals("MLE") || status.equals("RE")) {
+            clear(clearFile);
+            return;
+        }
+
+        // check the output
+        if (!copyFromDockerToHost(String.valueOf(id),
+                new File(workingDirectory.getAbsoluteFile() + "/output.txt"))) {
             this.status = "RE";
+            this.info = "Runtime Error";
+            clear(clearFile);
             return;
         }
-        if (!copyFromDockerToHost(String.valueOf(id), new File(FOLDER + id + "/output.txt"))) {
-            return;
-        }
-        try (FileReader fileReader = new FileReader(FOLDER + id + "/output.txt")) {
+        try (FileReader fileReader = new FileReader(workingDirectory.getAbsoluteFile() + "/output.txt")) {
             StringBuilder output = new StringBuilder();
             int c;
             while ((c = fileReader.read()) != -1) {
                 output.append((char) c);
             }
-            this.output = output.toString();
+            this.output = output.toString().stripTrailing().replace("\r", "");
+        }
+        checkAnswer();
+        clear(clearFile);
+    }
+
+    private void checkAnswer() {
+        if (this.expectedOutput == null) {
+            this.status = "AC";
+            this.info = "Accepted";
+            return;
+        }
+
+        // deal with different line ending
+        if (output.equals(expectedOutput)) {
+            this.status = "AC";
+            this.info = "Accepted";
+        } else {
+            this.status = "WA";
+            this.info = checkDifference(expectedOutput, output);
+        }
+
+    }
+
+    private void setUsedTimeAndMemory(String stdout, String stderr) {
+        String[] lines = (stdout + stderr).split("\n");
+        String memoryHeader = "Memory Usage: ";
+        String timeHeader = "Used time: ";
+        String exitCodeHeader = "Exit code: ";
+        for (String line : lines) {
+            if (line.startsWith(memoryHeader)) {
+                this.usedMemory = Integer.parseInt("0" + line.substring(memoryHeader.length()));
+            } else if (line.startsWith(timeHeader)) {
+                this.usedTime = (int) (Double.parseDouble("0" + line.substring(timeHeader.length())) * 1000);
+            } else if (line.startsWith(exitCodeHeader)) {
+                int exitCode = Integer.parseInt("0" + line.substring(exitCodeHeader.length()));
+                if (exitCode == TLE_EXIT_CODE) {
+                    this.status = "TLE";
+                    this.info = "Time Limit Exceeded";
+                } else if (exitCode != 0) {
+                    this.status = "RE";
+                    this.info = "Runtime Error";
+                }
+            }
+        }
+    }
+
+    private void clear(boolean clear) {
+        if (clear) {
+            if (!removeDockerContainer(String.valueOf(id))) {
+                log.error("Error occurred while removing docker container");
+            }
+            deleteFolder(workingDirectory);
         }
     }
 }

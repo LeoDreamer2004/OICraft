@@ -25,7 +25,7 @@ public enum DockerCodeCompiler {
         String sourceFilePath;
         if (createContainer) {
             pb = new ProcessBuilder("docker", "run", "--name", dockerContainer, "-d",
-                    "-it", dockerImage, "/bin/sh");
+                    "-it", dockerImage, "/bin/bash");
             try {
                 Process p = pb.start();
                 p.waitFor();

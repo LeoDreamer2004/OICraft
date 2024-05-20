@@ -39,8 +39,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deletePost(Post post) {
-        log.info("Delete post: {}", post.getTitle());
+        User user = post.getAuthor();
+        user.setExperience(user.getExperience() - 3);
+        userService.updateUser(user);
         postDao.deletePost(post);
+        log.info("Delete post: {}", post.getTitle());
     }
 
     @Override
@@ -62,8 +65,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deleteComment(Comment comment) {
-        log.info("Deleted a comment on post {}", comment.getPost().getId());
         commentDao.deleteComment(comment);
+        User user = comment.getAuthor();
+        user.setExperience(user.getExperience() - 1);
+        userService.updateUser(user);
+        log.info("Deleted a comment on post {}", comment.getPost().getId());
     }
 
     @Override

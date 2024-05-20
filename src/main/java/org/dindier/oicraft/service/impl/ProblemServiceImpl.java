@@ -124,11 +124,11 @@ public class ProblemServiceImpl implements ProblemService {
                 boolean passed = true;
 
                 Iterator<IOPair> iterator = ioPairs.iterator();
+                CodeChecker codeChecker = CodeCheckerFactory.getCodeChecker();
                 while (iterator.hasNext()) {
                     IOPair ioPair = iterator.next();
                     Checkpoint checkpoint = new Checkpoint(submission, ioPair);
                     checkpoint = checkpointDao.createCheckpoint(checkpoint);
-                    CodeChecker codeChecker = CodeCheckerFactory.getCodeChecker();
 
                     // test the code
                     try {
