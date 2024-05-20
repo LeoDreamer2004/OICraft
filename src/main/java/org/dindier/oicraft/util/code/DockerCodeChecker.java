@@ -1,40 +1,31 @@
 package org.dindier.oicraft.util.code;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.Nullable;
 
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 
 @Slf4j
-public class DockerCodeRunner extends CodeChecker {
+public class DockerCodeChecker extends CodeChecker {
     private static final int TLE_EXIT_CODE = 124;
     private static final int MLE_EXIT_CODE = 137;
-
-    private long id;
-
     /**
      * Set the code, language, input and expected output
      *
      * @implNote This method will create a new docker container.
      */
-    public DockerCodeRunner setIO(String code, String language, String input, String expectedOutput) {
-        this.language = language;
-        this.inputData = input;
-        this.expectedOutput = expectedOutput;
-        this.id = System.currentTimeMillis();
-        this.codePath = FOLDER + id + "/Main." + extensionsMap.get(language);
+    @Override
+    public DockerCodeChecker setIO(String code, String language, String input,
+                                   @Nullable String output) throws IOException {
+        super.setIO(code, language, input, output);
+        codePath = FOLDER + id + "/Main." + extensionsMap.get(language);
         String inputPath = FOLDER + id + "/input.txt";
 
         File file = createAndWriteToFile(codePath, code);
-        if (file == null) {
-            log.error("Error occurred while creating file");
-            return this;
-        }
         File inputFile = createAndWriteToFile(inputPath, input);
-        if (inputFile == null) {
-            log.error("Error occurred while creating file");
+        if (file == null || inputFile == null) {
             return this;
         }
 
@@ -87,29 +78,6 @@ public class DockerCodeRunner extends CodeChecker {
             log.error("Error occurred while removing docker container", e);
             return false;
         }
-    }
-
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private static File createAndWriteToFile(String path, String content) {
-        try {
-            File file = new File(path);
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            FileWriter fileWriter = new FileWriter(file);
-            fileWriter.write(content);
-            fileWriter.close();
-            return file;
-        } catch (IOException e) {
-            log.error("Error occurred while writing to file", e);
-            return null;
-        }
-    }
-
-    public DockerCodeRunner setLimit(int timeLimit, int memoryLimit) {
-        this.timeLimit = timeLimit;
-        this.memoryLimit = memoryLimit;
-        return this;
     }
 
     private boolean compile() {

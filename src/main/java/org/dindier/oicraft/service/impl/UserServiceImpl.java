@@ -34,6 +34,7 @@ public class UserServiceImpl implements UserService {
     private JavaMailSender mailSender;
     private final Map<Pair<String, String>, VerificationCode> verificationCodes = new ConcurrentHashMap<>();
     private static final long VALID_TIME = TimeUnit.MINUTES.toMillis(5);
+
     private static final int INTERMEDIATE_MIN_EXP = 100;
     private static final int ADVANCED_MIN_EXP = 200;
     private static final int EXPERT_MIN_EXP = 300;
