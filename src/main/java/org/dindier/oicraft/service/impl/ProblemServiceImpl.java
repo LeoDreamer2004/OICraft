@@ -56,7 +56,11 @@ public class ProblemServiceImpl implements ProblemService {
 
     @Override
     public Problem saveProblem(Problem problem) {
-        log.info("Save problem: {}", problem.getId());
+        if (problem.getId() == 0) {
+            log.info("Created new problem: {}", problem.getTitle());
+        } else {
+            log.info("Save problem {}: {}", problem.getId(), problem.getTitle());
+        }
         return problemDao.saveProblem(problem);
     }
 

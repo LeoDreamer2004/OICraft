@@ -81,6 +81,7 @@ public class UserServiceImpl implements UserService {
         User user = new User(username, passwordEncoder.encode(password),
                 User.Role.USER, User.Grade.BEGINNER);
         user.setExperience(0);
+        log.info("Created user {}", username);
         return userDao.saveUser(user);
     }
 
@@ -98,6 +99,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateUser(User user) {
         checkExperience(user);
+        log.info("Updated user {}", user.getUsername());
         return userDao.saveUser(user);
     }
 

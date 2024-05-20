@@ -11,6 +11,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 
+/**
+ * The abstract class for checking code
+ * <p>The code checker will compile the code and run it with the input data
+ * and check if the output is correct and runs within the time and memory limit
+ */
 @Slf4j
 public abstract class CodeChecker {
     public static final String FOLDER = "temp/";
@@ -23,8 +28,6 @@ public abstract class CodeChecker {
     protected int memoryLimit = 0;
     protected boolean compiled = false;
     protected File workingDirectory; // The working directory for the submission
-
-    protected static final String platform;
 
     protected static final Map<String, String> extensionsMap = Map.of(
             "Java", "java",
@@ -52,12 +55,10 @@ public abstract class CodeChecker {
     static {
         // Load the native library
         URL url;
-        if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+        if (CodeCheckerInitializer.platform.equals("Linux")) {
             url = LocalCodeChecker.class.getClassLoader().getResource("lib/CodeChecker.so");
-            platform = "Linux";
-        } else if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+        } else if (CodeCheckerInitializer.platform.equals("Windows")) {
             url = LocalCodeChecker.class.getClassLoader().getResource("lib/CodeChecker.dll");
-            platform = "Windows";
         } else {
             throw new LibraryNotFoundError("CodeChecker", "Unsupported platform");
         }

@@ -40,7 +40,7 @@ class DockerCodeChecker extends CodeChecker {
                     language = "Cpp";
                 }
                 String command = "docker run --name " + id + " -d -it "
-                        + DockerInitializer.dockerImages.get(language) + " /bin/bash";
+                        + CodeCheckerInitializer.dockerImages.get(language) + " /bin/bash";
                 Process process = Runtime.getRuntime().exec(command);
                 process.waitFor();
                 containerCreated = process.exitValue() == 0;
@@ -166,21 +166,14 @@ class DockerCodeChecker extends CodeChecker {
     }
 
     private void checkAnswer() {
-        if (this.expectedOutput == null) {
-            this.status = "AC";
-            this.info = "Accepted";
-            return;
-        }
-
         // deal with different line ending
-        if (output.equals(expectedOutput)) {
+        if (expectedOutput == null || output.equals(expectedOutput)) {
             this.status = "AC";
             this.info = "Accepted";
         } else {
             this.status = "WA";
             this.info = checkDifference(expectedOutput, output);
         }
-
     }
 
     private void setUsedTimeAndMemory(String stdout, String stderr) {

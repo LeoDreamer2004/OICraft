@@ -8,18 +8,18 @@ import java.io.File;
 import java.net.URL;
 
 @SpringBootTest
-public class CodeCompilerTest {
+public class LocalCodeCompilerTest {
 
     @Test
     @SuppressWarnings("ResultOfMethodCallIgnored")
     void testCodeCompilerCompileError() {
         LocalCodeCompiler compiler = LocalCodeCompiler.CPP;
-        URL cppFile = CodeCompilerTest.class.getClassLoader().getResource("test_codes/compile_error.cpp");
+        URL cppFile = LocalCodeCompilerTest.class.getClassLoader().getResource("test_codes/compile_error.cpp");
         if (cppFile == null) {
             throw new RuntimeException("Cannot find the test code file");
         }
         String result = compiler.compile(new File(cppFile.getPath()), new File("./.temp_codes"));
-        // The test code has compile error, so the result should not be null
+        // The test code didn't compile correctly, so the result should not be null
         assert result != null;
         System.out.println(result);
         assert !new File(".temp_codes/main.exe").exists();
@@ -32,7 +32,7 @@ public class CodeCompilerTest {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     void testCodeCompilerCompileSuccess() {
         LocalCodeCompiler compiler = LocalCodeCompiler.CPP;
-        URL cppFile = CodeCompilerTest.class.getClassLoader().getResource("test_codes/helloworld.cpp");
+        URL cppFile = LocalCodeCompilerTest.class.getClassLoader().getResource("test_codes/helloworld.cpp");
         if (cppFile == null) {
             throw new RuntimeException("Cannot find the test code file");
         }

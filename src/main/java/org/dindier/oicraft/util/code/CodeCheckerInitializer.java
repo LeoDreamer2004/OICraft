@@ -8,12 +8,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-@Slf4j
-public class DockerInitializer {
-    static boolean useDocker = false;
-    static final String platform;
 
-    static final Map<String, String> dockerImages = Map.of(
+/**
+ * An initializer for the code checker.
+ * <p>Read the system platform and set the platform variable.
+ * Initialize the code checker environment, detect whether docker is installed and running.
+ * If docker is not installed or not running, use local environment instead
+ */
+@Slf4j
+public class CodeCheckerInitializer {
+    public static boolean useDocker = false;
+    public static final String platform;
+    public static final Map<String, String> dockerImages = Map.of(
             "Java", "code-checker-java",
             "C", "code-checker-c",
             "Cpp", "code-checker-cpp",
@@ -21,6 +27,7 @@ public class DockerInitializer {
     );
 
     static {
+        // get the platform
         String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("win")) {
             platform = "Windows";
@@ -30,6 +37,56 @@ public class DockerInitializer {
             platform = "Linux";
         } else {
             platform = "Other";
+        }
+    }
+
+    /**
+     * Initialize the code checker environment
+     * Run when the service starts
+     */
+    public static void init() {
+        // Read if we should use docker from the environment variable
+        if (System.getenv("USE_DOCKER") != null && System.getenv("USE_DOCKER").equals("false")) {
+            log.warn("USE_DOCKER is set to false, use local environment instead");
+            return;
+        }
+        useDocker = detectDocker();
+        if (!useDocker) {
+            log.warn("Docker is not installed or not running, use local environment instead");
+            return;
+        }
+
+        // build the docker image
+        String dockerFilePath =
+                Objects.requireNonNull(LocalCodeChecker.class.getClassLoader().getResource("scripts/docker")).getPath();
+        if (platform.equals("Windows")) {
+            dockerFilePath = dockerFilePath.substring(1);
+        }
+        int dockerImagesSize = dockerImages.size();
+        Thread[] threads = new Thread[dockerImagesSize];
+        List<String> dockerImagesKey = new ArrayList<>(dockerImages.keySet());
+        for (int i = 0; i < dockerImagesSize; i++) {
+            String language = dockerImagesKey.get(i).toLowerCase();
+            String imageName = dockerImages.get(dockerImagesKey.get(i));
+            String finalDockerFilePath = dockerFilePath;
+            threads[i] = new Thread(() -> {
+                log.info("Building docker image for {}", language);
+                if (!buildDockerImage(new File(finalDockerFilePath + "/" + language), imageName)) {
+                    useDocker = false;
+                }
+            });
+            threads[i].start();
+        }
+        for (Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                log.error("Failed to build docker image");
+                useDocker = false;
+            }
+        }
+        if (useDocker) {
+            log.info("Docker is ready");
         }
     }
 
@@ -79,8 +136,6 @@ public class DockerInitializer {
 
     /**
      * Detect whether docker is installed and running
-     *
-     * @return Whether docker is installed and running
      */
     private static boolean detectDocker() {
         Process process;
@@ -91,55 +146,5 @@ public class DockerInitializer {
             return false;
         }
         return process.exitValue() == 0;
-    }
-
-    /**
-     * Initialize docker for the code checker
-     * If docker is not installed or not running, use local environment instead
-     */
-    public static void initDocker() {
-        // Read if we should use docker from the environment variable
-        if (System.getenv("USE_DOCKER") != null && System.getenv("USE_DOCKER").equals("false")) {
-            log.warn("USE_DOCKER is set to false, use local environment instead");
-            return;
-        }
-        useDocker = detectDocker();
-        if (!useDocker) {
-            log.warn("Docker is not installed or not running, use local environment instead");
-            return;
-        }
-
-        // build the docker image
-        String dockerFilePath =
-                Objects.requireNonNull(LocalCodeChecker.class.getClassLoader().getResource("scripts/docker")).getPath();
-        if (platform.equals("Windows")) {
-            dockerFilePath = dockerFilePath.substring(1);
-        }
-        int dockerImagesSize = dockerImages.size();
-        Thread[] threads = new Thread[dockerImagesSize];
-        List<String> dockerImagesKey = new ArrayList<>(dockerImages.keySet());
-        for (int i = 0; i < dockerImagesSize; i++) {
-            String language = dockerImagesKey.get(i).toLowerCase();
-            String imageName = dockerImages.get(dockerImagesKey.get(i));
-            String finalDockerFilePath = dockerFilePath;
-            threads[i] = new Thread(() -> {
-                log.info("Building docker image for {}", language);
-                if (!buildDockerImage(new File(finalDockerFilePath + "/" + language), imageName)) {
-                    useDocker = false;
-                }
-            });
-            threads[i].start();
-        }
-        for (Thread thread : threads) {
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                log.error("Failed to build docker image");
-                useDocker = false;
-            }
-        }
-        if (useDocker) {
-            log.info("Docker is ready");
-        }
     }
 }
