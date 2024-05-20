@@ -1,6 +1,7 @@
 package org.dindier.oicraft.util.code;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.Nullable;
 
 import java.io.*;
 import java.util.*;
@@ -9,12 +10,14 @@ import java.util.*;
 public class LocalCodeChecker extends CodeChecker {
     private long startTime;
     private Process process;
-    
-    @SuppressWarnings("ResultOfMethodCallIgnored")
+
     @Override
-    public CodeChecker setIO(String code, String language, String input, String output) throws IOException {
+    public CodeChecker setIO(String code, String language,
+                             String input, @Nullable String output) throws IOException {
+        super.setIO(code, language, input, output);
+
         // working directory
-        this.workingDirectory = new File(FOLDER + System.currentTimeMillis() + "/");
+        this.workingDirectory = new File(FOLDER + id + "/");
         if (!workingDirectory.exists() && !workingDirectory.mkdirs()) {
             throw new IOException("Fail to create working dictionary");
         }
@@ -23,22 +26,8 @@ public class LocalCodeChecker extends CodeChecker {
         String extension = extensionsMap.get(language);
         if (extension == null)
             log.error("Unsupported language: {}", language);
-        this.codePath = workingDirectory.getPath() + "/Main." + extension;
-        File codeFile = new File(codePath);
-        codeFile.createNewFile();
-        try (FileWriter fileWriter = new FileWriter(codeFile)) {
-            fileWriter.write(code);
-        }
-
-        // language
-        this.language = language;
-
-        // input
-        this.inputData = input + "\n"; // avoid EOF
-
-        // output
-        this.expectedOutput = output.stripTrailing();
-
+        codePath = workingDirectory.getPath() + "/Main." + extension;
+        createAndWriteToFile(codePath, code);
         return this;
     }
 
@@ -74,7 +63,7 @@ public class LocalCodeChecker extends CodeChecker {
                 outputStreamWriter.write(inputData);
                 outputStreamWriter.flush();
                 outputStreamWriter.close();
-            } catch (IOException e) {
+            } catch (IOException ignored) {
                 // Exception often occurs when the code does not accept any input
                 // It seems weird, but we still test the code as usual
             }
@@ -128,7 +117,6 @@ public class LocalCodeChecker extends CodeChecker {
                         "/main.exe");
             }
             default -> {
-                log.error("Unsupported language: {}", language);
                 return null;
             }
         }
@@ -191,7 +179,7 @@ public class LocalCodeChecker extends CodeChecker {
                 status = "RE";
                 info = "Runtime Error";
             }
-        } else {
+        } else if (expectedOutput != null) {
             status = "WA";
             info = checkDifference(expectedOutput, output);
         }

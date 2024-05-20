@@ -3,7 +3,7 @@ package org.dindier.oicraft.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.dindier.oicraft.service.IDEService;
 import org.dindier.oicraft.util.code.CodeChecker;
-import org.dindier.oicraft.util.code.LocalCodeChecker;
+import org.dindier.oicraft.util.code.CodeCheckerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -14,25 +14,27 @@ import java.util.Map;
 public class IDEServiceImpl implements IDEService {
     @Override
     public Object runCode(String code, String language, String input) {
-        CodeChecker localCodeChecker;
+        CodeChecker codeChecker;
         try {
             // ignore the expected output in codeChecker
-            localCodeChecker = new LocalCodeChecker().setIO(code, language, input, "").setLimit(5000, 512 * 1024);
-            localCodeChecker.test();
+            codeChecker = CodeCheckerFactory.getCodeChecker()
+                    .setIO(code, language, input, null)
+                    .setLimit(5000, 512 * 1024);
+            codeChecker.test();
         } catch (IOException | InterruptedException e) {
             log.error("Error occurred while running code", e);
             return "Error occurred while running code";
         }
-        String output = localCodeChecker.getOutput();
+        String output = codeChecker.getOutput();
         if (output == null)
             output = "";
-        String usage = switch (localCodeChecker.getStatus()) {
+        String usage = switch (codeChecker.getStatus()) {
             case "CE" -> "编译错误";
             case "RE" -> "运行时错误";
             case "TLE" -> "超出时间限制";
             case "MLE" -> "超出内存限制";
             default ->
-                    localCodeChecker.getUsedTime() + "ms, " + localCodeChecker.getUsedMemory() + "KB";
+                    codeChecker.getUsedTime() + "ms, " + codeChecker.getUsedMemory() + "KB";
         };
         return Map.of("output", output, "usage", usage);
     }

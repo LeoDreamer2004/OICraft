@@ -23,7 +23,8 @@ import org.dindier.oicraft.dao.ProblemDao;
 import org.dindier.oicraft.model.*;
 import org.dindier.oicraft.service.ProblemService;
 import org.dindier.oicraft.service.SubmissionService;
-import org.dindier.oicraft.util.code.LocalCodeChecker;
+import org.dindier.oicraft.util.code.CodeChecker;
+import org.dindier.oicraft.util.code.CodeCheckerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
@@ -36,23 +37,17 @@ import java.util.concurrent.*;
 @Service("problemService")
 @Slf4j
 public class ProblemServiceImpl implements ProblemService {
-    private static final int POOL_SIZE = 16;
-    private static final int WAITING_QUEUE_SIZE = 10000;
-    private static final int MAX_SEARCH_RESULT = 100;
-
-    private static final int RECORDS_PER_PAGE = 20;
-
     private ProblemDao problemDao;
     private CheckpointDao checkpointDao;
     private SubmissionService submissionService;
 
+    private static final int POOL_SIZE = 16;
+    private static final int WAITING_QUEUE_SIZE = 10000;
     private final ExecutorService executorService = new ThreadPoolExecutor(POOL_SIZE, POOL_SIZE,
             0L, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(WAITING_QUEUE_SIZE));
-    private static final Map<String, Float> boosts = new HashMap<>();
 
-    static {
-        boosts.put("title", 4.0f);
-    }
+    private static final int RECORDS_PER_PAGE = 20;
+    private static final int MAX_SEARCH_RESULT = 100;
 
     @Override
     public Problem getProblemById(int id) {
@@ -133,12 +128,12 @@ public class ProblemServiceImpl implements ProblemService {
                     IOPair ioPair = iterator.next();
                     Checkpoint checkpoint = new Checkpoint(submission, ioPair);
                     checkpoint = checkpointDao.createCheckpoint(checkpoint);
-                    LocalCodeChecker localCodeChecker = new LocalCodeChecker();
+                    CodeChecker codeChecker = CodeCheckerFactory.getCodeChecker();
 
                     // test the code
                     try {
                         // do not delete the files until the last test
-                        localCodeChecker.setIO(code, language, ioPair.getInput(), ioPair.getOutput())
+                        codeChecker.setIO(code, language, ioPair.getInput(), ioPair.getOutput())
                                 .setLimit(problem.getTimeLimit(), problem.getMemoryLimit())
                                 .test(!iterator.hasNext());
                     } catch (IOException | InterruptedException e) {
@@ -148,12 +143,12 @@ public class ProblemServiceImpl implements ProblemService {
                     }
 
                     // read the result
-                    checkpoint.setStatus(Checkpoint.Status.fromString(localCodeChecker.getStatus()));
-                    checkpoint.setUsedTime(localCodeChecker.getUsedTime());
-                    checkpoint.setUsedMemory(localCodeChecker.getUsedMemory());
-                    checkpoint.setInfo(localCodeChecker.getInfo());
+                    checkpoint.setStatus(Checkpoint.Status.fromString(codeChecker.getStatus()));
+                    checkpoint.setUsedTime(codeChecker.getUsedTime());
+                    checkpoint.setUsedMemory(codeChecker.getUsedMemory());
+                    checkpoint.setInfo(codeChecker.getInfo());
                     checkpointDao.updateCheckpoint(checkpoint);
-                    if (localCodeChecker.getStatus().equals("AC")) {
+                    if (codeChecker.getStatus().equals("AC")) {
                         score += ioPair.getScore();
                     } else {
                         passed = false;
@@ -249,6 +244,8 @@ public class ProblemServiceImpl implements ProblemService {
             indexWriter.close();
 
             // parse the query
+            Map<String, Float> boosts = new HashMap<>();
+            boosts.put("title", 4.0f);
             MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[]{"title"},
                     new SmartChineseAnalyzer(), boosts);
             Query query;

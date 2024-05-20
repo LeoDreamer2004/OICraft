@@ -103,7 +103,7 @@ public class AccountController {
                 addObject("originalPassword", user.getPassword());
     }
 
-    @GetMapping("/password/reset")
+    @PostMapping("/password/reset")
     public ResponseEntity<String> resetPassword(
             @PathParam("username") String username,
             @PathParam("password") String password,

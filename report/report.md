@@ -162,7 +162,11 @@ public class UserService {
 }
 ```
 
-另外，对于用户头像的存储有两种办法，其一是用 BLOB 类型直接存储在数据库中，但这时每次用户刷新网页请求时会造成大量的数据查询影响数据库性能；另一种是存储在一个固定的 URL 中，我们采用的是这一种方案。由于我们并没有一个存储数据的服务器，这里简单地存储在本地磁盘。
+特别地，对于诸如用户头像这种大型二进制的数据存储，有两种办法
+- 用 BLOB 类型直接存储在数据库中，但这时每次用户刷新网页请求时会造成大量的数据查询影响数据库性能
+- 存储在一个固定的 URL 中
+
+我们采用的是这一种方案。由于我们并没有一个存储数据的服务器（例如CDN)，这里简单地存储在本地磁盘。
 
 ### 业务逻辑（Service层）
 
@@ -398,15 +402,14 @@ public class WebSecurityConfig {
 这里充分体现了流式编程的设计思想，我们可以通过链式调用的方式，一步一步配置 Spring Security 的功能。
 
 - `authorizeHttpRequests` 配置 URL 的访问权限。例如，对于 `admin/**` 下的 URL，只有管理员才能访问。某些网页，必须登录之后才可访问。
-- `csrf` 配置 CSRF 保护。CSRF（跨站请求伪造）是一种网络攻击方式，Spring Security 提供了 CSRF 保护。可以配置对部分 POST 请求忽略保护。
+- `csrf` 配置 CSRF 保护。CSRF（跨站请求伪造）是一种网络攻击方式，Spring Security 提供了 CSRF 保护。
 - `formLogin` 配置登录页面。可以自定义用户登录页面的 URL。
 - `logout` 配置登出页面。可以自定义用户登出页面的 URL。
 - `rememberMe` 配置记住我功能。利用浏览器的 Cookie 机制，实现用户的自动登录。
 
-另外，考虑到要兼顾数据库的安全性，我们对用户密码进行了加密，使用了 BCrypt 加密算法。
+另外，考虑到要兼顾数据库的安全性，我们使用了 BCrypt 加密算法对对用户密码进行了加密。
 
 ```java
-
 @Bean
 public PasswordEncoder passwordEncoder() {
   return new BCryptPasswordEncoder();

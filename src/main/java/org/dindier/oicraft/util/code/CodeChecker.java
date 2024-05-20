@@ -1,44 +1,48 @@
 package org.dindier.oicraft.util.code;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.jni.LibraryNotFoundError;
+import org.springframework.lang.Nullable;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 
+@Slf4j
 public abstract class CodeChecker {
     public static final String FOLDER = "temp/";
-    String codePath;
-    String language;
-    String inputData;
-    String expectedOutput;
-    int timeLimit = 0;
-    int memoryLimit = 0;
-    // The working directory for the submission
-    File workingDirectory;
+    protected long id;
+    protected String codePath;
+    protected String language;
+    protected String inputData;
+    protected String expectedOutput;
+    protected int timeLimit = 0;
+    protected int memoryLimit = 0;
+    protected File workingDirectory; // The working directory for the submission
 
-    static final String platform;
+    protected static final String platform;
 
-    static final Map<String, String> extensionsMap = Map.of(
+    protected static final Map<String, String> extensionsMap = Map.of(
             "Java", "java",
             "C", "c",
             "C++", "cpp",
             "Python", "py"
     );
     @Getter
-    String output;
+    protected String output;
     @Getter
-    int usedTime = 0;
+    protected int usedTime = 0;
     @Getter
-    int usedMemory = 0;
+    protected int usedMemory = 0;
     @Getter
-    String status = "P";
+    protected String status = "P";
     @Getter
-    String info = "";
+    protected String info = "";
 
-    static native long getProcessMemoryUsage(long pid);
+    protected static native long getProcessMemoryUsage(long pid);
 
     static {
         // Load the native library
@@ -66,6 +70,9 @@ public abstract class CodeChecker {
 
     /**
      * Set the IO files for the code to be checked
+     * <p>Notice: if <code>output</code> is set to <code>null</code>,
+     * We will not test if the answer is correct
+     * </p>
      *
      * @param code     The code to be checked
      * @param language The language of the code
@@ -73,7 +80,14 @@ public abstract class CodeChecker {
      * @param output   The expected output
      * @return The CodeChecker itself
      */
-    public abstract CodeChecker setIO(String code, String language, String input, String output) throws IOException;
+    public CodeChecker setIO(String code, String language, String input,
+                             @Nullable String output) throws IOException {
+        this.language = language;
+        this.inputData = input + "\n"; // avoid blocking
+        this.expectedOutput = output == null ? null : output.stripTrailing(); // avoid EOF
+        this.id = System.currentTimeMillis();
+        return null;
+    }
 
     /**
      * Set the time and memory limit for the code to be checked
@@ -104,8 +118,25 @@ public abstract class CodeChecker {
         test(true);
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    protected static File createAndWriteToFile(String path, String content) {
+        try {
+            File file = new File(path);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(content);
+            fileWriter.close();
+            return file;
+        } catch (IOException e) {
+            log.error("Error occurred while creating or writing to file", e);
+            return null;
+        }
+    }
+
     /* Return the difference between expected and actual output */
-    static String checkDifference(String expected, String actual) {
+    protected static String checkDifference(String expected, String actual) {
         String[] expectedLines = expected.split("\n");
         String[] actualLines = actual.split("\n");
         int minLines = Math.min(expectedLines.length, actualLines.length);
