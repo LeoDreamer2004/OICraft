@@ -2,8 +2,7 @@ package org.dindier.oicraft.util.code;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +41,21 @@ public class DockerInitializer {
      * @return Whether the image is built successfully
      */
     private static boolean buildDockerImage(File dockerFilePath, String imageName) {
+        try {
+            Process checkProcess = Runtime.getRuntime().exec("docker images " + imageName);
+            checkProcess.waitFor();
+            InputStream checkInputStream = checkProcess.getInputStream();
+            BufferedReader bufferedReader =
+                    new BufferedReader(new InputStreamReader(checkInputStream));
+            if (bufferedReader.lines().count() > 1) {
+                log.info("Docker image {} already exists", imageName);
+                return true;
+            }
+        } catch (Exception e) {
+            log.error("Failed to check docker image {}", imageName);
+            return false;
+        }
+
         Process process;
         try {
             process =
@@ -97,7 +111,7 @@ public class DockerInitializer {
 
         // build the docker image
         String dockerFilePath =
-                Objects.requireNonNull(CodeChecker.class.getClassLoader().getResource("scripts/docker")).getPath();
+                Objects.requireNonNull(LocalCodeChecker.class.getClassLoader().getResource("scripts/docker")).getPath();
         if (platform.equals("Windows")) {
             dockerFilePath = dockerFilePath.substring(1);
         }
