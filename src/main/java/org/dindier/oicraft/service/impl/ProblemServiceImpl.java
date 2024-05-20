@@ -1,23 +1,6 @@
 package org.dindier.oicraft.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.lucene.analysis.cn.smart.SmartChineseAnalyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.document.TextField;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
-import org.apache.lucene.queryparser.classic.ParseException;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.store.ByteBuffersDirectory;
-import org.apache.lucene.store.Directory;
 import org.dindier.oicraft.dao.CheckpointDao;
 import org.dindier.oicraft.dao.ProblemDao;
 import org.dindier.oicraft.model.*;
@@ -25,12 +8,12 @@ import org.dindier.oicraft.service.ProblemService;
 import org.dindier.oicraft.service.SubmissionService;
 import org.dindier.oicraft.util.code.CodeChecker;
 import org.dindier.oicraft.util.code.CodeCheckerFactory;
+import org.dindier.oicraft.util.search.SearchHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -47,7 +30,6 @@ public class ProblemServiceImpl implements ProblemService {
             0L, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(WAITING_QUEUE_SIZE));
 
     private static final int RECORDS_PER_PAGE = 20;
-    private static final int MAX_SEARCH_RESULT = 100;
 
     @Override
     public Problem getProblemById(int id) {
@@ -231,47 +213,13 @@ public class ProblemServiceImpl implements ProblemService {
 
     @Override
     public List<Problem> searchProblems(String keyword) {
-        List<Problem> result = new ArrayList<>();
-        try (Directory directory = new ByteBuffersDirectory();
-             IndexWriter indexWriter = new IndexWriter(directory,
-                     new IndexWriterConfig(new SmartChineseAnalyzer()))
-        ) {
-            // index the problems
-            Iterable<Problem> problems = problemDao.getProblemList();
-            for (Problem problem : problems) {
-                Document document = new Document();
-                document.add(new StringField("id", String.valueOf(problem.getId()), Field.Store.YES));
-                document.add(new TextField("title", problem.getTitle(), Field.Store.YES));
-                indexWriter.addDocument(document);
-            }
-            indexWriter.commit();
-            indexWriter.close();
-
-            // parse the query
-            Map<String, Float> boosts = new HashMap<>();
-            boosts.put("title", 4.0f);
-            MultiFieldQueryParser parser = new MultiFieldQueryParser(new String[]{"title"},
-                    new SmartChineseAnalyzer(), boosts);
-            Query query;
-            try {
-                query = parser.parse(keyword);
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
-            }
-
-            // search the problems
-            try (IndexReader indexReader = DirectoryReader.open(directory)) {
-                IndexSearcher indexSearcher = new IndexSearcher(indexReader);
-                TopDocs topDocs = indexSearcher.search(query, MAX_SEARCH_RESULT);
-                for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
-                    int id = Integer.parseInt(indexSearcher.doc(scoreDoc.doc).get("id"));
-                    result.add(problemDao.getProblemById(id));
-                }
-            }
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-        return result;
+        SearchHelper<Problem> searchHelper = new SearchHelper<>();
+        List<Problem> problems = new ArrayList<>();
+        problemDao.getProblemList().forEach(problems::add);
+        searchHelper.setItems(problems);
+        searchHelper.setIdentifier("id", problem -> String.valueOf(problem.getId()));
+        searchHelper.addField("title", Problem::getTitle, 4.0f);
+        return searchHelper.search(keyword);
     }
 
     @Override

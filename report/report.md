@@ -83,6 +83,11 @@ OICraft 所用服务器是 SpringBoot 内置的 Tomcat 服务器（在本机运�
 - **Controller**：控制层，是 MVC 架构的重点。用于处理用户请求，调用 Service 层处理业务逻辑，并返回结果给用户。此外，还有拦截器 Interceptor 用于拦截请求捕获必要的信息。
 - **View**：前端页面，包括 HTML、CSS、JavaScript 等文件，依托于 bootstrap 样式和 Thymeleaf 模板引擎，给用户展示页面并直接与用户交互。
 
+除此之外，还有：
+
+- **Config**：配置类，包括对 Spring 的配置，对 SpringMVC 的配置和对 Spring Security 的配置。
+- **Util**：工具类，包括一些工具方法，例如代码评测、网络爬虫、邮箱验证等等。
+
 Spring 架构提供的 Bean 容器，可以自动扫描并加载这些层次的类，实现了解耦合，提高了代码的可维护性。
 
 ---
