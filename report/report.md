@@ -10,8 +10,8 @@ SpringBoot 是一个基于 Spring 的轻量级框架，它可以用来快速开�
 
 ## 项目分工
 
-- 原梓轩 2200010825：代码大框架设计，前端交互页面以及 MVC 框架搭建
-- 陈润璘 2200010848：SQL 数据库的设计与 JPA 实现，外部服务器支持
+- 原梓轩 2200010825：代码大框架设计，前端交互页面以及 MVC 框架搭建，运行于本机的代码检查实现
+- 陈润璘 2200010848：SQL 数据库的设计与 JPA 实现，外部服务器支持，运行于 Docker 容器的代码检查实现
 - 任子博 2200010626：部分核心业务逻辑与后端代码编写
 
 ---
@@ -129,25 +129,7 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 作为对 `Repository` 的进一步封装，我们为其它两层的需求实现了更加具体的方法。同时，我们还实现了一些自动化的数据更新，例如 用户做对一道题目时自动增加积分，用户签到时自动增加积分以及根据用户的积分自动更新用户的级别。
 
 同时，由于数据库中的数据约束导致直接删除记录时可能出现异常，我们在实现删除操作时同时避免了直接删除产生的异常。
-
-```java
-public void deleteUser(User user) {
-    // get the user's submissions and related checkpoints
-    List<Checkpoint> checkpoints;
-    List<Submission> submissions;
-    checkpointRepository.deleteAll(checkpoints);
-    submissionRepository.deleteAll(submissions);
-
-    // set the user's problem to null
-    List<Problem> problems = user.getProblems();
-    for (Problem problem : problems) {
-        problem.setAuthor(null);
-    }
-
-    problemRepository.saveAll(problems);
-    userRepository.delete(user);
-}
-```
+例如，删除用户时，要把用户的提交和测试点都删除。但是，把用户的问题设置为 null，这表明用户已注销，但是问题依然会保留。
 
 在建立 DAO 对象时，使用 Bean 容器自动装配 `@Autowired` 的方式，直接调用接口的方法即可。这样，我们就可以在不改变接口的情况下，更换具体的实现。
 
@@ -162,11 +144,11 @@ public class UserService {
 }
 ```
 
-特别地，对于诸如用户头像这种大型二进制的数据存储，有两种办法
+特别地，对于诸如用户头像这种大型二进制的数据存储，有两种办法：
 - 用 BLOB 类型直接存储在数据库中，但这时每次用户刷新网页请求时会造成大量的数据查询影响数据库性能
-- 存储在一个固定的 URL 中
+- 存储在一个固定的 URL 中，这种方式对性能开销小
 
-我们采用的是这一种方案。由于我们并没有一个存储数据的服务器（例如CDN)，这里简单地存储在本地磁盘。
+我们采用的是第二种方案。由于我们并没有一个存储数据的服务器（例如CDN)，这里简单地存储在本地磁盘。
 
 ### 业务逻辑（Service层）
 
@@ -185,13 +167,13 @@ private final ExecutorService executorService = Executors.newCachedThreadPool();
 ```java
 public int testCode(User user, Problem problem, String code, String language) {
     ...
-    //在线程池中开启一个子线程
-    executorService.execute(() -> {
-        CodeChecker localCodeChecker = new CodeChecker();
-        // 测试代码
-        localCodeChecker.setIO(...).setLimit(...).test();
+  //在线程池中开启一个子线程
+  executorService.execute(() -> {
+    CodeChecker codeChecker = CodeCheckerFactory.getCodeChecker();
+    // 测试代码
+    codeChecker.setIO(...).setLimit(...).test();
         ... // 处理结果
-    }
+  }
 }
 ```
 
@@ -422,7 +404,7 @@ public PasswordEncoder passwordEncoder() {
 
 一些可能的扩展和改进：
 
-- 代码评测功能的优化，例如支持更多语言，支持更多测试点，支持更多的编译器和运行环境。一个正在尝试的设计是把运行放在 Docker 容器中，这样可以更好地隔离环境。<font color="red">（可能会在提交前实现）</font>
+- 代码评测功能的优化，例如支持更多语言，支持更多测试点，支持更多的编译器和运行环境。
 - 用户管理功能的优化，例如支持更多的用户操作，支持更多的用户信息。也许可以设计用户关注和私信聊天的功能。
 - 问题管理优化，例如设计题目的标签和分类。
 - 网站的美化，例如设计更多的动画效果，更多的交互效果。当然，这方面属于前端的工作，不是本次 Java 课程设计的重点。
