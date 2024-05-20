@@ -7,13 +7,15 @@ import java.io.*;
 import java.util.*;
 
 @Slf4j
-public class LocalCodeChecker extends CodeChecker {
+class LocalCodeChecker extends CodeChecker {
     private long startTime;
     private Process process;
 
     @Override
     public CodeChecker setIO(String code, String language,
                              String input, @Nullable String output) throws IOException {
+        input = (input + "\n").replace("\r", "").replace("\n", System.lineSeparator());
+        output = output == null ? "" : output.replace("\r", "").replace("\n", System.lineSeparator());
         super.setIO(code, language, input, output);
 
         // working directory
@@ -33,6 +35,14 @@ public class LocalCodeChecker extends CodeChecker {
 
     @Override
     public void test(boolean clearFile) throws IOException, InterruptedException {
+        if (this.status.equals("CE")) {
+            if (clearFile) {
+                clearFiles();
+            }
+            return;
+        }
+        this.status = "P";
+        this.info = "Pending";
         ProcessBuilder pb = getProcessBuilder();
         TimerTask timerTask = new TimerTask() {
             @Override
@@ -43,8 +53,9 @@ public class LocalCodeChecker extends CodeChecker {
         Timer timer = new Timer();
 
         if (pb == null) {
-            if (clearFile)
+            if (clearFile) {
                 clearFiles();
+            }
             return;
         }
 
@@ -74,8 +85,9 @@ public class LocalCodeChecker extends CodeChecker {
         timer.cancel();
 
         if (status.equals("TLE") || status.equals("MLE")) {
-            if (clearFile)
+            if (clearFile) {
                 clearFiles();
+            }
             return;
         }
 
@@ -122,8 +134,9 @@ public class LocalCodeChecker extends CodeChecker {
         }
 
         // if the compiler is not null, compile the code
-        if (compiler != null) {
+        if (!compiled && compiler != null) {
             String compileError = compiler.compile(new File(codePath), workingDirectory);
+            compiled = true;
             if (compileError != null) {
                 status = "CE";
                 info = compileError;
@@ -168,7 +181,8 @@ public class LocalCodeChecker extends CodeChecker {
     /* Check the answer */
     private void checkAnswer() throws IOException {
         InputStream inputStream = process.getInputStream();
-        output = new String(inputStream.readAllBytes()).stripTrailing();
+        output = new String(inputStream.readAllBytes()).stripTrailing()
+                .replace("\r", "").replace("\n", System.lineSeparator());
 
         if (output.equals(expectedOutput)) {
             status = "AC";
@@ -201,21 +215,6 @@ public class LocalCodeChecker extends CodeChecker {
             } else {
                 deleteFolder(workingDirectory);
             }
-        }
-    }
-
-    private static void deleteFolder(File folder) {
-        if (folder.isDirectory()) {
-            File[] files = folder.listFiles();
-            if (files != null) {
-                for (File file : files) {
-                    deleteFolder(file);
-                }
-            }
-        }
-        if (!folder.delete()) {
-            log.warn("Failed to delete folder {}, you may need to delete it by yourself",
-                    folder);
         }
     }
 }

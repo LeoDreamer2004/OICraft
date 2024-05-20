@@ -5,3 +5,4 @@ RUN apt-get update
 RUN apt-get install time
 RUN chmod +x /usr/src/test/compile.sh
 RUN chmod +x /usr/src/test/run.sh
+RUN apt-get install bc

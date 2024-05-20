@@ -21,6 +21,7 @@ public abstract class CodeChecker {
     protected String expectedOutput;
     protected int timeLimit = 0;
     protected int memoryLimit = 0;
+    protected boolean compiled = false;
     protected File workingDirectory; // The working directory for the submission
 
     protected static final String platform;
@@ -43,6 +44,10 @@ public abstract class CodeChecker {
     protected String info = "";
 
     protected static native long getProcessMemoryUsage(long pid);
+
+    public CodeChecker() {
+        this.id = System.currentTimeMillis();
+    }
 
     static {
         // Load the native library
@@ -79,13 +84,13 @@ public abstract class CodeChecker {
      * @param input    The input string
      * @param output   The expected output
      * @return The CodeChecker itself
+     * @implNote This method will deal with the difference of line separator on different platforms
      */
     public CodeChecker setIO(String code, String language, String input,
                              @Nullable String output) throws IOException {
         this.language = language;
-        this.inputData = input + "\n"; // avoid blocking
-        this.expectedOutput = output == null ? null : output.stripTrailing(); // avoid EOF
-        this.id = System.currentTimeMillis();
+        this.inputData = input;
+        this.expectedOutput = output == null ? null : output.stripTrailing();
         return null;
     }
 
@@ -163,5 +168,20 @@ public abstract class CodeChecker {
             return "Line " + (minLines + 1) + ": expected a new line, but got EOF";
         }
         return "Unknown Error";
+    }
+
+    protected static void deleteFolder(File folder) {
+        if (folder.isDirectory()) {
+            File[] files = folder.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    deleteFolder(file);
+                }
+            }
+        }
+        if (!folder.delete()) {
+            log.warn("Failed to delete folder {}, you may need to delete it by yourself",
+                    folder);
+        }
     }
 }
