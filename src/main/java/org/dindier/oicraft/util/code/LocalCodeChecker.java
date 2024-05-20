@@ -119,14 +119,14 @@ class LocalCodeChecker extends CodeChecker {
             case "C++" -> {
                 compiler = LocalCodeCompiler.CPP;
                 runCmd = new String[1];
-                runCmd[0] = workingDirectory.getPath() + (platform.equals("Linux") ? "/main" :
-                        "/main.exe");
+                runCmd[0] = workingDirectory.getPath() +
+                        (CodeCheckerInitializer.platform.equals("Linux") ? "/main" : "/main.exe");
             }
             case "C" -> {
                 compiler = LocalCodeCompiler.C;
                 runCmd = new String[1];
-                runCmd[0] = workingDirectory.getPath() + (platform.equals("Linux") ? "/main" :
-                        "/main.exe");
+                runCmd[0] = workingDirectory.getPath() +
+                        (CodeCheckerInitializer.platform.equals("Linux") ? "/main" : "/main.exe");
             }
             default -> {
                 return null;
@@ -201,7 +201,7 @@ class LocalCodeChecker extends CodeChecker {
 
     private void clearFiles() {
         if (workingDirectory.exists()) {
-            if (platform.equals("Windows")) {
+            if (CodeCheckerInitializer.platform.equals("Windows")) {
                 // delete the folder after 5 seconds because on Windows,
                 // if a process encounters runtime error, it may not exit immediately
                 // It's not a good idea, but I don't have a better solution

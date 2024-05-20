@@ -74,7 +74,12 @@ public class SubmissionServiceImpl implements SubmissionService {
         }
 
         problemDao.saveProblem(problem);
-        log.info("Submission {} saved", submission.getId());
+
+        if (submission.getId() == 0) {
+            log.info("New submission created");
+        } else {
+            log.info("Submission {} saved", submission.getId());
+        }
         return submissionDao.saveSubmission(submission);
     }
 
