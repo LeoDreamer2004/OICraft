@@ -176,16 +176,16 @@ public class UserService {
 private final ExecutorService executorService = Executors.newCachedThreadPool();
 ```
 
-每个代码提交（Submission）都会被放入一个子线程中，调用`codeChecker`对相应问题的每个测试点（IOPair）进行评测。
+每个代码提交（Submission）都会被放入一个子线程中，调用`localCodeChecker`对相应问题的每个测试点（IOPair）进行评测。
 
 ```java
 public int testCode(User user, Problem problem, String code, String language) {
     ...
     //在线程池中开启一个子线程
     executorService.execute(() -> {
-        CodeChecker codeChecker = new CodeChecker();
+        CodeChecker localCodeChecker = new CodeChecker();
         // 测试代码
-        codeChecker.setIO(...).setLimit(...).test();
+        localCodeChecker.setIO(...).setLimit(...).test();
         ... // 处理结果
     }
 }

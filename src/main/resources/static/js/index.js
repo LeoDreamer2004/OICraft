@@ -1,14 +1,13 @@
 const text = document.querySelector('.blinking-code');
 const txt = [
-    'print("Hello world!")', // Python
-    'System.out.println("Hello world!");', // Java
-    'echo "Hello world!";', // PHP
-    'printf("Hello world!");', // C
-    'cout << "Hello world!" << endl;', // C++
-    'console.log("Hello world!");', // JavaScript
-    'println!("Hello world!");', // Rust
-    'fmt.Println("Hello world!")', // Go
-
+    'print("Hello OICraft!")', // Python
+    'System.out.println("Hello OICraft!");', // Java
+    'echo "Hello OICraft!";', // PHP
+    'printf("Hello OICraft!");', // C
+    'cout << "Hello OICraft!" << endl;', // C++
+    'console.log("Hello OICraft!");', // JavaScript
+    'println!("Hello OICraft!");', // Rust
+    'fmt.Println("Hello OICraft!")', // Go
 ];
 let index = 0;
 let i = 0;

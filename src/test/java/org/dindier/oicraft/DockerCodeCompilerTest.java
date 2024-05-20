@@ -1,6 +1,7 @@
 package org.dindier.oicraft;
 
 import org.dindier.oicraft.util.code.DockerCodeCompiler;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,6 +25,15 @@ public class DockerCodeCompilerTest {
         }
     }
 
+    static void stopDockerContainer(String containerName) {
+        try {
+            Process process = new ProcessBuilder("docker", "stop", containerName).start();
+            process.waitFor();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to stop docker container " + containerName);
+        }
+    }
+
     void copyFile(File source, File dest) {
         try {
             Files.copy(source.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -39,6 +49,24 @@ public class DockerCodeCompilerTest {
         deleteDockerContainer("03");
     }
 
+    @AfterAll
+    static void stopDockerContainers() {
+        Thread[] threads = new Thread[3];
+        for (int i = 1; i <= 3; i++) {
+            int finalI = i;
+            threads[i - 1] = new Thread(() -> stopDockerContainer("0" + finalI));
+            threads[i - 1].start();
+        }
+        try {
+            for (int i = 1; i <= 3; i++) {
+                threads[i - 1].join();
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Failed to stop docker containers");
+        }
+    }
+
+
     @Test
     @SuppressWarnings("ResultOfMethodCallIgnored")
     void testCodeCompilerCompileErrorCpp() {
@@ -50,7 +78,7 @@ public class DockerCodeCompilerTest {
         // copy the test code to a temp file called Main.cpp
         File cppFileTemp = new File("Main.cpp");
         copyFile(new File(cppFile.getFile()), cppFileTemp);
-        String result = compiler.compile(cppFileTemp, "01");
+        String result = compiler.compile(cppFileTemp, "01", true);
         cppFileTemp.delete();
         // The test code has compile error, so the result should not be null
         assertNotNull(result);
@@ -68,7 +96,7 @@ public class DockerCodeCompilerTest {
         // copy the test code to a temp file called Main.cpp
         File cppFileTemp = new File("Main.cpp");
         copyFile(new File(cppFile.getFile()), cppFileTemp);
-        String result = compiler.compile(cppFileTemp, "02");
+        String result = compiler.compile(cppFileTemp, "02", true);
         cppFileTemp.delete();
         // The test code has no compile error, so the result should be null
         assertNull(result);
@@ -85,7 +113,7 @@ public class DockerCodeCompilerTest {
         // copy the test code to a temp file called Main.java
         File javaFileTemp = new File("Main.java");
         copyFile(new File(javaFile.getFile()), javaFileTemp);
-        String result = compiler.compile(javaFileTemp, "03");
+        String result = compiler.compile(javaFileTemp, "03", true);
         javaFileTemp.delete();
         // The test code has compile error, so the result should not be null
         assertNull(result);

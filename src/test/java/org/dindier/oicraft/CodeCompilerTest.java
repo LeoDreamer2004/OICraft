@@ -1,6 +1,6 @@
 package org.dindier.oicraft;
 
-import org.dindier.oicraft.util.code.CodeCompiler;
+import org.dindier.oicraft.util.code.LocalCodeCompiler;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -13,7 +13,7 @@ public class CodeCompilerTest {
     @Test
     @SuppressWarnings("ResultOfMethodCallIgnored")
     void testCodeCompilerCompileError() {
-        CodeCompiler compiler = CodeCompiler.CPP;
+        LocalCodeCompiler compiler = LocalCodeCompiler.CPP;
         URL cppFile = CodeCompilerTest.class.getClassLoader().getResource("test_codes/compile_error.cpp");
         if (cppFile == null) {
             throw new RuntimeException("Cannot find the test code file");
@@ -31,7 +31,7 @@ public class CodeCompilerTest {
     @Test
     @SuppressWarnings("ResultOfMethodCallIgnored")
     void testCodeCompilerCompileSuccess() {
-        CodeCompiler compiler = CodeCompiler.CPP;
+        LocalCodeCompiler compiler = LocalCodeCompiler.CPP;
         URL cppFile = CodeCompilerTest.class.getClassLoader().getResource("test_codes/helloworld.cpp");
         if (cppFile == null) {
             throw new RuntimeException("Cannot find the test code file");

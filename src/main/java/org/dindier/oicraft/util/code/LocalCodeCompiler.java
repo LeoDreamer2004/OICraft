@@ -9,7 +9,7 @@ import java.io.File;
  * This class is used to compile source code file.
  */
 @Slf4j
-public enum CodeCompiler {
+public enum LocalCodeCompiler {
     JAVA("javac"),
     CPP("g++", "-o", "main", "-O2"),
     C("gcc", "-o", "main", "-O2");
@@ -23,7 +23,7 @@ public enum CodeCompiler {
      * @param compiler      The compiler to use (e.g. "g++", "cl", etc.)
      * @param compileOption The compile options for the compiler. For example, for g++, it can be {"-o", "main"}; for javac, it can be {"-d", "temp"}.
      */
-    CodeCompiler(String compiler, String... compileOption) {
+    LocalCodeCompiler(String compiler, String... compileOption) {
         this.compiler = compiler;
         this.compileOption = compileOption;
     }

@@ -23,7 +23,7 @@ import org.dindier.oicraft.dao.ProblemDao;
 import org.dindier.oicraft.model.*;
 import org.dindier.oicraft.service.ProblemService;
 import org.dindier.oicraft.service.SubmissionService;
-import org.dindier.oicraft.util.code.CodeChecker;
+import org.dindier.oicraft.util.code.LocalCodeChecker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
@@ -133,12 +133,12 @@ public class ProblemServiceImpl implements ProblemService {
                     IOPair ioPair = iterator.next();
                     Checkpoint checkpoint = new Checkpoint(submission, ioPair);
                     checkpoint = checkpointDao.createCheckpoint(checkpoint);
-                    CodeChecker codeChecker = new CodeChecker();
+                    LocalCodeChecker localCodeChecker = new LocalCodeChecker();
 
                     // test the code
                     try {
                         // do not delete the files until the last test
-                        codeChecker.setIO(code, language, ioPair.getInput(), ioPair.getOutput(), id)
+                        localCodeChecker.setIO(code, language, ioPair.getInput(), ioPair.getOutput())
                                 .setLimit(problem.getTimeLimit(), problem.getMemoryLimit())
                                 .test(!iterator.hasNext());
                     } catch (IOException | InterruptedException e) {
@@ -148,12 +148,12 @@ public class ProblemServiceImpl implements ProblemService {
                     }
 
                     // read the result
-                    checkpoint.setStatus(Checkpoint.Status.fromString(codeChecker.getStatus()));
-                    checkpoint.setUsedTime(codeChecker.getUsedTime());
-                    checkpoint.setUsedMemory(codeChecker.getUsedMemory());
-                    checkpoint.setInfo(codeChecker.getInfo());
+                    checkpoint.setStatus(Checkpoint.Status.fromString(localCodeChecker.getStatus()));
+                    checkpoint.setUsedTime(localCodeChecker.getUsedTime());
+                    checkpoint.setUsedMemory(localCodeChecker.getUsedMemory());
+                    checkpoint.setInfo(localCodeChecker.getInfo());
                     checkpointDao.updateCheckpoint(checkpoint);
-                    if (codeChecker.getStatus().equals("AC")) {
+                    if (localCodeChecker.getStatus().equals("AC")) {
                         score += ioPair.getScore();
                     } else {
                         passed = false;

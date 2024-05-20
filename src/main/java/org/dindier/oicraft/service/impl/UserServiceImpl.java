@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.misc.Pair;
 import org.dindier.oicraft.model.User;
 import org.dindier.oicraft.service.UserService;
-import org.dindier.oicraft.util.code.CodeChecker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
