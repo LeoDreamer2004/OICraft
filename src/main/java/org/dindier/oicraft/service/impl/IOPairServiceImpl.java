@@ -108,8 +108,8 @@ public class IOPairServiceImpl implements IOPairService {
     }
 
     @Override
-    public InputStream getIOPairsStream(int problemId) throws IOException {
-        List<IOPair> ioPairs = ioPairDao.getIOPairByProblemId(problemId);
+    public InputStream getIOPairsStream(Problem problem) throws IOException {
+        List<IOPair> ioPairs = problem.getIoPairs();
         String folderPath = getZipDir + File.separator + getId++;
         Path tempDir = Files.createDirectories(Paths.get(folderPath));
 

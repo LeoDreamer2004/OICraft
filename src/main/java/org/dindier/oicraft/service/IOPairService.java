@@ -1,6 +1,7 @@
 package org.dindier.oicraft.service;
 
 import org.dindier.oicraft.model.IOPair;
+import org.dindier.oicraft.model.Problem;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,8 +28,8 @@ public interface IOPairService {
     /**
      * Get IOPairs in zip file as a stream
      *
-     * @param problemId the problem id
+     * @param problem the problem
      * @return the stream of the zip file
      */
-    InputStream getIOPairsStream(int problemId) throws IOException;
+    InputStream getIOPairsStream(Problem problem) throws IOException;
 }

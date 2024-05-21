@@ -6,9 +6,6 @@ import org.dindier.oicraft.service.IOPairService;
 import org.dindier.oicraft.service.ProblemService;
 import org.dindier.oicraft.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.InputStreamSource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -109,17 +106,6 @@ public class ProblemViewController {
                 .addObject("problem", problemService.getProblemById(id));
     }
 
-    @GetMapping("/problem/{id}/download")
-    public ResponseEntity<Object> download(@PathVariable int id) {
-        Problem problem = problemService.getProblemById(id);
-        if (problem == null)
-            return ResponseEntity.badRequest().body("No such problem");
-        InputStreamSource inputStreamSource =
-                new ByteArrayResource(problemService.getProblemMarkdown(problem).getBytes());
-        return ResponseEntity.ok().header("Content-Disposition",
-                        "attachment; filename=\"%s.md\"".formatted(problem.getIdString()))
-                .body(inputStreamSource);
-    }
 
     @PostMapping("/problem/result")
     public RedirectView handIn(@RequestParam("problemId") int id,
@@ -251,16 +237,6 @@ public class ProblemViewController {
         IOPair ioPair = new IOPair(problem, input, output, typeMap.get(type), score);
         ioPairService.saveIOPair(ioPair);
         return new RedirectView("/problem/" + id);
-    }
-
-
-    @GetMapping("/problem/{id}/checkpoints/download")
-    public ResponseEntity<byte[]> downloadCheckpoints(@PathVariable int id) throws IOException {
-        InputStream inputStream = ioPairService.getIOPairsStream(id);
-        byte[] bytes = inputStream.readAllBytes();
-        inputStream.close();
-        return ResponseEntity.ok().header("Content-Disposition",
-                "attachment; filename=\"checkpoints.zip\"").body(bytes);
     }
 
     @Autowired

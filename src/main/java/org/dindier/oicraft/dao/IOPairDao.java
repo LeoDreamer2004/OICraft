@@ -39,14 +39,6 @@ public interface IOPairDao {
     Iterable<IOPair> addIOPairs(List<IOPair> ioPairs);
 
     /**
-     * Get all IOPairs in the database
-     *
-     * @return A list of all {@code IOPair} classes in the database.
-     * If there is no IOPair, an empty list will be returned.
-     */
-    List<IOPair> getIOPairByProblemId(int problemId);
-
-    /**
      * delete all IOPair with the problem id
      *
      * @param problemId the problem id which shows the IOPairs.

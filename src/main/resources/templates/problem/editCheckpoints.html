@@ -34,7 +34,7 @@
                 <input type="file" id="file" name="file" accept="application/zip" required>
             </div>
             <div th:unless="${errorMsg eq null}">错误：[[${${errorMsg}}]]</div>
-            <a th:href="@{/problem/{id}/checkpoints/download(id=${problem.id})}" class="btn btn-primary">下载测试点</a>
+            <a th:href="@{/api/problem/checkpoints/download(id=${problem.id})}" class="btn btn-primary">下载测试点</a>
             <button type="submit" class="btn btn-danger">确认修改</button>
         </form>
     </div>
