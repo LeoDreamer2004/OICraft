@@ -36,9 +36,9 @@ public class WebSecurityConfig {
                         ).hasRole("ADMIN")
                         .requestMatchers(
                                 "/submission/**",
-                                "/problem/*/submit",
+                                "/problem/submit",
                                 "/problem/new/**",
-                                "/problem/*/post/new",
+                                "/problem/post/new",
                                 "/email/verification/new"
                         ).authenticated()
                         .anyRequest().permitAll()
