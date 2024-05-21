@@ -59,32 +59,26 @@
         <script>hljs.highlightAll();</script>
     </th:block>
 
-    <th:block th:fragment="runMarkdown">
-        <script>
-            var elements = document.getElementsByClassName('markdown');
-            for (i = 0; i < elements.length; i++) {
-                elements[i].innerHTML = marked.parse(elements[i].innerHTML);
-            }
-        </script>
-    </th:block>
+    <script src="/js/run-markdown.js" th:fragment="runMarkdown"></script>
+    <script src="/js/person-link.js" th:fragment="personLink"></script>
 
     <th:block th:fragment="codeMirror">
-    <link rel="stylesheet" href="/plugins/codemirror/lib/codemirror.css">
-    <script src="/plugins/codemirror/lib/codemirror.js"></script>
-    <link rel="stylesheet" href="/plugins/codemirror/theme/eclipse.css">
+        <link rel="stylesheet" href="/plugins/codemirror/lib/codemirror.css">
+        <script src="/plugins/codemirror/lib/codemirror.js"></script>
+        <link rel="stylesheet" href="/plugins/codemirror/theme/eclipse.css">
 
-    <script src="/plugins/codemirror/mode/clike/clike.js"></script>
-    <script src="/plugins/codemirror/mode/python/python.js"></script>
-    <link rel="stylesheet" href="/plugins/codemirror/addon/hint/show-hint.css">
-    <script src="/plugins/codemirror/addon/hint/show-hint.js"></script>
-    <script src="/plugins/codemirror/addon/hint/anyword-hint.js"></script>
-    <script src="/plugins/codemirror/addon/edit/matchbrackets.js"></script>
+        <script src="/plugins/codemirror/mode/clike/clike.js"></script>
+        <script src="/plugins/codemirror/mode/python/python.js"></script>
+        <link rel="stylesheet" href="/plugins/codemirror/addon/hint/show-hint.css">
+        <script src="/plugins/codemirror/addon/hint/show-hint.js"></script>
+        <script src="/plugins/codemirror/addon/hint/anyword-hint.js"></script>
+        <script src="/plugins/codemirror/addon/edit/matchbrackets.js"></script>
 
-    <link rel="stylesheet" href="/plugins/codemirror/addon/fold/foldgutter.css"/>
-    <script src="/plugins/codemirror/addon/fold/foldcode.js"></script>
-    <script src="/plugins/codemirror/addon/fold/foldgutter.js"></script>
-    <script src="/plugins/codemirror/addon/fold/brace-fold.js"></script>
-    <script src="/plugins/codemirror/addon/fold/comment-fold.js"></script>
+        <link rel="stylesheet" href="/plugins/codemirror/addon/fold/foldgutter.css"/>
+        <script src="/plugins/codemirror/addon/fold/foldcode.js"></script>
+        <script src="/plugins/codemirror/addon/fold/foldgutter.js"></script>
+        <script src="/plugins/codemirror/addon/fold/brace-fold.js"></script>
+        <script src="/plugins/codemirror/addon/fold/comment-fold.js"></script>
     </th:block>
 </head>
 <body>

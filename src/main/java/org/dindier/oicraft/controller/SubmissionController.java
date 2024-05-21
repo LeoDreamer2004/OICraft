@@ -28,15 +28,25 @@ public class SubmissionController {
     @GetMapping("/problem/{id}/history")
     public ModelAndView history(@PathVariable int id) {
         Problem problem = problemService.getProblemById(id);
+
         String pageStr = request.getParameter("page");
         int page = pageStr == null ? 1 : Integer.parseInt(pageStr);
         if (problem == null) return new ModelAndView("error/404");
-        List<Submission> submissions = submissionService.getSubmissionsInPage(problem, page);
+
+        String userId = request.getParameter("user");
+        if (userId == null) userId = "all"; // Default value "all
+        User user = null;
+        if (!userId.equals("all")) {
+            user = userService.getUserById(Integer.parseInt(userId));
+            if (user == null) return new ModelAndView("error/404");
+        }
+        List<Submission> submissions = submissionService.getSubmissionsInPage(problem, page, user);
         return new ModelAndView("submission/history")
                 .addObject("problem", problem)
+                .addObject("userId", userId)
                 .addObject("submissions", submissions)
                 .addObject("page", page)
-                .addObject("totalPages", submissionService.getSubmissionPages(problem));
+                .addObject("totalPages", submissionService.getSubmissionPages(problem, user));
     }
 
     @GetMapping("/submission/{id}")

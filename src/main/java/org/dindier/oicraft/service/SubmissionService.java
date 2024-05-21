@@ -2,6 +2,7 @@ package org.dindier.oicraft.service;
 
 import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.Submission;
+import org.dindier.oicraft.model.User;
 import org.springframework.lang.Nullable;
 
 import java.util.List;
@@ -18,21 +19,25 @@ public interface SubmissionService {
     Submission getSubmissionById(int id);
 
     /**
-     * Get the submissions of a problem with the given page number to show to the user
+     * Get the submissions by a user of a problem with the given page number
+     * If the user is null, then get all the submissions of the problem
      *
      * @param problem The problem requested
      * @param page The page number
+     * @param user The user requested
      * @return The submissions got
      */
-    List<Submission> getSubmissionsInPage(Problem problem, int page);
+    List<Submission> getSubmissionsInPage(Problem problem, int page, User user);
 
     /**
      * Get the page number of the submission
+     * If the user is null, then get all the submissions of the problem
      *
      * @param problem The problem requested
+     * @param user The user requested
      * @return The pages of the submissions
      */
-    int getSubmissionPages(Problem problem);
+    int getSubmissionPages(Problem problem, User user);
 
     /**
      * Create a new submission

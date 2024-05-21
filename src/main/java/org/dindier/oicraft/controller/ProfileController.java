@@ -96,7 +96,7 @@ public class ProfileController {
         return new RedirectView("/profile");
     }
 
-    @PostMapping("/checkin")
+    @PostMapping("/profile/checkin")
     public ResponseEntity<String> checkin() {
         userService.checkIn(userService.getUserByRequest(request));
         return ResponseEntity.ok("Checkin");

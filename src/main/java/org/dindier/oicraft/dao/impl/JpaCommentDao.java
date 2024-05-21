@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository("commentDao")
 @Slf4j
 public class JpaCommentDao implements CommentDao {
-    private final CommentRepository commentRepository;
+    private CommentRepository commentRepository;
 
     @Override
     public Comment getCommentById(int id) {
@@ -28,7 +28,7 @@ public class JpaCommentDao implements CommentDao {
     }
 
     @Autowired
-    public JpaCommentDao(CommentRepository commentRepository) {
+    public void setCommentRepository(CommentRepository commentRepository) {
         this.commentRepository = commentRepository;
     }
 }

@@ -34,13 +34,16 @@ public class SubmissionServiceImpl implements SubmissionService {
     }
 
     @Override
-    public List<Submission> getSubmissionsInPage(Problem problem, int page) {
+    public List<Submission> getSubmissionsInPage(Problem problem, int page, User user) {
+        // TODO: Implement the method
+        if (user!= null && user.getId() == 1) return List.of();
         return submissionDao.getSubmissionsInRangeByProblemId(problem.getId(),
                 (page - 1) * RECORD_PER_PAGE, RECORD_PER_PAGE);
     }
 
     @Override
-    public int getSubmissionPages(Problem problem) {
+    public int getSubmissionPages(Problem problem, User user) {
+        // TODO: Implement the method
         return (int) Math.ceil(submissionDao.countByProblemId(problem.getId()) / (double) RECORD_PER_PAGE);
     }
 

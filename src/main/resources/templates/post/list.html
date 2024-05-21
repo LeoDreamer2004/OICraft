@@ -10,9 +10,9 @@
 <body>
 <div class="header">
     <p class="link">
-        <a th:href="@{/static}">首页</a>
+        <a href="/">首页</a>
         <span>></span>
-        <a th:href="@{/problems}">题目清单</a>
+        <a href="/problems">题目清单</a>
         <span>></span>
         <a th:href="@{/problem/{id}(id=${problem.id})}" th:text="${problem.title}"></a>
         <span>></span>
@@ -37,9 +37,10 @@
             <a th:text="${post.title}" class="ml-3" th:href="@{/post/{id}(id=${post.id})}"></a>
             <span th:text="${post.createTime}" style="float: right;"></span>
         </div>
-        <div class="card-body markdown" th:utext="${post.content}"></div>
+        <div class="card-body markdown user-comment" th:utext="${post.content}"></div>
     </div>
 </main>
-<th:block th:replace="~{base :: runMarkdown}"></th:block>
+<script th:replace="~{base :: runMarkdown}"></script>
+<script th:replace="~{base :: personLink}"></script>
 </body>
 </html>
