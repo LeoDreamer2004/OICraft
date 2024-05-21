@@ -1,4 +1,4 @@
-package org.dindier.oicraft.controller;
+package org.dindier.oicraft.controller.view;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.dindier.oicraft.model.*;
@@ -26,7 +26,7 @@ import java.util.Map;
 
 
 @Controller
-public class ProblemController {
+public class ProblemViewController {
     private UserService userService;
     private ProblemService problemService;
     private IOPairService ioPairService;

@@ -105,11 +105,11 @@
 
     // get AI advice on load
     document.addEventListener('DOMContentLoaded', function () {
-        fetch('/submission/ai?submission=' + id, {
+        fetch('/api/submission/ai?submission=' + id, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-            }
+            },
         })
             .then(response => response.text())
             .then(text => {
@@ -125,7 +125,7 @@
     getHelp.addEventListener('click', function () {
         getHelp.disabled = true;
         getHelp.innerText = '正在请求中';
-        fetch('/submission/ai', {
+        fetch('/api/submission/ai', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',

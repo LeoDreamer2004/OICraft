@@ -1,4 +1,4 @@
-package org.dindier.oicraft.controller;
+package org.dindier.oicraft.controller.view;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.dindier.oicraft.model.User;
@@ -12,7 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
-public class AdminController {
+public class AdminViewController {
 
     private UserService userService;
     private HttpServletRequest request;

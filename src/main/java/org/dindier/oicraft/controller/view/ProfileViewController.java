@@ -1,4 +1,4 @@
-package org.dindier.oicraft.controller;
+package org.dindier.oicraft.controller.view;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.dindier.oicraft.model.User;
@@ -18,7 +18,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import java.io.IOException;
 
 @Controller
-public class ProfileController {
+public class ProfileViewController {
 
     private UserService userService;
     private ProblemService problemService;

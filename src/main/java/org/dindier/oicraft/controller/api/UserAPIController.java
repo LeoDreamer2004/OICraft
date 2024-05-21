@@ -1,4 +1,4 @@
-package org.dindier.oicraft.controller;
+package org.dindier.oicraft.controller.api;
 
 import org.dindier.oicraft.model.User;
 import org.dindier.oicraft.service.UserService;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class APIController {
+public class UserAPIController {
 
     UserService userService;
 
