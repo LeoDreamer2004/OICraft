@@ -94,7 +94,7 @@ class LocalCodeChecker extends CodeChecker {
         String[] runCmd;
 
         switch (language) {
-            case PYTHON -> runCmd = new String[]{"python3", codePath};
+            case PYTHON -> runCmd = new String[]{"python", codePath};
             case JAVA -> {
                 compiler = LocalCodeCompiler.JAVA;
                 runCmd = new String[]{"java", "-cp",

@@ -27,23 +27,23 @@
     <div class="card my-card p-3" th:unless="${submissions.isEmpty()}">
         <ul class="pagination justify-content-center" th:unless="${page eq null}">
             <li class="page-item" th:classappend="${page == 1} ? 'disabled'">
-                <a class="page-link" th:href="@{/problem/{id}/history(page=1, id=${problem.id}, user=${userId})}">首页</a>
+                <a class="page-link" th:href="@{/problem/history(page=1, id=${problem.id}, user=${userId})}">首页</a>
             </li>
             <li class="page-item" th:classappend="${page == 1} ? 'disabled'">
                 <a class="page-link"
-                   th:href="@{/problem/{id}/history(page=${page - 1}, id=${problem.id}, user=${userId})}">上一页</a>
+                   th:href="@{/problem/history(page=${page - 1}, id=${problem.id}, user=${userId})}">上一页</a>
             </li>
             <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"
                 th:classappend="${i == page} ? 'active'">
-                <a class="page-link" th:href="@{/problem/{id}/history(page=${i}, id=${problem.id}, user=${userId})}"
+                <a class="page-link" th:href="@{/problem/history(page=${i}, id=${problem.id}, user=${userId})}"
                    th:text="${i}"></a>
             <li class="page-item" th:classappend="${page == totalPages} ? 'disabled'">
                 <a class="page-link"
-                   th:href="@{/problem/{id}/history(page=${page + 1}, id=${problem.id}, user=${userId})}">下一页</a>
+                   th:href="@{/problem/history(page=${page + 1}, id=${problem.id}, user=${userId})}">下一页</a>
             </li>
             <li class="page-item" th:classappend="${page == totalPages} ? 'disabled'">
                 <a class="page-link"
-                   th:href="@{/problem/{id}/history(page=${totalPages}, id=${problem.id}, user=${userId})}">尾页</a>
+                   th:href="@{/problem/history(page=${totalPages}, id=${problem.id}, user=${userId})}">尾页</a>
             </li>
         </ul>
 

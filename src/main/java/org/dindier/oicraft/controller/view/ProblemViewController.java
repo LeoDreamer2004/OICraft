@@ -6,9 +6,6 @@ import org.dindier.oicraft.service.IOPairService;
 import org.dindier.oicraft.service.ProblemService;
 import org.dindier.oicraft.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.InputStreamSource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -103,23 +100,12 @@ public class ProblemViewController {
         return new RedirectView("/problem/" + problem.getId());
     }
 
-    @GetMapping("/problem/{id}/submit")
-    public ModelAndView submitCode(@PathVariable int id) {
+    @GetMapping("/problem/submit")
+    public ModelAndView submitCode(@RequestParam int id) {
         return new ModelAndView("problem/submit")
                 .addObject("problem", problemService.getProblemById(id));
     }
 
-    @GetMapping("/problem/{id}/download")
-    public ResponseEntity<Object> download(@PathVariable int id) {
-        Problem problem = problemService.getProblemById(id);
-        if (problem == null)
-            return ResponseEntity.badRequest().body("No such problem");
-        InputStreamSource inputStreamSource =
-                new ByteArrayResource(problemService.getProblemMarkdown(problem).getBytes());
-        return ResponseEntity.ok().header("Content-Disposition",
-                        "attachment; filename=\"%s.md\"".formatted(problem.getIdString()))
-                .body(inputStreamSource);
-    }
 
     @PostMapping("/problem/result")
     public RedirectView handIn(@RequestParam("problemId") int id,
@@ -133,8 +119,8 @@ public class ProblemViewController {
         return new RedirectView("/submission/" + submissionId);
     }
 
-    @GetMapping("/problem/{id}/edit")
-    public ModelAndView edit(@PathVariable int id) {
+    @GetMapping("/problem/edit")
+    public ModelAndView edit(@RequestParam int id) {
         User user = userService.getUserByRequest(request);
         Problem problem = problemService.getProblemById(id);
         if (problem == null)
@@ -146,14 +132,14 @@ public class ProblemViewController {
     }
 
     @PostMapping("/problem/edit")
-    public RedirectView editConfirm(@RequestParam("problemId") int id,
-                                    @RequestParam("title") String title,
-                                    @RequestParam("description") String description,
-                                    @RequestParam("inputFormat") String inputFormat,
-                                    @RequestParam("outputFormat") String outputFormat,
-                                    @RequestParam("difficulty") String difficulty,
-                                    @RequestParam("timeLimit") int timeLimit,
-                                    @RequestParam("memoryLimit") int memoryLimit) {
+    public RedirectView editConfirm(@RequestParam int id,
+                                    @RequestParam String title,
+                                    @RequestParam String description,
+                                    @RequestParam String inputFormat,
+                                    @RequestParam String outputFormat,
+                                    @RequestParam String difficulty,
+                                    @RequestParam int timeLimit,
+                                    @RequestParam int memoryLimit) {
         User user = userService.getUserByRequest(request);
         Problem problem = problemService.getProblemById(id);
         if (problem == null)
@@ -171,8 +157,8 @@ public class ProblemViewController {
         return new RedirectView("/problem/" + id);
     }
 
-    @GetMapping("/problem/{id}/delete")
-    public ModelAndView delete(@PathVariable int id) {
+    @GetMapping("/problem/delete")
+    public ModelAndView delete(@RequestParam int id) {
         User user = userService.getUserByRequest(request);
         Problem problem = problemService.getProblemById(id);
         if (problem == null)
@@ -184,7 +170,7 @@ public class ProblemViewController {
     }
 
     @PostMapping("/problem/delete")
-    public RedirectView deleteConfirm(@RequestParam("problemId") int id) {
+    public RedirectView deleteConfirm(@RequestParam int id) {
         User user = userService.getUserByRequest(request);
         Problem problem = problemService.getProblemById(id);
         if (problem == null)
@@ -195,8 +181,8 @@ public class ProblemViewController {
         return new RedirectView("/problems");
     }
 
-    @GetMapping("/problem/{id}/edit/checkpoints")
-    public ModelAndView editCheckpoints(@PathVariable int id) {
+    @GetMapping("/problem/edit/checkpoints")
+    public ModelAndView editCheckpoints(@RequestParam int id) {
         User user = userService.getUserByRequest(request);
         Problem problem = problemService.getProblemById(id);
         if (problem == null || !problem.getSubmissions().isEmpty())
@@ -207,9 +193,9 @@ public class ProblemViewController {
                 .addObject("problem", problem);
     }
 
-    @PostMapping("/problem/{id}/edit/checkpoints/file")
-    public Object editCheckpointsConfirm(@PathVariable int id,
-                                               @RequestParam("file") MultipartFile file) {
+    @PostMapping("/problem/edit/checkpoints/file")
+    public Object editCheckpointsConfirm(@RequestParam int id,
+                                         @RequestParam("file") MultipartFile file) {
         User user = userService.getUserByRequest(request);
         Problem problem = problemService.getProblemById(id);
         if (problem == null || !problem.getSubmissions().isEmpty())
@@ -232,12 +218,12 @@ public class ProblemViewController {
                 .addObject("errorMsg", errorMsg);
     }
 
-    @PostMapping("/problem/{id}/edit/checkpoints/text")
-    public RedirectView editCheckpointsConfirm(@PathVariable int id,
-                                               @RequestParam("input") String input,
-                                               @RequestParam("output") String output,
-                                               @RequestParam("type") String type,
-                                               @RequestParam("score") int score) {
+    @PostMapping("/problem/edit/checkpoints/text")
+    public RedirectView editCheckpointsConfirm(@RequestParam int id,
+                                               @RequestParam String input,
+                                               @RequestParam String output,
+                                               @RequestParam String type,
+                                               @RequestParam int score) {
         User user = userService.getUserByRequest(request);
         Problem problem = problemService.getProblemById(id);
         if (problem == null || !problem.getSubmissions().isEmpty())
@@ -251,16 +237,6 @@ public class ProblemViewController {
         IOPair ioPair = new IOPair(problem, input, output, typeMap.get(type), score);
         ioPairService.saveIOPair(ioPair);
         return new RedirectView("/problem/" + id);
-    }
-
-
-    @GetMapping("/problem/{id}/checkpoints/download")
-    public ResponseEntity<byte[]> downloadCheckpoints(@PathVariable int id) throws IOException {
-        InputStream inputStream = ioPairService.getIOPairsStream(id);
-        byte[] bytes = inputStream.readAllBytes();
-        inputStream.close();
-        return ResponseEntity.ok().header("Content-Disposition",
-                "attachment; filename=\"checkpoints.zip\"").body(bytes);
     }
 
     @Autowired

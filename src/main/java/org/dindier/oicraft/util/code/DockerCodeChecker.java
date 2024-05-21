@@ -10,7 +10,6 @@ import java.io.IOException;
 @Slf4j
 class DockerCodeChecker extends CodeChecker {
     private static final int TLE_EXIT_CODE = 124;
-
     private boolean containerCreated = false;
 
     @Override

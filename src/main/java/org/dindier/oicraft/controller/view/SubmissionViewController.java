@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -22,8 +23,8 @@ public class SubmissionViewController {
     private SubmissionService submissionService;
     private HttpServletRequest request;
 
-    @GetMapping("/problem/{id}/history")
-    public ModelAndView history(@PathVariable int id) {
+    @GetMapping("/problem/history")
+    public ModelAndView history(@RequestParam int id) {
         Problem problem = problemService.getProblemById(id);
 
         String pageStr = request.getParameter("page");

@@ -1,6 +1,5 @@
 package org.dindier.oicraft.dao.impl;
 
-import lombok.extern.slf4j.Slf4j;
 import org.dindier.oicraft.dao.ProblemDao;
 import org.dindier.oicraft.dao.repository.CheckpointRepository;
 import org.dindier.oicraft.dao.repository.IOPairRepository;
@@ -16,7 +15,6 @@ import java.util.Comparator;
 import java.util.List;
 
 @Repository("problemDao")
-@Slf4j
 public class JpaProblemDao implements ProblemDao {
     private ProblemRepository problemRepository;
     private IOPairRepository ioPairRepository;
@@ -62,7 +60,6 @@ public class JpaProblemDao implements ProblemDao {
         submissionRepository.deleteAll(submissions);
         ioPairRepository.deleteAll(problem.getIoPairs());
         problemRepository.delete(problem);
-        log.info("Delete problem: {}", problem.getId());
     }
 
     @Override

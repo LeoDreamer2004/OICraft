@@ -5,7 +5,6 @@ import org.dindier.oicraft.model.User;
 import org.dindier.oicraft.service.ProblemService;
 import org.dindier.oicraft.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -96,11 +95,6 @@ public class ProfileViewController {
         return new RedirectView("/profile");
     }
 
-    @PostMapping("/profile/checkin")
-    public ResponseEntity<String> checkin() {
-        userService.checkIn(userService.getUserByRequest(request));
-        return ResponseEntity.ok("Checkin");
-    }
 
     @Autowired
     public void setUserService(UserService userService) {
