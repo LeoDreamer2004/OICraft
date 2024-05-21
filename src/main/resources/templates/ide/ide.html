@@ -96,7 +96,7 @@
             const code = encodeURIComponent(editor.getValue());
             const input = encodeURIComponent(document.getElementById("input").value);
             const language = encodeURIComponent(document.getElementById("language").value);
-            fetch("/ide/run", {
+            fetch("/api/ide/run", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",

@@ -40,22 +40,22 @@ public class PostViewController {
                         map(comment -> postService.canDeleteComment(user, comment)).toList());
     }
 
-    @GetMapping("/problem/{id}/posts")
-    public ModelAndView posts(@PathVariable int id) {
-        Problem problem = problemService.getProblemById(id);
-        if (problem == null)
+    @GetMapping("/problem/posts")
+    public ModelAndView posts(@RequestParam int problem) {
+        Problem p = problemService.getProblemById(problem);
+        if (p == null)
             return new ModelAndView("error/404");
         return new ModelAndView("post/list")
-                .addObject("problem", problem);
+                .addObject("problem", p);
     }
 
-    @GetMapping("/problem/{id}/post/new")
-    public ModelAndView newPost(@PathVariable int id) {
-        Problem problem = problemService.getProblemById(id);
-        if (problem == null)
+    @GetMapping("/problem/post/new")
+    public ModelAndView newPost(@RequestParam int problem) {
+        Problem p = problemService.getProblemById(problem);
+        if (p == null)
             return new ModelAndView("error/404");
         return new ModelAndView("post/new")
-                .addObject("problem", problem);
+                .addObject("problem", p);
     }
 
     @PostMapping("/post/new")

@@ -25,7 +25,7 @@
 <main role="main" class="container">
     <h4 class="underlined-title mt-5">上传测试点</h4>
     <div class="card my-card p-3">
-        <form th:action="@{/problem/{id}/edit/checkpoints/file(id=${problem.id})}" method="post"
+        <form th:action="@{/problem/edit/checkpoints/file(id=${problem.id})}" method="post"
               enctype="multipart/form-data">
             <div class="form-group" style="font-size: 18px">
                 <p>文件格式：请上传一个zip文件，其中包含两个文件夹sample和test，分别代表样例用/测试用。<br/>
@@ -34,14 +34,14 @@
                 <input type="file" id="file" name="file" accept="application/zip" required>
             </div>
             <div th:unless="${errorMsg eq null}">错误：[[${${errorMsg}}]]</div>
-            <a th:href="@{/problem/{id}/checkpoints/download(id=${problem.id})}" class="btn btn-primary">下载测试点</a>
+            <a th:href="@{/api/problem/checkpoints/download(id=${problem.id})}" class="btn btn-primary">下载测试点</a>
             <button type="submit" class="btn btn-danger">确认修改</button>
         </form>
     </div>
 
     <h4 class="underlined-title mt-5">手动添加测试点</h4>
     <div class="card my-card p-3 mb-5">
-        <form th:action="@{/problem/{id}/edit/checkpoints/text(id=${problem.id})}" method="post">
+        <form th:action="@{/problem/edit/checkpoints/text(id=${problem.id})}" method="post">
             <div class="form-group">
                 <label for="input">输入</label>
                 <textarea class="form-control" id="input" name="input" rows="2" required></textarea>

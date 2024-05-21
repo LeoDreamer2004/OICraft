@@ -106,7 +106,7 @@
 <script>
     let checkInBtn = document.getElementById('checkInBtn')
     checkInBtn.addEventListener('click', function () {
-        fetch('/profile/checkin', {
+        fetch('/api/user/checkin', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
