@@ -1,4 +1,4 @@
-package org.dindier.oicraft.controller;
+package org.dindier.oicraft.controller.view;
 
 import org.dindier.oicraft.service.IDEService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-public class IDEController {
+public class IDEViewController {
     private IDEService ideService;
 
     @GetMapping("/ide")

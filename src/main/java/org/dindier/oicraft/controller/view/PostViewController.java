@@ -1,4 +1,4 @@
-package org.dindier.oicraft.controller;
+package org.dindier.oicraft.controller.view;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.dindier.oicraft.model.Comment;
@@ -20,7 +20,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import java.util.List;
 
 @Controller
-public class PostController {
+public class PostViewController {
 
     private UserService userService;
     private ProblemService problemService;
