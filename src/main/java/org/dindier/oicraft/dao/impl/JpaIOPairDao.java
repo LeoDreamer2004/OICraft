@@ -50,16 +50,11 @@ public class JpaIOPairDao implements IOPairDao {
     }
 
     @Override
-    public List<IOPair> getIOPairByProblemId(int problemId) {
-        return problemRepository
+    public void deleteIOPairByProblemId(int problemId) {
+        List<IOPair> ioPairs = problemRepository
                 .findById(problemId)
                 .map(Problem::getIoPairs)
                 .orElse(List.of());
-    }
-
-    @Override
-    public void deleteIOPairByProblemId(int problemId) {
-        List<IOPair> ioPairs = getIOPairByProblemId(problemId);
         for (IOPair ioPair : ioPairs) {
             deleteIOPair(ioPair);
         }

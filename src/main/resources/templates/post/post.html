@@ -25,6 +25,7 @@
     <div th:replace="~{problem/list :: nav}"></div>
 </div>
 <main role="main" class="container">
+    <!-- post -->
     <a th:unless="${post.author eq null}" th:href="@{/profile/{id}(id=${post.author.id})}" class="no-dec">
         <img class="avatar" th:src="${post.author.avatarPath}" width="30" height="30" alt="avatar">
     </a>
@@ -41,8 +42,9 @@
                 <button type="submit" class="delete-link">删帖</button>
             </form>
         </div>
-        <div class="card-body markdown" th:utext="${post.content}"></div>
+        <div class="card-body markdown user-comment" th:utext="${post.content}"></div>
     </div>
+    <!-- comment form -->
     <form th:action="@{/post/comment}" method="post" class="mt-4 pt-5" style="border-top: 2px dashed lightgray">
         <input type="hidden" name="postId" th:value="${post.id}">
         <div class="form-group">
@@ -53,6 +55,7 @@
             <textarea class="form-control" id="comment" name="content" rows="3" maxlength="1000" placeholder="说点什么吧"></textarea>
         </div>
     </form>
+    <!-- comments -->
     <div class="card mb-3" th:each="comment, stat: ${post.comments}" th:unless="${post.comments.isEmpty()}">
         <div class="card-header">
             <a th:unless="${comment.author eq null}" th:href="@{/profile/{id}(id=${comment.author.id})}">
@@ -67,12 +70,13 @@
                 <button type="submit" class="delete-link">删除</button>
             </form>
         </div>
-        <div class="card-body markdown" th:text="${comment.content}"></div>
+        <div class="card-body markdown user-comment" th:text="${comment.content}"></div>
     </div>
     <div th:if="${post.comments.isEmpty()}" style="text-align: center" class="m-3">
         <p>还没有评论...要抢一个沙发吗？</p>
     </div>
 </main>
 <th:block th:replace="~{base :: runMarkdown}"></th:block>
+<script th:replace="~{base :: personLink}"></script>
 </body>
 </html>

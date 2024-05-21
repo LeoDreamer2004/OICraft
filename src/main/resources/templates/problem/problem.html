@@ -21,7 +21,8 @@
     <!--/*@thymesVar id="user" type="org.dindier.oicraft.model.User"*/-->
     <a th:unless="${user eq null || !canSubmit}" class="btn btn-primary mb-3"
        th:href="@{/problem/{id}/submit(id=${problem.id})}">提交代码</a>
-    <a th:if="${user eq null && canSubmit}" class="btn btn-primary mb-3" th:href="@{/problem/{id}/submit(id=${problem.id})}">登录后提交</a>
+    <a th:if="${user eq null && canSubmit}" class="btn btn-primary mb-3"
+       th:href="@{/problem/{id}/submit(id=${problem.id})}">登录后提交</a>
     <a class="btn btn-secondary mb-3" th:href="@{/problems}">返回题单</a>
     <span th:unless="${canSubmit}" class="ml-3">此题暂无测试点，不可提交</span>
 
@@ -50,8 +51,8 @@
     <div class="lr-container">
         <div class="problem-main mb-5">
             <div class="card my-card">
-                <a th:href="@{/problem/{id}/download(id=${problem.id})}"
-                style="position: absolute; right: 20px;" class="no-dec">
+                <a th:href="@{/api/problem/download(id=${problem.id})}"
+                   style="position: absolute; right: 20px;" class="no-dec">
                     <span class="iconfont icon-markdown"></span>
                     下载Markdown
                 </a>
@@ -104,13 +105,14 @@
                     <p th:text="${historyScore}"></p>
                 </div>
 
-                <a class="iconfont icon-toupiao no-dec" th:href="@{/problem/{id}/history(id=${problem.id})}"> 提交记录</a>
+                <a class="iconfont icon-toupiao no-dec" th:href="@{/problem/{id}/history(id=${problem.id})}">
+                    提交记录</a>
             </div>
             <div class="card my-card mt-3">
                 <h5 class="mb-3 underlined-title">讨论区</h5>
                 <div>
-                <a th:href="@{/problem/{id}/posts(id=${problem.id})}" class="mr-2 no-dec">查看帖子</a>
-                <a th:href="@{/problem/{id}/post/new(id=${problem.id})}" class="no-dec">发布帖子</a>
+                    <a th:href="@{/problem/{id}/posts(id=${problem.id})}" class="mr-2 no-dec">查看帖子</a>
+                    <a th:href="@{/problem/{id}/post/new(id=${problem.id})}" class="no-dec">发布帖子</a>
                 </div>
             </div>
             <div class="card my-card mt-3" th:if="${canEdit}">
@@ -118,8 +120,10 @@
                 <div>
                     <a class="btn btn-primary" style="width:auto"
                        th:href="@{/problem/{id}/edit(id=${problem.id})}">编辑题目</a>
-                    <a class="btn btn-primary" style="width:auto" th:classappend="${!canEditCheckpoints} ? disabled"
+                    <a class="btn btn-primary" style="width:auto" th:if="${canEditCheckpoints}"
                        th:href="@{/problem/{id}/edit/checkpoints(id=${problem.id})}">编辑测试点</a>
+                    <a class="btn btn-primary" style="width:auto" th:unless="${canEditCheckpoints}"
+                       th:href="@{/api/problem/checkpoints/download(id=${problem.id})}">下载测试点</a>
                     <a class="btn btn-danger" style="width:auto"
                        th:href="@{/problem/{id}/delete(id=${problem.id})}">删除题目</a>
                 </div>

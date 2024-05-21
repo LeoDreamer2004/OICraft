@@ -68,7 +68,7 @@
                 btn.classList.remove("disabled")
             }
         }, 1000);
-        fetch('/email/verification/new?email=' + email, {
+        fetch('/api/user/email/new?email=' + email, {
             method: 'GET',
         })
             .then(response => {
