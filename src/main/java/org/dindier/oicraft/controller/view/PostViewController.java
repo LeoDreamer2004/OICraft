@@ -70,7 +70,7 @@ public class PostViewController {
             return new RedirectView("/login");
         Post post = new Post(title, content, problem, user);
         postService.savePost(post);
-        return new RedirectView("/problem/" + id + "/posts");
+        return new RedirectView("/problem/posts?problem=" + id);
     }
 
     @PostMapping("/post/delete")
@@ -82,7 +82,7 @@ public class PostViewController {
         if (!postService.canDeletePost(uer, post))
             return new RedirectView("error/403");
         postService.deletePost(post);
-        return new RedirectView("/problem/" + post.getProblem().getId() + "/posts");
+        return new RedirectView("/problem/posts?problem=" + post.getProblem().getId());
     }
 
     @PostMapping("/post/comment/delete")
