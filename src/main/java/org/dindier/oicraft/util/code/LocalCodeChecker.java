@@ -15,7 +15,8 @@ class LocalCodeChecker extends CodeChecker {
     public CodeChecker setIO(String code, String language,
                              String input, @Nullable String output) throws IOException {
         input = (input + "\n").replace("\r", "").replace("\n", System.lineSeparator());
-        output = output == null ? "" : output.replace("\r", "").replace("\n", System.lineSeparator());
+        output = output == null ? null : output.replace("\r", "").replace("\n",
+                System.lineSeparator());
         super.setIO(code, language, input, output);
 
         // working directory
@@ -25,7 +26,7 @@ class LocalCodeChecker extends CodeChecker {
         }
 
         // code
-        String extension = extensionsMap.get(language);
+        String extension = extensionsMap.get(Language.fromString(language));
         if (extension == null)
             log.error("Unsupported language: {}", language);
         codePath = workingDirectory.getPath() + "/Main." + extension;
@@ -36,13 +37,11 @@ class LocalCodeChecker extends CodeChecker {
     @Override
     public void test(boolean clearFile) throws IOException, InterruptedException {
         if (this.status.equals("CE")) {
-            if (clearFile) {
-                clearFiles();
-            }
+            clearFiles(clearFile);
             return;
         }
         this.status = "P";
-        this.info = "Pending";
+        this.info = "";
         ProcessBuilder pb = getProcessBuilder();
         TimerTask timerTask = new TimerTask() {
             @Override
@@ -53,9 +52,7 @@ class LocalCodeChecker extends CodeChecker {
         Timer timer = new Timer();
 
         if (pb == null) {
-            if (clearFile) {
-                clearFiles();
-            }
+            clearFiles(clearFile);
             return;
         }
 
@@ -84,17 +81,11 @@ class LocalCodeChecker extends CodeChecker {
         usedTime = (int) (System.currentTimeMillis() - startTime);
         timer.cancel();
 
-        if (status.equals("TLE") || status.equals("MLE")) {
-            if (clearFile) {
-                clearFiles();
-            }
-            return;
+        if (!status.equals("TLE") && !status.equals("MLE")) {
+            checkAnswer();
         }
 
-        checkAnswer();
-        if (clearFile) {
-            clearFiles();
-        }
+        clearFiles(clearFile);
     }
 
     /* Get the ProcessBuilder for the code to be checked */
@@ -103,30 +94,22 @@ class LocalCodeChecker extends CodeChecker {
         String[] runCmd;
 
         switch (language) {
-            case "Python" -> {
-                runCmd = new String[2];
-                runCmd[0] = "python";
-                runCmd[1] = codePath;
-            }
-            case "Java" -> {
+            case PYTHON -> runCmd = new String[]{"python3", codePath};
+            case JAVA -> {
                 compiler = LocalCodeCompiler.JAVA;
-                runCmd = new String[4];
-                runCmd[0] = "java";
-                runCmd[1] = "-cp";
-                runCmd[2] = workingDirectory.getPath();
-                runCmd[3] = codePath.substring(codePath.lastIndexOf("/") + 1, codePath.length() - 5);
+                runCmd = new String[]{"java", "-cp",
+                        workingDirectory.getPath(),
+                        codePath.substring(codePath.lastIndexOf("/") + 1, codePath.length() - 5)};
             }
-            case "C++" -> {
+            case CPP -> {
                 compiler = LocalCodeCompiler.CPP;
-                runCmd = new String[1];
-                runCmd[0] = workingDirectory.getPath() +
-                        (CodeCheckerInitializer.platform.equals("Linux") ? "/main" : "/main.exe");
+                runCmd = new String[]{workingDirectory.getPath() +
+                        (CodeCheckerInitializer.platform.equals("Linux") ? "/main" : "/main.exe")};
             }
-            case "C" -> {
+            case C -> {
                 compiler = LocalCodeCompiler.C;
-                runCmd = new String[1];
-                runCmd[0] = workingDirectory.getPath() +
-                        (CodeCheckerInitializer.platform.equals("Linux") ? "/main" : "/main.exe");
+                runCmd = new String[]{workingDirectory.getPath() +
+                        (CodeCheckerInitializer.platform.equals("Linux") ? "/main" : "/main.exe")};
             }
             default -> {
                 return null;
@@ -183,7 +166,6 @@ class LocalCodeChecker extends CodeChecker {
         InputStream inputStream = process.getInputStream();
         output = new String(inputStream.readAllBytes()).stripTrailing()
                 .replace("\r", "").replace("\n", System.lineSeparator());
-
         if (output.equals(expectedOutput)) {
             status = "AC";
             info = "Answer Accepted";
@@ -199,8 +181,8 @@ class LocalCodeChecker extends CodeChecker {
         }
     }
 
-    private void clearFiles() {
-        if (workingDirectory.exists()) {
+    private void clearFiles(boolean clearFile) {
+        if (clearFile && workingDirectory.exists()) {
             if (CodeCheckerInitializer.platform.equals("Windows")) {
                 // delete the folder after 5 seconds because on Windows,
                 // if a process encounters runtime error, it may not exit immediately

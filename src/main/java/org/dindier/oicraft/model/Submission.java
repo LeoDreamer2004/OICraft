@@ -3,6 +3,7 @@ package org.dindier.oicraft.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
+import org.dindier.oicraft.util.code.Language;
 
 import java.util.List;
 
@@ -33,43 +34,23 @@ public class Submission {
     protected Submission() {
     }
 
-    @Getter
-    public enum Language {
-        JAVA("Java"), PYTHON("Python"), C("C"), CPP("C++");
-
-        private final String displayName;
-
-        Language(String displayName) {
-            this.displayName = displayName;
-        }
-
-        public static Language fromString(String language) {
-            for (Language l : Language.values()) {
-                if (l.getDisplayName().equalsIgnoreCase(language)) {
-                    return l;
-                }
-            }
-            return null;
-        }
-    }
-
     @Enumerated(EnumType.STRING)
     private Language language;
 
     @Getter
-    public enum Status {
+    public enum Result {
         WAITING("waiting"), PASSED("passed"), FAILED("failed");
 
         private final String displayName;
 
-        Status(String displayName) {
+        Result(String displayName) {
             this.displayName = displayName;
         }
 
     }
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private Result result;
     private int score;
 
     public Submission(User user, Problem problem, String code, Language language) {
@@ -77,7 +58,7 @@ public class Submission {
         this.problem = problem;
         this.code = code;
         this.language = language;
-        this.status = Status.WAITING;
+        this.result = Result.WAITING;
         this.aiAdviceRequested = false;
     }
 
@@ -88,9 +69,4 @@ public class Submission {
     public String getLanguageDisplayName() {
         return language.getDisplayName();
     }
-
-    public String getStatusString() {
-        return status.getDisplayName();
-    }
-
 }

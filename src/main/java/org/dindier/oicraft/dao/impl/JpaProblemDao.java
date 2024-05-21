@@ -85,8 +85,8 @@ public class JpaProblemDao implements ProblemDao {
                 .map(submissions -> submissions
                         .stream()
                         .filter(submission -> submission
-                                .getStatus()
-                                .equals(Submission.Status.PASSED)
+                                .getResult()
+                                .equals(Submission.Result.PASSED)
                         )
                         .sorted(Comparator.comparingInt(Submission::getId))
                         .toList()

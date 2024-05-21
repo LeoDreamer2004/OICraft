@@ -74,7 +74,7 @@ OICraft 所用服务器是 SpringBoot 内置的 Tomcat 服务器（在本机运�
 
 ## 项目结构
 
-![项目结构图](./img/structure.jpg)
+![项目结构图](./img/structure.png)
 
 由于项目较大，文件过多，UML图太复杂不能很好地反映项目结构，这里从整体上介绍项目分为的五个主要层次：
 
@@ -269,6 +269,8 @@ public List<Problem> searchProblems(String keyword) {
 #### AI查错
 
 我们使用了~~白嫖的~~讯飞星火的 API 进行 AI 查错。如果某次提交没有通过，用户可以调用 AI 来分析代码中的错误。我们使用一个提示词模板来生成相应的问题，并调用 API 来获取结果。
+
+![提交记录](./img/submission.png)
 
 ### 控制层（Controller层）
 

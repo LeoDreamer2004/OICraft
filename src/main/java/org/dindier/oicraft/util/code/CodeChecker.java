@@ -21,7 +21,7 @@ public abstract class CodeChecker {
     public static final String FOLDER = "temp/";
     protected long id;
     protected String codePath;
-    protected String language;
+    protected Language language;
     protected String inputData;
     protected String expectedOutput;
     protected int timeLimit = 0;
@@ -29,11 +29,11 @@ public abstract class CodeChecker {
     protected boolean compiled = false;
     protected File workingDirectory; // The working directory for the submission
 
-    protected static final Map<String, String> extensionsMap = Map.of(
-            "Java", "java",
-            "C", "c",
-            "C++", "cpp",
-            "Python", "py"
+    protected static final Map<Language, String> extensionsMap = Map.of(
+            Language.JAVA, "java",
+            Language.C, "c",
+            Language.CPP, "cpp",
+            Language.PYTHON, "py"
     );
     @Getter
     protected String output;
@@ -53,7 +53,7 @@ public abstract class CodeChecker {
     }
 
     static {
-        // Load the native library
+        // load the native library
         URL url;
         if (CodeCheckerInitializer.platform.equals("Linux")) {
             url = LocalCodeChecker.class.getClassLoader().getResource("lib/CodeChecker.so");
@@ -89,7 +89,7 @@ public abstract class CodeChecker {
      */
     public CodeChecker setIO(String code, String language, String input,
                              @Nullable String output) throws IOException {
-        this.language = language;
+        this.language = Language.fromString(language);
         this.inputData = input;
         this.expectedOutput = output == null ? null : output.stripTrailing();
         return null;

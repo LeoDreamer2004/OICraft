@@ -19,11 +19,11 @@ import java.util.Objects;
 public class CodeCheckerInitializer {
     public static boolean useDocker = false;
     public static final String platform;
-    public static final Map<String, String> dockerImages = Map.of(
-            "Java", "code-checker-java",
-            "C", "code-checker-c",
-            "Cpp", "code-checker-cpp",
-            "Python", "code-checker-python"
+    public static final Map<Language, String> dockerImages = Map.of(
+            Language.JAVA, "code-checker-java",
+            Language.C, "code-checker-c",
+            Language.CPP, "code-checker-cpp",
+            Language.PYTHON, "code-checker-python"
     );
 
     static {
@@ -58,20 +58,22 @@ public class CodeCheckerInitializer {
 
         // build the docker image
         String dockerFilePath =
-                Objects.requireNonNull(LocalCodeChecker.class.getClassLoader().getResource("scripts/docker")).getPath();
+                Objects.requireNonNull(CodeCheckerInitializer.class.getClassLoader()
+                        .getResource("scripts/docker")).getPath();
         if (platform.equals("Windows")) {
             dockerFilePath = dockerFilePath.substring(1);
         }
         int dockerImagesSize = dockerImages.size();
         Thread[] threads = new Thread[dockerImagesSize];
-        List<String> dockerImagesKey = new ArrayList<>(dockerImages.keySet());
+        List<Language> dockerImagesKey = new ArrayList<>(dockerImages.keySet());
         for (int i = 0; i < dockerImagesSize; i++) {
-            String language = dockerImagesKey.get(i).toLowerCase();
+            Language language = dockerImagesKey.get(i);
             String imageName = dockerImages.get(dockerImagesKey.get(i));
             String finalDockerFilePath = dockerFilePath;
             threads[i] = new Thread(() -> {
-                log.info("Building docker image for {}", language);
-                if (!buildDockerImage(new File(finalDockerFilePath + "/" + language), imageName)) {
+                log.info("Building docker image for {}", language.getDisplayName());
+                if (!buildDockerImage(new File(finalDockerFilePath + "/" +
+                                language.getDisplayName().toLowerCase()), imageName)) {
                     useDocker = false;
                 }
             });

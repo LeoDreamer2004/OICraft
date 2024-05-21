@@ -8,6 +8,7 @@ import org.dindier.oicraft.service.ProblemService;
 import org.dindier.oicraft.service.SubmissionService;
 import org.dindier.oicraft.util.code.CodeChecker;
 import org.dindier.oicraft.util.code.CodeCheckerFactory;
+import org.dindier.oicraft.util.code.Language;
 import org.dindier.oicraft.util.search.SearchHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
@@ -82,7 +83,7 @@ public class ProblemServiceImpl implements ProblemService {
     public List<Problem> getPassedProblems(User user) {
         if (user == null) return List.of();
         return user.getSubmissions().stream()
-                .filter(submission -> submission.getStatus() == Submission.Status.PASSED)
+                .filter(submission -> submission.getResult() == Submission.Result.PASSED)
                 .map(Submission::getProblem)
                 .distinct().sorted(Comparator.comparingInt(Problem::getId)).toList();
     }
@@ -97,7 +98,7 @@ public class ProblemServiceImpl implements ProblemService {
     @Override
     public int testCode(User user, Problem problem, String code, String language) {
         Submission temp = new Submission(user, problem, code,
-                Submission.Language.fromString(language));
+                Language.fromString(language));
         final Submission submission = submissionService.saveSubmission(temp);
         final int id = submission.getId();
         final Iterable<IOPair> ioPairs = getTests(problem);
@@ -124,7 +125,7 @@ public class ProblemServiceImpl implements ProblemService {
                                 .test(!iterator.hasNext());
                     } catch (IOException | InterruptedException e) {
                         log.warn("CodeChecker encounter exception: {}", e.getMessage());
-                        submission.setStatus(Submission.Status.FAILED);
+                        submission.setResult(Submission.Result.FAILED);
                         submissionService.saveSubmission(submission);
                     }
 
@@ -143,13 +144,13 @@ public class ProblemServiceImpl implements ProblemService {
 
                 // update the submission
                 submission.setScore(score);
-                submission.setStatus(passed ?
-                        Submission.Status.PASSED : Submission.Status.FAILED);
+                submission.setResult(passed ?
+                        Submission.Result.PASSED : Submission.Result.FAILED);
                 submissionService.saveSubmission(submission);
             });
         } catch (RejectedExecutionException e) {
             log.error("Executor rejected task for submission {}: {}", id, e.getMessage());
-            submission.setStatus(Submission.Status.WAITING);
+            submission.setResult(Submission.Result.WAITING);
             submissionService.saveSubmission(submission);
         }
 
@@ -213,13 +214,13 @@ public class ProblemServiceImpl implements ProblemService {
 
     @Override
     public List<Problem> searchProblems(String keyword) {
-        SearchHelper<Problem> searchHelper = new SearchHelper<>();
+        SearchHelper<Problem> helper = new SearchHelper<>();
         List<Problem> problems = new ArrayList<>();
         problemDao.getProblemList().forEach(problems::add);
-        searchHelper.setItems(problems);
-        searchHelper.setIdentifier("id", problem -> String.valueOf(problem.getId()));
-        searchHelper.addField("title", Problem::getTitle, 4.0f);
-        return searchHelper.search(keyword);
+        helper.setItems(problems);
+        helper.setIdentifier("id", problem -> String.valueOf(problem.getId()));
+        helper.addField("title", Problem::getTitle, 4.0f);
+        return helper.search(keyword);
     }
 
     @Override
@@ -230,7 +231,7 @@ public class ProblemServiceImpl implements ProblemService {
         for (Submission submission : submissions) {
             if (submission.getProblemId() == problem.getId()) {
                 score = Math.max(score, submission.getScore());
-                if (submission.getStatus().equals(Submission.Status.PASSED))
+                if (submission.getResult().equals(Submission.Result.PASSED))
                     break;  // a simple optimization
             }
         }

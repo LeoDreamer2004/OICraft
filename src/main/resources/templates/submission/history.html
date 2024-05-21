@@ -61,13 +61,13 @@
                 <td>
                     <span>#[[${submission.id}]]</span>
                 </td>
-                <td th:if="${submission.statusString eq 'passed'}">
+                <td th:if="${submission.result.displayName  eq 'passed'}">
                     <span class="badge badge-success my-large-badge">通过</span>
                 </td>
-                <td th:if="${submission.statusString eq 'failed'}">
+                <td th:if="${submission.result.displayName  eq 'failed'}">
                     <span class="badge badge-danger my-large-badge">未通过</span>
                 </td>
-                <td th:if="${submission.statusString eq 'waiting'}">
+                <td th:if="${submission.result.displayName  eq 'waiting'}">
                     <span class="badge badge-secondary my-large-badge">测试中</span>
                 </td>
                 <td>

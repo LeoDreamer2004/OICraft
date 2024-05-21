@@ -75,11 +75,11 @@
                 <div class="card-body">
                     <div class="info-line">
                         <p>用户名</p>
-                        <p th:text="${seeUser.name}"></p>
+                        <p th:text="${seeUser.name}" id="username"></p>
                     </div>
                     <div class="info-line">
                         <p>经验</p>
-                        <p th:text="${seeUser.experience}"></p>
+                        <p th:text="${seeUser.experience}" id="experience"></p>
                     </div>
                     <!--/*@thymesVar id="user" type="org.dindier.oicraft.model.User"*/-->
                     <div class="info-line" th:if="${seeUser.equals(user)}">
@@ -90,7 +90,7 @@
                     </div>
                     <div class="info-line">
                         <p>等级</p>
-                        <p th:text="${seeUser.getGradeString()}"></p>
+                        <p th:text="${seeUser.gradeString}" id="grade"></p>
                     </div>
                     <div class="info-line">
                         <p>用户组</p>
@@ -115,6 +115,8 @@
         })
             .then(response => {
                 if (response.ok) {
+                    const experience = document.getElementById('experience');
+                    experience.innerText = (parseInt(experience.innerText) + 1).toString();
                     checkInBtn.disabled = true;
                     checkInBtn.innerText = "√ 已签到";
                     checkInBtn.classList.remove("btn-primary");
