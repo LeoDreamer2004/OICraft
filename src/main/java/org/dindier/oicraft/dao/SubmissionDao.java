@@ -43,10 +43,30 @@ public interface SubmissionDao {
     List<Submission> getSubmissionsInRangeByProblemId(int problemId, int start, int count);
 
     /**
+     * Get all submissions in the database in a page by problem ID and user ID
+     *
+     * @param problemId the ID of the problem
+     * @param userId    the ID of the user
+     * @param start     the start index of the submissions
+     * @param count     the number of submissions to get
+     * @return A list of all {@code Submission} classes in the page.
+     */
+    List<Submission> getSubmissionsInRangeByProblemIdAndUserId(int problemId, int userId, int start, int count);
+
+    /**
      * Get the number of submissions by problem ID
      *
      * @param problemId the ID of the problem
      * @return The number of submissions
      */
     int countByProblemId(int problemId);
+
+    /**
+     * Get the number of submissions by problem ID and user ID
+     *
+     * @param problemId the ID of the problem
+     * @param userId    the ID of the user
+     * @return The number of submissions
+     */
+    int countByProblemIdAndUserId(int problemId, int userId);
 }
