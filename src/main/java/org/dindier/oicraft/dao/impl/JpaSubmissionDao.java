@@ -40,7 +40,17 @@ public class JpaSubmissionDao implements SubmissionDao {
     }
 
     @Override
+    public List<Submission> getSubmissionsInRangeByProblemIdAndUserId(int problemId, int userId, int start, int count) {
+        return submissionRepository.findSubmissionInRangeByProblemAndUserId(problemId, userId, start, count);
+    }
+
+    @Override
     public int countByProblemId(int problemId) {
         return submissionRepository.countByProblemId(problemId);
+    }
+
+    @Override
+    public int countByProblemIdAndUserId(int problemId, int userId) {
+        return submissionRepository.countByProblemAndUserId(problemId, userId);
     }
 }
