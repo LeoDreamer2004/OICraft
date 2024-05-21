@@ -20,11 +20,12 @@ SpringBoot 是一个基于 Spring 的轻量级框架，它可以用来快速开�
 
 OICraft 所用服务器是 SpringBoot 内置的 Tomcat 服务器（在本机运行），数据库 MySQL 来自于远程的阿里云服务器，采用了 JPA 框架来操作数据库。前端页面采用了 Thymeleaf 模板引擎。
 
-> <b><font color="red">请注意，务必将本项目放在英文目录文件夹下，否则可能不能正常评测代码！</font></b> 如果在测试当中遇到问题，可以用微信联系。
+> <b><font color="red">请注意，务必将本项目放在英文目录文件夹下，否则可能不能正常评测代码！目前仅支持 Windows 和 Linux 平台。</font></b> 如果在测试当中遇到问题，可以用微信联系。
 
 - 下载项目源代码后，使用 IntelliJ IDEA 作为项目打开。
 - 点击 `pom.xml` 文件，刷新导入 Maven 依赖。
 - 在 `resources/application.properties` 文件中配置数据库连接信息和邮箱信息。这里我们已经配好了远程阿里云数据库和公用邮箱。
+- 如果电脑上安装了 Docker，可以使用 Docker 容器运行代码检查以免受到提交的恶意代码的攻击，否则将在本机运行代码检查。如果使用 Docker，第一次运行时可能要用几分钟时间下载镜像和构建容器。如果要强制禁用 Docker，请在运行前将 `USE_DOCKER` 环境变量设置为 `false`。
 - 运行 `OICraftApplication.java` 启动项目。如果控制台出现了 OICraft 的 Logo，并随后出现了 SpringBoot 的运行日志 `Completed initialization in xxx ms`，说明项目启动成功。（注意：由于要链接数据库，需要保持较好的网络连接）
 - 在浏览器中输入 `http://localhost:8080` 即可访问网站。
 - 在网站的右上角登录账户，如果没有账户，可以点击注册按钮注册账户。（为了更好地展示所有功能，可以登录事先的管理员账户：<font color="red">用户名 （待定）；密码 （待定））</font>
@@ -37,7 +38,7 @@ OICraft 所用服务器是 SpringBoot 内置的 Tomcat 服务器（在本机运�
 
 ### 代码评测
 
-本项目是一个在线代码测评网站，用户可以在网站上提交代码，网站会自动编译运行代码，并返回运行结果。目前支持的语言有 Java、C、C++、Python（实际上，这里的代码是在本机运行的，所以本机需要有相应的编译器和开发环境）。
+本项目是一个在线代码测评网站，用户可以在网站上提交代码，网站会自动编译运行代码，并返回运行结果。目前支持的语言有 Java、C、C++、Python。
 
 ### 用户管理
 
@@ -267,7 +268,7 @@ public List<Problem> searchProblems(String keyword) {
 
 #### AI查错
 
-<font color="red"> 待完成！ </font>
+我们使用了~~白嫖的~~讯飞星火的 API 进行 AI 查错。如果某次提交没有通过，用户可以调用 AI 来分析代码中的错误。我们使用一个提示词模板来生成相应的问题，并调用 API 来获取结果。
 
 ### 控制层（Controller层）
 
