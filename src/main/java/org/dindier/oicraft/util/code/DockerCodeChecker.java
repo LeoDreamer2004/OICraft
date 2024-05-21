@@ -24,7 +24,8 @@ class DockerCodeChecker extends CodeChecker {
             log.error("Fail to create working dictionary");
             return this;
         }
-        codePath = workingDirectory.getAbsolutePath() + "/Main." + extensionsMap.get(language);
+        codePath =
+                workingDirectory.getAbsolutePath() + "/Main." + extensionsMap.get(Language.fromString(language));
         String inputFilePath = workingDirectory.getPath() + "/input.txt";
 
         File file = createAndWriteToFile(codePath, code);
@@ -36,11 +37,8 @@ class DockerCodeChecker extends CodeChecker {
         if (!containerCreated) {
             // create docker container
             try {
-                if (language.equals("C++")) {
-                    language = "Cpp";
-                }
                 String command = "docker run --name " + id + " -d -it "
-                        + CodeCheckerInitializer.dockerImages.get(language) + " /bin/bash";
+                        + CodeCheckerInitializer.dockerImages.get(this.language) + " /bin/bash";
                 Process process = Runtime.getRuntime().exec(command);
                 process.waitFor();
                 containerCreated = process.exitValue() == 0;
@@ -94,9 +92,9 @@ class DockerCodeChecker extends CodeChecker {
             return true;
         }
         DockerCodeCompiler compiler = switch (language) {
-            case "Java" -> DockerCodeCompiler.JAVA;
-            case "C" -> DockerCodeCompiler.C;
-            case "C++" -> DockerCodeCompiler.CPP;
+            case JAVA -> DockerCodeCompiler.JAVA;
+            case C -> DockerCodeCompiler.C;
+            case CPP -> DockerCodeCompiler.CPP;
             default -> null;
         };
         if (compiler != null) {

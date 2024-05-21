@@ -51,9 +51,9 @@ public class SubmissionServiceImpl implements SubmissionService {
         Submission historySubmission = getSubmissionById(submission.getId());
 
         boolean check = true;
-        if (!submission.getStatus().equals(Submission.Status.PASSED)) {
+        if (!submission.getResult().equals(Submission.Result.PASSED)) {
             check = false;
-        } else if (historySubmission != null && historySubmission.getStatus().equals(Submission.Status.PASSED)) {
+        } else if (historySubmission != null && historySubmission.getResult().equals(Submission.Result.PASSED)) {
             check = false;
         }
         if (historySubmission == null) {
@@ -64,7 +64,7 @@ public class SubmissionServiceImpl implements SubmissionService {
             // add experience if the submission is passed and the user has not passed the problem
             if (!user.getSubmissions()
                     .stream()
-                    .filter(s -> s.getStatus().equals(Submission.Status.PASSED))
+                    .filter(s -> s.getResult().equals(Submission.Result.PASSED))
                     .map(Submission::getProblemId)
                     .toList().
                     contains(submission.getProblemId())) {
@@ -85,7 +85,7 @@ public class SubmissionServiceImpl implements SubmissionService {
 
     @Override
     public Submission getAIAdvice(Submission submission) {
-        if (submission.getStatus() != Submission.Status.FAILED
+        if (submission.getResult() != Submission.Result.FAILED
                 || submission.getAdviceAI() != null
                 || waitingSubmissions.contains(submission.getId()))
             return submission;
