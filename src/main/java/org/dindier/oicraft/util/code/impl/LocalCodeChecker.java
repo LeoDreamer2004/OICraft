@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.dindier.oicraft.util.code.CodeChecker;
 import org.dindier.oicraft.util.code.CodeCheckerInitializer;
 import org.dindier.oicraft.util.code.lang.Language;
+import org.dindier.oicraft.util.code.lang.Platform;
 import org.dindier.oicraft.util.code.lang.Status;
 import org.springframework.lang.Nullable;
 
@@ -96,24 +97,23 @@ public class LocalCodeChecker extends CodeChecker {
     private ProcessBuilder getProcessBuilder() {
         LocalCodeCompiler compiler = null;
         String[] runCmd;
+        String path = workingDirectory.getPath();
+        String exeName = CodeCheckerInitializer.platform == Platform.LINUX ? "main" : "main.exe";
 
         switch (language) {
             case PYTHON -> runCmd = new String[]{"python", codePath};
             case JAVA -> {
                 compiler = LocalCodeCompiler.JAVA;
-                runCmd = new String[]{"java", "-cp",
-                        workingDirectory.getPath(),
+                runCmd = new String[]{"java", "-cp", path,
                         codePath.substring(codePath.lastIndexOf("/") + 1, codePath.length() - 5)};
             }
             case CPP -> {
                 compiler = LocalCodeCompiler.CPP;
-                runCmd = new String[]{workingDirectory.getPath() +
-                        (CodeCheckerInitializer.platform.equals("Linux") ? "/main" : "/main.exe")};
+                runCmd = new String[]{path + "/" + exeName};
             }
             case C -> {
                 compiler = LocalCodeCompiler.C;
-                runCmd = new String[]{workingDirectory.getPath() +
-                        (CodeCheckerInitializer.platform.equals("Linux") ? "/main" : "/main.exe")};
+                runCmd = new String[]{path + "/" + exeName};
             }
             default -> {
                 return null;
@@ -187,7 +187,7 @@ public class LocalCodeChecker extends CodeChecker {
 
     private void clearFiles(boolean clearFile) {
         if (clearFile && workingDirectory.exists()) {
-            if (CodeCheckerInitializer.platform.equals("Windows")) {
+            if (CodeCheckerInitializer.platform == Platform.WINDOWS) {
                 // delete the folder after 5 seconds because on Windows,
                 // if a process encounters runtime error, it may not exit immediately
                 // It's not a good idea, but I don't have a better solution

@@ -105,7 +105,7 @@ body {
     border-radius: 5px 5px 0 0;
     font-size: 17px;
     text-align: center;
-    text-decoration: none;
+    text-decoration: none !important;
     color: #000;
     background-color: #eee;
     transition: background-color 0.3s ease,

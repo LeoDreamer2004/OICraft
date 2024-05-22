@@ -2,6 +2,7 @@ package org.dindier.oicraft.util.code;
 
 import lombok.extern.slf4j.Slf4j;
 import org.dindier.oicraft.util.code.lang.Language;
+import org.dindier.oicraft.util.code.lang.Platform;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -19,27 +20,13 @@ import java.util.Objects;
 @Slf4j
 public class CodeCheckerInitializer {
     public static boolean useDocker = false;
-    public static final String platform;
+    public static final Platform platform = Platform.detect();
     public static final Map<Language, String> dockerImages = Map.of(
             Language.JAVA, "code-checker-java",
             Language.C, "code-checker-c",
             Language.CPP, "code-checker-cpp",
             Language.PYTHON, "code-checker-python"
     );
-
-    static {
-        // get the platform
-        String os = System.getProperty("os.name").toLowerCase();
-        if (os.contains("win")) {
-            platform = "Windows";
-        } else if (os.contains("mac")) {
-            platform = "Mac";
-        } else if (os.contains("nix") || os.contains("nux")) {
-            platform = "Linux";
-        } else {
-            platform = "Other";
-        }
-    }
 
     /**
      * Initialize the code checker environment
@@ -61,7 +48,7 @@ public class CodeCheckerInitializer {
         String dockerFilePath =
                 Objects.requireNonNull(CodeCheckerInitializer.class.getClassLoader()
                         .getResource("scripts/docker")).getPath();
-        if (platform.equals("Windows")) {
+        if (platform == Platform.WINDOWS) {
             dockerFilePath = dockerFilePath.substring(1);
         }
         int dockerImagesSize = dockerImages.size();
@@ -74,7 +61,7 @@ public class CodeCheckerInitializer {
             threads[i] = new Thread(() -> {
                 log.info("Building docker image for {}", language.getDisplayName());
                 if (!buildDockerImage(new File(finalDockerFilePath + "/" +
-                                language.getDisplayName().toLowerCase()), imageName)) {
+                        language.getDisplayName().toLowerCase()), imageName)) {
                     useDocker = false;
                 }
             });

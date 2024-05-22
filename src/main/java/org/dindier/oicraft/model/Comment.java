@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.sql.Timestamp;
 
+/**
+ * The comment under a post
+ */
 @Entity
 @Data
 public class Comment {

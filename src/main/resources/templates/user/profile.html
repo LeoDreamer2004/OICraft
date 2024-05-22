@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>个人主页</title>
-    <link th:replace="~{index :: indexStyle}"/>
+    <th:block th:fragment="profileStyle">
+        <link rel="shortcut icon" href="/img/favicon/2.ico">
+        <link rel="stylesheet" href="/css/profile.css">
+    </th:block>
     <th:block th:replace="~{base :: baseStyle}"></th:block>
-    <link rel="stylesheet" href="/css/profile.css" th:fragment="profileStyle">
 </head>
 <body>
 <div class="profile-header">
@@ -96,6 +98,10 @@
                         <p>用户组</p>
                         <p th:if="${seeUser.isAdmin()}">管理员</p>
                         <p th:unless="${seeUser.isAdmin()}">用户</p>
+                    </div>
+                    <div th:if="${user != null && user.equals(seeUser)}">
+                        <a href="/profile/edit" class="no-dec">编辑档案</a>
+                        <a href="/logoff" class="link-danger no-dec ml-3">注销</a>
                     </div>
                 </div>
             </div>

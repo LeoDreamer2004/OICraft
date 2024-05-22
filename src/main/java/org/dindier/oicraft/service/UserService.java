@@ -3,8 +3,9 @@ package org.dindier.oicraft.service;
 import jakarta.servlet.http.HttpServletRequest;
 import org.dindier.oicraft.model.User;
 import org.springframework.lang.Nullable;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
-public interface UserService {
+public interface UserService extends UserDetailsService {
 
     /**
      * Get user by id

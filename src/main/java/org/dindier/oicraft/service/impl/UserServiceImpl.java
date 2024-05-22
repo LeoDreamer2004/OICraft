@@ -7,6 +7,7 @@ import org.dindier.oicraft.model.User;
 import org.dindier.oicraft.service.UserService;
 import org.dindier.oicraft.util.email.EmailVerifier;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.dindier.oicraft.dao.UserDao;
@@ -64,6 +65,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserByUsername(String name) {
         return userDao.getUserByUsername(name);
+    }
+
+    @Override
+    public User loadUserByUsername(String name) throws UsernameNotFoundException {
+        User user = getUserByUsername(name);
+        if (user == null)
+            throw new UsernameNotFoundException("User " + name + " not found");
+        return user;
     }
 
     @Override
