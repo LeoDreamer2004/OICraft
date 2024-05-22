@@ -32,7 +32,7 @@ public class SubmissionViewController {
         if (problem == null) return new ModelAndView("error/404");
 
         String userId = request.getParameter("user");
-        if (userId == null) userId = "all"; // Default value "all
+        if (userId == null) userId = "all"; // Default value "all"
         User user = null;
         if (!userId.equals("all")) {
             user = userService.getUserById(Integer.parseInt(userId));

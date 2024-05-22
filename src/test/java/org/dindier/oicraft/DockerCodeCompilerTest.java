@@ -1,6 +1,6 @@
 package org.dindier.oicraft;
 
-import org.dindier.oicraft.util.code.DockerCodeCompiler;
+import org.dindier.oicraft.util.code.impl.DockerCodeCompiler;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

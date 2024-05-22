@@ -1,7 +1,6 @@
 package org.dindier.oicraft.dao;
 
 import org.dindier.oicraft.model.Problem;
-import org.dindier.oicraft.model.Submission;
 import org.springframework.lang.Nullable;
 
 import java.util.List;
@@ -39,26 +38,6 @@ public interface ProblemDao {
      * @implNote This method will also delete all submissions and I/O pairs of the problem
      */
     void deleteProblem(Problem problem);
-
-    /**
-     * Get the list of submissions for a problem
-     *
-     * @param problemId the id of the problem
-     * @return the list of submissions for the problem,
-     * if the problem not exists, return an empty list
-     */
-    @SuppressWarnings("unused")
-    List<Submission> getAllSubmissions(int problemId);
-
-    /**
-     * Get the list of passed submissions for a problem
-     *
-     * @param problemId the id of the problem
-     * @return the list of passed submissions for the problem,
-     * if the problem not exists, return an empty list
-     */
-    @SuppressWarnings("unused")
-    List<Submission> getPassedSubmissions(int problemId);
 
     /**
      * Get the count of problems in the database

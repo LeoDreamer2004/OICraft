@@ -1,6 +1,10 @@
-package org.dindier.oicraft.util.code;
+package org.dindier.oicraft.util.code.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.dindier.oicraft.util.code.CodeChecker;
+import org.dindier.oicraft.util.code.CodeCheckerInitializer;
+import org.dindier.oicraft.util.code.lang.Language;
+import org.dindier.oicraft.util.code.lang.Status;
 import org.springframework.lang.Nullable;
 
 import java.io.File;
@@ -8,7 +12,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 @Slf4j
-class DockerCodeChecker extends CodeChecker {
+public class DockerCodeChecker extends CodeChecker {
     private static final int TLE_EXIT_CODE = 124;
     private boolean containerCreated = false;
 
@@ -100,7 +104,7 @@ class DockerCodeChecker extends CodeChecker {
             String info = compiler.compile(null, String.valueOf(id), false);
             if (info != null) {
                 this.info = info;
-                this.status = "CE";
+                this.status = Status.CE;
                 return false;
             }
         }
@@ -110,11 +114,11 @@ class DockerCodeChecker extends CodeChecker {
 
     public void test(boolean clearFile) throws IOException, InterruptedException {
         // if the code is already compiled, skip the compile step
-        if (this.status.equals("CE")) {
+        if (this.status == Status.CE) {
             clear(clearFile);
             return;
         }
-        this.status = "P";
+        this.status = Status.P;
         this.info = "Pending";
         if (!compile()) {
             clear(clearFile);
@@ -132,12 +136,12 @@ class DockerCodeChecker extends CodeChecker {
         String stderr = new String(runProcess.getErrorStream().readAllBytes());
         setUsedTimeAndMemory(stdout, stderr);
         if (this.usedMemory > this.memoryLimit) {
-            this.status = "MLE";
+            this.status = Status.MLE;
             this.info = "Memory Limit Exceeded";
             clear(clearFile);
             return;
         }
-        if (status.equals("TLE") || status.equals("MLE") || status.equals("RE")) {
+        if (status == Status.TLE || status == Status.MLE || status == Status.RE) {
             clear(clearFile);
             return;
         }
@@ -145,7 +149,7 @@ class DockerCodeChecker extends CodeChecker {
         // check the output
         if (!copyFromDockerToHost(String.valueOf(id),
                 new File(workingDirectory.getAbsoluteFile() + "/output.txt"))) {
-            this.status = "RE";
+            this.status = Status.RE;
             this.info = "Runtime Error";
             clear(clearFile);
             return;
@@ -165,10 +169,10 @@ class DockerCodeChecker extends CodeChecker {
     private void checkAnswer() {
         // deal with different line ending
         if (expectedOutput == null || output.equals(expectedOutput)) {
-            this.status = "AC";
+            this.status = Status.AC;
             this.info = "Accepted";
         } else {
-            this.status = "WA";
+            this.status = Status.WA;
             this.info = checkDifference(expectedOutput, output);
         }
     }
@@ -186,10 +190,10 @@ class DockerCodeChecker extends CodeChecker {
             } else if (line.startsWith(exitCodeHeader)) {
                 int exitCode = Integer.parseInt("0" + line.substring(exitCodeHeader.length()));
                 if (exitCode == TLE_EXIT_CODE) {
-                    this.status = "TLE";
+                    this.status = Status.TLE;
                     this.info = "Time Limit Exceeded";
                 } else if (exitCode != 0) {
-                    this.status = "RE";
+                    this.status = Status.RE;
                     this.info = "Runtime Error";
                 }
             }

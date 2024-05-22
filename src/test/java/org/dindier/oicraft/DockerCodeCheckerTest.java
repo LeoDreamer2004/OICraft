@@ -2,6 +2,7 @@ package org.dindier.oicraft;
 
 import org.dindier.oicraft.util.code.CodeChecker;
 import org.dindier.oicraft.util.code.CodeCheckerFactory;
+import org.dindier.oicraft.util.code.lang.Status;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -34,7 +35,7 @@ public class DockerCodeCheckerTest {
         codeChecker.setIO("while True: pass", "Python", "1 2", "3")
                 .setLimit(1000, 128 * 1024).test();
         System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedTime() + "ms/" + codeChecker.getUsedMemory() + "KB");
-        assert codeChecker.getStatus().equals("TLE");
+        assert codeChecker.getStatus() == Status.TLE;
     }
 
     @Test
@@ -45,7 +46,7 @@ public class DockerCodeCheckerTest {
                 .setLimit(1000, 128 * 1024)
                 .test();
         System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedTime() + "ms/" + codeChecker.getUsedMemory() + "KB");
-        assert codeChecker.getStatus().equals("AC");
+        assert codeChecker.getStatus() == Status.AC;
     }
 
     @Test
@@ -56,7 +57,7 @@ public class DockerCodeCheckerTest {
                 .setLimit(1000, 128 * 1024)
                 .test();
         System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedTime() + "ms/" + codeChecker.getUsedMemory() + "KB");
-        assert codeChecker.getStatus().equals("WA");
+        assert codeChecker.getStatus() == Status.WA;
     }
 
     @Test
@@ -67,7 +68,7 @@ public class DockerCodeCheckerTest {
                 .setLimit(5000, 128 * 1024)
                 .test();
         System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedTime() + "ms/" + codeChecker.getUsedMemory() + "KB");
-        assert codeChecker.getStatus().equals("RE");
+        assert codeChecker.getStatus() == Status.RE;
     }
 
     @Test
@@ -78,7 +79,7 @@ public class DockerCodeCheckerTest {
                 .setLimit(1000, 128 * 1024)
                 .test();
         System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedTime() + "ms/" + codeChecker.getUsedMemory() + "KB");
-        assert codeChecker.getStatus().equals("CE");
+        assert codeChecker.getStatus() == Status.CE;
     }
 
     @Test
@@ -89,7 +90,7 @@ public class DockerCodeCheckerTest {
                 .setLimit(1000, 128 * 1024)
                 .test();
         System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedTime() + "ms/" + codeChecker.getUsedMemory() + "KB");
-        assert codeChecker.getStatus().equals("AC");
+        assert codeChecker.getStatus() == Status.AC;
     }
 
     @Test
@@ -100,7 +101,7 @@ public class DockerCodeCheckerTest {
                 .setLimit(1000, 128 * 1024)
                 .test();
         System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedMemory() + "ms/" + codeChecker.getUsedMemory() + "KB");
-        assert codeChecker.getStatus().equals("WA");
+        assert codeChecker.getStatus() == Status.WA;
     }
 
     @Test
@@ -111,6 +112,6 @@ public class DockerCodeCheckerTest {
                 .setLimit(1000, 128 * 1024)
                 .test();
         System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedTime() + "ms/" + codeChecker.getUsedMemory() + "KB");
-        assert codeChecker.getStatus().equals("AC");
+        assert codeChecker.getStatus() == Status.AC;
     }
 }

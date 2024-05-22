@@ -3,7 +3,7 @@ package org.dindier.oicraft.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
-import org.dindier.oicraft.util.code.Language;
+import org.dindier.oicraft.util.code.lang.Language;
 
 import java.util.List;
 

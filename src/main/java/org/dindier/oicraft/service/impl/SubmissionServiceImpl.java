@@ -10,6 +10,7 @@ import org.dindier.oicraft.model.User;
 import org.dindier.oicraft.service.SubmissionService;
 import org.dindier.oicraft.service.UserService;
 import org.dindier.oicraft.util.ai.AIAdapter;
+import org.dindier.oicraft.util.code.lang.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -99,12 +100,12 @@ public class SubmissionServiceImpl implements SubmissionService {
         log.info("Submission {} requested for AI advice", submission.getId());
 
         List<Checkpoint> checkpoints = submission.getCheckpoints();
-        Checkpoint.Status status;
+        Status status;
 
         // get the wrong info
         status = checkpoints.stream()
-                .filter(checkpoint -> checkpoint.getStatus() != Checkpoint.Status.AC &&
-                        checkpoint.getStatus() != Checkpoint.Status.P)
+                .filter(checkpoint -> checkpoint.getStatus() != Status.AC &&
+                        checkpoint.getStatus() != Status.P)
                 .findFirst()
                 .map(Checkpoint::getStatus)
                 .orElse(null);
