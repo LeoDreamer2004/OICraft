@@ -12,6 +12,9 @@ import java.sql.Date;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Basic user model
+ */
 @Entity
 @Table(name = "User",
         uniqueConstraints = @UniqueConstraint(columnNames = "username")

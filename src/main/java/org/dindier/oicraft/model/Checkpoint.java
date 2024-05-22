@@ -4,6 +4,10 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.dindier.oicraft.util.code.lang.Status;
 
+/**
+ * A checkpoint in the submission
+ * Get the status by CodeChecker
+ */
 @Entity
 @Data
 public class Checkpoint {

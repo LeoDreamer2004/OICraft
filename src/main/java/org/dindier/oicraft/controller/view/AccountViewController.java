@@ -63,8 +63,6 @@ public class AccountViewController {
         return new ModelAndView("user/emailSuccess");
     }
 
-
-
     @GetMapping("/password/forget")
     public ModelAndView forgetPassword() {
         return new ModelAndView("user/forgetPassword");
@@ -93,6 +91,19 @@ public class AccountViewController {
     @GetMapping("/logout")
     public ModelAndView logout() {
         return new ModelAndView("user/logout");
+    }
+
+    @GetMapping("/logoff")
+    public ModelAndView logoff() {
+        return new ModelAndView("user/logoff");
+    }
+
+    @PostMapping("/logoff")
+    public RedirectView logoffConfirm() {
+        User user = userService.getUserByRequest(request);
+        if (user == null) return new RedirectView("/error/403");
+        userService.deleteUser(user);
+        return new RedirectView("/");
     }
 
     @Autowired

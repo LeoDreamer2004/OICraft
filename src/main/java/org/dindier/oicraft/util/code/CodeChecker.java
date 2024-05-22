@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.jni.LibraryNotFoundError;
 import org.dindier.oicraft.util.code.impl.LocalCodeChecker;
 import org.dindier.oicraft.util.code.lang.Language;
+import org.dindier.oicraft.util.code.lang.Platform;
 import org.dindier.oicraft.util.code.lang.Status;
 import org.springframework.lang.Nullable;
 
@@ -58,9 +59,9 @@ public abstract class CodeChecker {
     static {
         // load the native library
         URL url;
-        if (CodeCheckerInitializer.platform.equals("Linux")) {
+        if (CodeCheckerInitializer.platform == Platform.LINUX) {
             url = LocalCodeChecker.class.getClassLoader().getResource("lib/CodeChecker.so");
-        } else if (CodeCheckerInitializer.platform.equals("Windows")) {
+        } else if (CodeCheckerInitializer.platform == Platform.WINDOWS) {
             url = LocalCodeChecker.class.getClassLoader().getResource("lib/CodeChecker.dll");
         } else {
             throw new LibraryNotFoundError("CodeChecker", "Unsupported platform");

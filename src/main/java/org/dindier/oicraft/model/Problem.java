@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * The problem model
+ */
 @Entity
 @Data
 public class Problem implements Comparable<Problem> {

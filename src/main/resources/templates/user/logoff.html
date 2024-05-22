@@ -3,23 +3,26 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>重置密码</title>
+    <title>注销账户</title>
     <th:block th:replace="~{index :: indexStyle}"></th:block>
     <th:block th:replace="~{base :: baseStyle}"></th:block>
 </head>
 
 <body class="colored-background">
+
 <div th:insert="~{index :: nav}"></div>
 <main role="main" class="card-container">
-    <div class="login-card" id="registerForm">
-        <form class="login-form" th:action="@{/}" method="get">
+    <div class="login-card" id="logoutForm">
+        <form class="login-form" th:action="@{/logoff}" method="post">
             <div class="login-title">
-                <h1>您已成功重置密码</h1>
+                <h3>要注销账号吗？</h3>
+                <p>账号会消失很久...真的很久！</p>
             </div>
-            <button type="submit">返回主页</button>
+            <button type="submit">我心已决</button>
         </form>
     </div>
 </main>
 <footer th:replace="~{index :: footer}"></footer>
 </body>
+
 </html>

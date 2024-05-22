@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/css/submission.css">
+    <th:block th:replace="~{problem/problem :: problemStyle}"></th:block>
     <th:block th:replace="~{base :: baseStyle}"></th:block>
     <th:block th:replace="~{base :: markdown}"></th:block>
     <title>测试结果</title>
@@ -94,7 +95,7 @@
             <p>本AI来源于科大讯飞（的白嫖的 2M Tokens）提供的官方 Java 接口。</p>
             <button type="button" id="aiHelp" class="btn btn-danger">我需要AI帮助</button>
         </div>
-        <div class="markdown" id="aiAdvice" type="hidden" style="display: none;"></div>
+        <div class="markdown" id="aiAdvice" style="display: none;"></div>
     </div>
 </main>
 <script>
