@@ -8,7 +8,6 @@ import org.dindier.oicraft.model.Post;
 import org.dindier.oicraft.model.User;
 import org.dindier.oicraft.service.PostService;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +18,6 @@ public class PostServiceImpl implements PostService {
     private CommentDao commentDao;
     private UserServiceImpl userService;
 
-    @Nullable
     @Override
     public Post getPostById(int id) {
         return postDao.getPostById(id);

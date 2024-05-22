@@ -1,4 +1,4 @@
-package org.dindier.oicraft.util.code;
+package org.dindier.oicraft.util.code.impl;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

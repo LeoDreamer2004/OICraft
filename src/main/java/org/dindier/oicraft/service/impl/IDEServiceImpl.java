@@ -29,10 +29,10 @@ public class IDEServiceImpl implements IDEService {
         if (output == null)
             output = "";
         String usage = switch (codeChecker.getStatus()) {
-            case "CE" -> "编译错误";
-            case "RE" -> "运行时错误";
-            case "TLE" -> "超出时间限制";
-            case "MLE" -> "超出内存限制";
+            case CE -> "编译错误";
+            case RE -> "运行时错误";
+            case TLE -> "超出时间限制";
+            case MLE -> "超出内存限制";
             default ->
                     codeChecker.getUsedTime() + "ms, " + codeChecker.getUsedMemory() + "KB";
         };

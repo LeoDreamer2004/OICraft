@@ -1,13 +1,17 @@
-package org.dindier.oicraft.util.code;
+package org.dindier.oicraft.util.code.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.dindier.oicraft.util.code.CodeChecker;
+import org.dindier.oicraft.util.code.CodeCheckerInitializer;
+import org.dindier.oicraft.util.code.lang.Language;
+import org.dindier.oicraft.util.code.lang.Status;
 import org.springframework.lang.Nullable;
 
 import java.io.*;
 import java.util.*;
 
 @Slf4j
-class LocalCodeChecker extends CodeChecker {
+public class LocalCodeChecker extends CodeChecker {
     private long startTime;
     private Process process;
 
@@ -36,11 +40,11 @@ class LocalCodeChecker extends CodeChecker {
 
     @Override
     public void test(boolean clearFile) throws IOException, InterruptedException {
-        if (this.status.equals("CE")) {
+        if (this.status == Status.CE) {
             clearFiles(clearFile);
             return;
         }
-        this.status = "P";
+        this.status = Status.P;
         this.info = "";
         ProcessBuilder pb = getProcessBuilder();
         TimerTask timerTask = new TimerTask() {
@@ -81,7 +85,7 @@ class LocalCodeChecker extends CodeChecker {
         usedTime = (int) (System.currentTimeMillis() - startTime);
         timer.cancel();
 
-        if (!status.equals("TLE") && !status.equals("MLE")) {
+        if (!(status == Status.TLE) && !(status == Status.MLE)) {
             checkAnswer();
         }
 
@@ -121,7 +125,7 @@ class LocalCodeChecker extends CodeChecker {
             String compileError = compiler.compile(new File(codePath), workingDirectory);
             compiled = true;
             if (compileError != null) {
-                status = "CE";
+                status = Status.CE;
                 info = compileError;
                 return null;
             }
@@ -133,7 +137,7 @@ class LocalCodeChecker extends CodeChecker {
     private void timerTask() {
         usedTime = (int) (System.currentTimeMillis() - startTime);
         if (usedTime > timeLimit) {
-            status = "TLE";
+            status = Status.TLE;
             info = "Time Limit Exceeded";
             terminateProcess();
         }
@@ -146,7 +150,7 @@ class LocalCodeChecker extends CodeChecker {
         }
 
         if (temp > memoryLimit) {
-            status = "MLE";
+            status = Status.MLE;
             info = "Memory Limit Exceeded";
             terminateProcess();
         }
@@ -167,16 +171,16 @@ class LocalCodeChecker extends CodeChecker {
         output = new String(inputStream.readAllBytes()).stripTrailing()
                 .replace("\r", "").replace("\n", System.lineSeparator());
         if (output.equals(expectedOutput)) {
-            status = "AC";
+            status = Status.AC;
             info = "Answer Accepted";
         } else if (process.exitValue() != 0) {
             if (info.isEmpty()) {
                 // Not killed by timer, which means it's a runtime error
-                status = "RE";
+                status = Status.RE;
                 info = "Runtime Error";
             }
         } else if (expectedOutput != null) {
-            status = "WA";
+            status = Status.WA;
             info = checkDifference(expectedOutput, output);
         }
     }

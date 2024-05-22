@@ -1,7 +1,10 @@
-package org.dindier.oicraft.util.code;
+package org.dindier.oicraft.util.code.lang;
 
 import lombok.Getter;
 
+/**
+ * The language of the code
+ */
 @Getter
 public enum Language {
     JAVA("Java"), PYTHON("Python"), C("C"), CPP("C++");

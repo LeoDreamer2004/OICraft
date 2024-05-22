@@ -3,6 +3,9 @@ package org.dindier.oicraft.util.code;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.jni.LibraryNotFoundError;
+import org.dindier.oicraft.util.code.impl.LocalCodeChecker;
+import org.dindier.oicraft.util.code.lang.Language;
+import org.dindier.oicraft.util.code.lang.Status;
 import org.springframework.lang.Nullable;
 
 import java.io.File;
@@ -42,7 +45,7 @@ public abstract class CodeChecker {
     @Getter
     protected int usedMemory = 0;
     @Getter
-    protected String status = "P";
+    protected Status status = Status.P;
     @Getter
     protected String info = "";
 

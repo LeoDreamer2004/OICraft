@@ -11,7 +11,6 @@ import org.dindier.oicraft.model.Submission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.Comparator;
 import java.util.List;
 
 @Repository("problemDao")
@@ -60,35 +59,6 @@ public class JpaProblemDao implements ProblemDao {
         submissionRepository.deleteAll(submissions);
         ioPairRepository.deleteAll(problem.getIoPairs());
         problemRepository.delete(problem);
-    }
-
-    @Override
-    public List<Submission> getAllSubmissions(int problemId) {
-        return problemRepository
-                .findById(problemId)
-                .map(Problem::getSubmissions)
-                .map(submissions -> {
-                    submissions.sort(Comparator.comparingInt(Submission::getId));
-                    return submissions;
-                })
-                .orElse(List.of());
-    }
-
-    @Override
-    public List<Submission> getPassedSubmissions(int problemId) {
-        return problemRepository
-                .findById(problemId)
-                .map(Problem::getSubmissions)
-                .map(submissions -> submissions
-                        .stream()
-                        .filter(submission -> submission
-                                .getResult()
-                                .equals(Submission.Result.PASSED)
-                        )
-                        .sorted(Comparator.comparingInt(Submission::getId))
-                        .toList()
-                )
-                .orElse(List.of());
     }
 
     @Override

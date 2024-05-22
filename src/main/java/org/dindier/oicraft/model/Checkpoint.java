@@ -2,6 +2,7 @@ package org.dindier.oicraft.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.dindier.oicraft.util.code.lang.Status;
 
 @Entity
 @Data
@@ -15,19 +16,6 @@ public class Checkpoint {
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private IOPair ioPair;
-
-    public enum Status {
-        P, AC, WA, TLE, MLE, RE, CE;
-
-        public static Status fromString(String status) {
-            for (Status s : Status.values()) {
-                if (s.toString().equals(status)) {
-                    return s;
-                }
-            }
-            return null;
-        }
-    }
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -53,10 +41,6 @@ public class Checkpoint {
 
     public String getStatusString() {
         return status.toString();
-    }
-
-    public boolean isPassed() {
-        return status == Status.AC;
     }
 
     /**

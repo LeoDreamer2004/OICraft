@@ -8,7 +8,8 @@ import org.dindier.oicraft.service.ProblemService;
 import org.dindier.oicraft.service.SubmissionService;
 import org.dindier.oicraft.util.code.CodeChecker;
 import org.dindier.oicraft.util.code.CodeCheckerFactory;
-import org.dindier.oicraft.util.code.Language;
+import org.dindier.oicraft.util.code.lang.Language;
+import org.dindier.oicraft.util.code.lang.Status;
 import org.dindier.oicraft.util.search.SearchHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
@@ -130,12 +131,12 @@ public class ProblemServiceImpl implements ProblemService {
                     }
 
                     // read the result
-                    checkpoint.setStatus(Checkpoint.Status.fromString(codeChecker.getStatus()));
+                    checkpoint.setStatus(codeChecker.getStatus());
                     checkpoint.setUsedTime(codeChecker.getUsedTime());
                     checkpoint.setUsedMemory(codeChecker.getUsedMemory());
                     checkpoint.setInfo(codeChecker.getInfo());
                     checkpointDao.updateCheckpoint(checkpoint);
-                    if (codeChecker.getStatus().equals("AC")) {
+                    if (codeChecker.getStatus() == Status.AC) {
                         score += ioPair.getScore();
                     } else {
                         passed = false;
