@@ -98,6 +98,14 @@
     </div>
 </main>
 <script>
+    const msgBoxes = document.querySelectorAll('.msg-box');
+    msgBoxes.forEach(box => {
+        if (box.innerText.length > 50) {
+            box.innerText = box.innerText.substring(0, 50) + '...';
+        }
+    });
+</script>
+<script>
     const guide = document.getElementById('aiGuide');
     const advice = document.getElementById('aiAdvice');
     const getHelp = document.getElementById('aiHelp');

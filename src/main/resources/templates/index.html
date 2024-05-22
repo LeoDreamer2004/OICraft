@@ -104,10 +104,8 @@
 
         if (output) {
             text.innerHTML = txt[i].slice(0, ++index);
-            console.log(index);
         } else {
             text.innerHTML = txt[i].slice(0, index--);
-            console.log(index);
         }
 
         if (index === txt[i].length + 15) {
