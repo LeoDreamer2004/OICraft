@@ -116,7 +116,7 @@ public class ProblemServiceImpl implements ProblemService {
                 while (iterator.hasNext()) {
                     IOPair ioPair = iterator.next();
                     Checkpoint checkpoint = new Checkpoint(submission, ioPair);
-                    checkpoint = checkpointDao.createCheckpoint(checkpoint);
+                    checkpoint = checkpointDao.saveCheckpoint(checkpoint);
 
                     // test the code
                     try {
@@ -135,7 +135,7 @@ public class ProblemServiceImpl implements ProblemService {
                     checkpoint.setUsedTime(codeChecker.getUsedTime());
                     checkpoint.setUsedMemory(codeChecker.getUsedMemory());
                     checkpoint.setInfo(codeChecker.getInfo());
-                    checkpointDao.updateCheckpoint(checkpoint);
+                    checkpointDao.saveCheckpoint(checkpoint);
                     if (codeChecker.getStatus() == Status.AC) {
                         score += ioPair.getScore();
                     } else {

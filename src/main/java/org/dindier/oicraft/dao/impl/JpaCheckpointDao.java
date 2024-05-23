@@ -18,18 +18,7 @@ public class JpaCheckpointDao implements CheckpointDao {
     }
 
     @Override
-    public Checkpoint createCheckpoint(Checkpoint checkpoint) {
-        checkpoint = this.checkpointRepository.save(checkpoint);
-        log.info("Create checkpoint for submission {} (id: {})",
-                checkpoint.getSubmission().getId(), checkpoint.getId());
-        return checkpoint;
-    }
-
-    @Override
-    public Checkpoint updateCheckpoint(Checkpoint checkpoint) {
-        checkpoint = this.checkpointRepository.save(checkpoint);
-        log.info("Update checkpoint for submission {} (id: {})",
-                checkpoint.getSubmission().getId(), checkpoint.getId());
-        return checkpoint;
+    public Checkpoint saveCheckpoint(Checkpoint checkpoint) {
+        return this.checkpointRepository.save(checkpoint);
     }
 }
