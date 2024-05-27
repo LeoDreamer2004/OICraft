@@ -19,7 +19,7 @@ public class AccountViewController {
 
     @GetMapping("/")
     public ModelAndView index() {
-        return new ModelAndView("/index");
+        return new ModelAndView("index");
     }
 
     @GetMapping("/login")
