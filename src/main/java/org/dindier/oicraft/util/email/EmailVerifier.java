@@ -21,6 +21,8 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Email verification utility class
+ *
+ * @author Rzb, LeoDreamer
  */
 @Slf4j
 @Component

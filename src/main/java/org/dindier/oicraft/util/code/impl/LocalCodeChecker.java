@@ -11,6 +11,11 @@ import org.springframework.lang.Nullable;
 import java.io.*;
 import java.util.*;
 
+/**
+ * A code checker that runs the code in the local environment
+ *
+ * @author LeoDreamer
+ */
 @Slf4j
 public class LocalCodeChecker extends CodeChecker {
     private long startTime;

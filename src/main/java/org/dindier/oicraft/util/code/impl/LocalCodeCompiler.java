@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.File;
 
 /**
- * Code compiler for compiled language such as C/C++, Java, Rust, etc.
- * This class is used to compile source code file.
+ * Code compiler for compiled language such as C/C++, Java, Rust, etc. in the local environment
+ * <p>It will compile the code and return the error message if any
+ *
+ * @author Crl
  */
 @Slf4j
 public enum LocalCodeCompiler {
@@ -21,7 +23,9 @@ public enum LocalCodeCompiler {
      * Constructor for CodeCompiler
      *
      * @param compiler      The compiler to use (e.g. "g++", "cl", etc.)
-     * @param compileOption The compile options for the compiler. For example, for g++, it can be {"-o", "main"}; for javac, it can be {"-d", "temp"}.
+     * @param compileOption The compile options for the compiler.
+     *                      For example, for g++, it can be {"-o", "main"};
+     *                      for javac, it can be {"-d", "temp"}.
      */
     LocalCodeCompiler(String compiler, String... compileOption) {
         this.compiler = compiler;

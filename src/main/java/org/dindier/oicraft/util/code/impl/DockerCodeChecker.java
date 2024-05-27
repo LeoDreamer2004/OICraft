@@ -11,6 +11,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+/**
+ * A code checker that runs the code in a docker container
+ *
+ * @author Crl
+ */
 @Slf4j
 public class DockerCodeChecker extends CodeChecker {
     private static final int TLE_EXIT_CODE = 124;

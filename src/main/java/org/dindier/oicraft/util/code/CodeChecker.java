@@ -19,6 +19,8 @@ import java.util.Map;
  * The abstract class for checking code
  * <p>The code checker will compile the code and run it with the input data
  * and check if the output is correct and runs within the time and memory limit
+ *
+ * @author Crl, LeoDreamer
  */
 @Slf4j
 public abstract class CodeChecker {
