@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -31,6 +33,7 @@ public class EmailVerifier {
             = new ConcurrentHashMap<>();
     private final long VALID_TIME = TimeUnit.MINUTES.toMillis(5);
     private JavaMailSender mailSender;
+    private final Timer timer = new Timer();
 
     @Autowired
     public void setMailSender(JavaMailSender mailSender) {
@@ -81,9 +84,18 @@ public class EmailVerifier {
         }
         mailSender.send(mailMessage);
         log.info("Verification code sent to {}", email);
+        //Auto-delete the verification code in 5 minutes
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (verificationCodes.containsKey(key)) {
+                    verificationCodes.remove(key);
+                    log.info("Verification code for {} expired and removed", username);
+                }
+            }
+        }, VALID_TIME);
     }
 
-    // FIXME: Auto-delete the verification code in 5 minutes
     public boolean verify(User user, String email, String code) {
         String username = user.getUsername();
         Pair<String, String> key = new Pair<>(username, email);
