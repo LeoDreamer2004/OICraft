@@ -11,6 +11,11 @@ import java.util.concurrent.CountDownLatch;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * A web utility class to crawl web pages and download files
+ *
+ * @author LeoDreamer
+ */
 @Slf4j
 public class WebUtil {
     public static boolean SHOW_PROCESS = true;

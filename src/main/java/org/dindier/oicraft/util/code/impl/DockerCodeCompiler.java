@@ -5,6 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 
+/**
+ * A code compiler that runs the code in a docker container
+ * <p>It will compile the code and return the error message if any
+ *
+ * @author Crl
+ */
 @Getter
 @Slf4j
 public enum DockerCodeCompiler {

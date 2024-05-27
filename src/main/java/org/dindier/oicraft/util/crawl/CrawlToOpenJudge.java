@@ -5,6 +5,11 @@ import org.dindier.oicraft.model.User;
 
 import java.util.*;
 
+/**
+ * A utility class to crawl problems from OpenJudge
+ *
+ * @author LeoDreamer
+ */
 public class CrawlToOpenJudge {
 
     public static void main(String[] args) {

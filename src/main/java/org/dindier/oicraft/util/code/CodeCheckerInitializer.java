@@ -16,6 +16,8 @@ import java.util.Objects;
  * <p>Read the system platform and set the platform variable.
  * Initialize the code checker environment, detect whether docker is installed and running.
  * If docker is not installed or not running, use local environment instead
+ *
+ * @author Crl
  */
 @Slf4j
 public class CodeCheckerInitializer {
@@ -124,9 +126,7 @@ public class CodeCheckerInitializer {
         return true;
     }
 
-    /**
-     * Detect whether docker is installed and running
-     */
+    /* Detect whether docker is installed and running */
     private static boolean detectDocker() {
         Process process;
         try {

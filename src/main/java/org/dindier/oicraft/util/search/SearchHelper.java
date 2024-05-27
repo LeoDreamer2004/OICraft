@@ -23,6 +23,12 @@ import java.io.UncheckedIOException;
 import java.util.*;
 import java.util.function.Function;
 
+/**
+ * A utility class to search items with Lucene
+ *
+ * @param <T> the type of the items
+ * @author Rzb, LeoDreamer
+ */
 public class SearchHelper<T> {
 
     @Setter
@@ -58,7 +64,8 @@ public class SearchHelper<T> {
     }
 
     /**
-     * Search the items with the keyword
+     * Search the items with the keyword.
+     * Set identifier and fields before calling this method
      *
      * @param keyword the keyword to search
      * @return a list of identifiers of the items that match the keyword
@@ -98,7 +105,7 @@ public class SearchHelper<T> {
                 throw new RuntimeException(e);
             }
 
-            // search the problems
+            // search the items
             try (IndexReader indexReader = DirectoryReader.open(directory)) {
                 IndexSearcher indexSearcher = new IndexSearcher(indexReader);
                 TopDocs topDocs = indexSearcher.search(query, maxSearchResult);

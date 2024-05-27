@@ -15,6 +15,11 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * An AI adapter to communicate with the AI service
+ *
+ * @author Crl
+ */
 @Component
 @Slf4j
 public class AIAdapter {
@@ -67,6 +72,7 @@ public class AIAdapter {
             this.question = question;
         }
 
+        /* get a request with basic parameters */
         private JSONObject generateRequest(String prompt, String question) {
             JSONObject request = new JSONObject();
 
