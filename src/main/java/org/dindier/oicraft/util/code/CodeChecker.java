@@ -58,16 +58,18 @@ public abstract class CodeChecker {
 
     static {
         // load the native library
-        URL url;
-        if (CodeCheckerInitializer.platform == Platform.LINUX) {
-            url = LocalCodeChecker.class.getClassLoader().getResource("lib/CodeChecker.so");
-        } else if (CodeCheckerInitializer.platform == Platform.WINDOWS) {
-            url = LocalCodeChecker.class.getClassLoader().getResource("lib/CodeChecker.dll");
-        } else {
-            throw new LibraryNotFoundError("CodeChecker", "Unsupported platform");
-        }
-        if (url != null) {
-            System.load(url.getPath());
+        if (!CodeCheckerInitializer.useDocker) {
+            URL url;
+            if (CodeCheckerInitializer.platform == Platform.LINUX) {
+                url = LocalCodeChecker.class.getClassLoader().getResource("lib/CodeChecker.so");
+            } else if (CodeCheckerInitializer.platform == Platform.WINDOWS) {
+                url = LocalCodeChecker.class.getClassLoader().getResource("lib/CodeChecker.dll");
+            } else {
+                throw new LibraryNotFoundError("CodeChecker", "Unsupported platform");
+            }
+            if (url != null) {
+                System.load(url.getPath());
+            }
         }
 
         // create the folder if not exists
@@ -80,7 +82,7 @@ public abstract class CodeChecker {
 
     /**
      * Set the IO files for the code to be checked
-     * <p>Notice: if <code>output</code> is set to <code>null</code>,
+     * <p>Notice: if {@code output} is set to {@code null},
      * We will not test if the answer is correct
      * </p>
      *
