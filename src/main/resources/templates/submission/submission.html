@@ -85,6 +85,10 @@
                 <div class="msg-box" th:text="${checkpoint.info}"></div>
                 <div class="checkpoint-num">#[[${stat.index + 1}]]</div>
             </div>
+            <div th:case="'UKE'" class="checkpoint-box uke-box">
+                <p class="text-status">UKE</p>
+                <div class="checkpoint-num">#[[${stat.index + 1}]]</div>
+            </div>
         </div>
     </div>
 

@@ -43,7 +43,7 @@ public class IOPairServiceImpl implements IOPairService {
     public IOPair saveIOPair(IOPair ioPair) {
         if (ioPair.getId() == 0)
             log.info("Created IOPair for problem: {}", ioPair.getProblem().getId());
-        log.info("Save IOPair: {}", ioPair.getId());
+        else log.info("Save IOPair: {}", ioPair.getId());
         return ioPairDao.saveIOPair(ioPair);
     }
 
