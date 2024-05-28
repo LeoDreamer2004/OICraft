@@ -168,6 +168,7 @@ public class DockerCodeChecker extends CodeChecker {
             this.output = output.toString().stripTrailing().replace("\r", "");
         }
         checkAnswer();
+        if (status == Status.P) status = Status.UKE;
         clear(clearFile);
     }
 

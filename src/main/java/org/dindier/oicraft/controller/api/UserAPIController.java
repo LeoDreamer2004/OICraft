@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserAPIController {
 
-    UserService userService;
-    HttpServletRequest request;
+    private UserService userService;
+    private HttpServletRequest request;
 
     @GetMapping("/api/user")
     public ResponseEntity<Integer> getUserId(@RequestParam String username) {

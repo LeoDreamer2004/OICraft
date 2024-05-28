@@ -114,8 +114,8 @@ public interface ProblemService {
     /**
      * Return whether the user can edit the problem
      *
-     * @param user The user to check
-     * @param problem  The problem to check
+     * @param user    The user to check
+     * @param problem The problem to check
      * @return Whether the user can edit the problem
      */
     boolean canEdit(User user, @NonNull Problem problem);
@@ -137,11 +137,19 @@ public interface ProblemService {
     int getProblemPages();
 
     /**
+     * Get the page number of a problem
+     *
+     * @param id The requested problem id
+     * @return The page number
+     */
+    int getProblemPageNumber(int id);
+
+    /**
      * Get the list of problems by keyword
      *
      * @param keyword the keyword to search
      * @return The list of problems that contains the keyword
-     *         It's better to order the list by the relevance of the keyword
+     * It's better to order the list by the relevance of the keyword
      */
     List<Problem> searchProblems(String keyword);
 }

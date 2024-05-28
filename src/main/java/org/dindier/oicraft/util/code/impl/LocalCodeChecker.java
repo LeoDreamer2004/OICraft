@@ -1,6 +1,7 @@
 package org.dindier.oicraft.util.code.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.jni.LibraryNotFoundError;
 import org.dindier.oicraft.util.code.CodeChecker;
 import org.dindier.oicraft.util.code.CodeCheckerInitializer;
 import org.dindier.oicraft.util.code.lang.Language;
@@ -9,6 +10,7 @@ import org.dindier.oicraft.util.code.lang.Status;
 import org.springframework.lang.Nullable;
 
 import java.io.*;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -20,6 +22,21 @@ import java.util.*;
 public class LocalCodeChecker extends CodeChecker {
     private long startTime;
     private Process process;
+
+    static {
+        // load the native library
+        URL url;
+        if (CodeCheckerInitializer.platform == Platform.LINUX) {
+            url = LocalCodeChecker.class.getClassLoader().getResource("lib/CodeChecker.so");
+        } else if (CodeCheckerInitializer.platform == Platform.WINDOWS) {
+            url = LocalCodeChecker.class.getClassLoader().getResource("lib/CodeChecker.dll");
+        } else {
+            throw new LibraryNotFoundError("CodeChecker", "Unsupported platform");
+        }
+        if (url != null) {
+            System.load(url.getPath());
+        }
+    }
 
     @Override
     public CodeChecker setIO(String code, String language,
@@ -95,6 +112,7 @@ public class LocalCodeChecker extends CodeChecker {
             checkAnswer();
         }
 
+        if (status == Status.P) status = Status.UKE;
         clearFiles(clearFile);
     }
 

@@ -197,6 +197,12 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
+    public int getProblemPageNumber(int id) {
+        // TODO: Implementation of the method
+        return 2;
+    }
+
+    @Override
     public String getProblemMarkdown(Problem problem) {
         StringBuilder sb = new StringBuilder();
         sb.append("# ").append(problem.getTitle()).append("\n\n")

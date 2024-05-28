@@ -2,17 +2,13 @@ package org.dindier.oicraft.util.code;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.jni.LibraryNotFoundError;
-import org.dindier.oicraft.util.code.impl.LocalCodeChecker;
 import org.dindier.oicraft.util.code.lang.Language;
-import org.dindier.oicraft.util.code.lang.Platform;
 import org.dindier.oicraft.util.code.lang.Status;
 import org.springframework.lang.Nullable;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Map;
 
 /**
@@ -54,31 +50,15 @@ public abstract class CodeChecker {
 
     protected static native long getProcessMemoryUsage(long pid);
 
-    public CodeChecker() {
+    protected CodeChecker() {
         this.id = System.currentTimeMillis();
     }
 
     static {
-        // load the native library
-        if (!CodeCheckerInitializer.useDocker) {
-            URL url;
-            if (CodeCheckerInitializer.platform == Platform.LINUX) {
-                url = LocalCodeChecker.class.getClassLoader().getResource("lib/CodeChecker.so");
-            } else if (CodeCheckerInitializer.platform == Platform.WINDOWS) {
-                url = LocalCodeChecker.class.getClassLoader().getResource("lib/CodeChecker.dll");
-            } else {
-                throw new LibraryNotFoundError("CodeChecker", "Unsupported platform");
-            }
-            if (url != null) {
-                System.load(url.getPath());
-            }
-        }
-
         // create the folder if not exists
         File folder = new File(FOLDER);
-        if (!folder.exists()) {
-            if (!folder.mkdirs())
-                throw new RuntimeException("Failed to create folder: " + FOLDER);
+        if (!folder.exists() && !folder.mkdirs()) {
+            throw new RuntimeException("Failed to create folder: " + FOLDER);
         }
     }
 
@@ -86,7 +66,6 @@ public abstract class CodeChecker {
      * Set the IO files for the code to be checked
      * <p>Notice: if {@code output} is set to {@code null},
      * We will not test if the answer is correct
-     * </p>
      *
      * @param code     The code to be checked
      * @param language The language of the code
@@ -100,7 +79,7 @@ public abstract class CodeChecker {
         this.language = Language.fromString(language);
         this.inputData = input;
         this.expectedOutput = output == null ? null : output.stripTrailing();
-        return null;
+        return this;
     }
 
     /**

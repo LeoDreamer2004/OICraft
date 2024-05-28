@@ -7,6 +7,7 @@ import org.dindier.oicraft.model.Comment;
 import org.dindier.oicraft.model.Post;
 import org.dindier.oicraft.model.User;
 import org.dindier.oicraft.service.PostService;
+import org.dindier.oicraft.service.UserService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class PostServiceImpl implements PostService {
     private PostDao postDao;
     private CommentDao commentDao;
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @Override
     public Post getPostById(int id) {
@@ -92,7 +93,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Autowired
-    public void setUserService(UserServiceImpl userService) {
+    public void setUserService(UserService userService) {
         this.userService = userService;
     }
 }

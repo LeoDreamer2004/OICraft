@@ -42,7 +42,8 @@
     opacity: 0.8;
 }
 
-.p-box {
+.p-box,
+.uke-box {
     background-color: #666666;
 }
 
@@ -62,10 +63,7 @@
     background-color: rgb(157, 61, 207);
 }
 
-.tle-box {
-    background-color: rgb(5, 34, 66);
-}
-
+.tle-box,
 .mle-box {
     background-color: rgb(5, 34, 66);
 }

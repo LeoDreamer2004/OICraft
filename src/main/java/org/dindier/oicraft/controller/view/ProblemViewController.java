@@ -33,8 +33,10 @@ public class ProblemViewController {
     public Object problems() {
         User user = userService.getUserByRequest(request);
         String pageStr = request.getParameter("page");
+        String from = request.getParameter("from");
         if (pageStr == null) {
-            return new RedirectView("/problems?page=1");
+            int page = from == null ? 1 : problemService.getProblemPageNumber(Integer.parseInt(from));
+            return new RedirectView("/problems?page=" + page);
         }
         int page = Integer.parseInt(pageStr);
         // Do NOT use problemService.hasPassed() here for optimization

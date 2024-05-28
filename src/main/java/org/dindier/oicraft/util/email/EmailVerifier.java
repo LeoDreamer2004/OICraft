@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 public class EmailVerifier {
     private final Map<Pair<String, String>, VerificationCode> verificationCodes
             = new ConcurrentHashMap<>();
-    private final long VALID_TIME = TimeUnit.MINUTES.toMillis(5);
+    private static final long VALID_TIME = TimeUnit.MINUTES.toMillis(5);
     private JavaMailSender mailSender;
     private final Timer timer = new Timer();
 
@@ -84,14 +84,11 @@ public class EmailVerifier {
         }
         mailSender.send(mailMessage);
         log.info("Verification code sent to {}", email);
-        //Auto-delete the verification code in 5 minutes
+        // Auto-delete the verification code in 5 minutes
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (verificationCodes.containsKey(key)) {
-                    verificationCodes.remove(key);
-                    log.info("Verification code for {} expired and removed", username);
-                }
+                verificationCodes.remove(key);
             }
         }, VALID_TIME);
     }

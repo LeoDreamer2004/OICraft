@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class SubmissionAPIController {
-    UserService userService;
-    SubmissionService submissionService;
-    HttpServletRequest request;
+    private UserService userService;
+    private SubmissionService submissionService;
+    private HttpServletRequest request;
 
     @GetMapping("/api/submission/ai")
     public ResponseEntity<String> getAIAdvice(@RequestParam("submission") int id) {
