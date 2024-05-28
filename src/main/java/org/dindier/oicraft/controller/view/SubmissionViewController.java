@@ -45,7 +45,6 @@ public class SubmissionViewController {
     }
 
 
-
     @Autowired
     public void setUserService(UserService userService) {
         this.userService = userService;
