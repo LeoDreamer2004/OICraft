@@ -54,4 +54,12 @@ public interface ProblemDao {
      * @return a list of problems in the range
      */
     List<Problem> getProblemInRange(int start, int count);
+
+    /**
+     * Get the index of a problem
+     *
+     * @param problemId the ID of the problem
+     * @return the index of the problem
+     */
+    int getProblemIndex(int problemId);
 }
