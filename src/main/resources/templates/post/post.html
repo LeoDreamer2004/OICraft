@@ -19,7 +19,7 @@
         <span>讨论帖子</span>
     </p>
     <h2>讨论帖子</h2>
-    <a class="btn btn-primary mb-3" th:href="@{/problem/posts(problem=${post.problem.id})}">返回讨论区</a>
+    <a class="btn btn-primary mb-3" th:href="@{/post/list(problem=${post.problem.id})}">返回讨论区</a>
     <a class="btn btn-secondary mb-3" th:href="@{/problem/{id}(id=${post.problem.id})}">返回题目</a>
     <div th:replace="~{problem/list :: nav}"></div>
 </div>

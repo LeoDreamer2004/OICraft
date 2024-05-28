@@ -11,11 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.List;
-
+@RequestMapping("/submission")
 @Controller
 public class SubmissionViewController {
     private UserService userService;
@@ -23,31 +22,7 @@ public class SubmissionViewController {
     private SubmissionService submissionService;
     private HttpServletRequest request;
 
-    @GetMapping("/problem/history")
-    public ModelAndView history(@RequestParam int id) {
-        Problem problem = problemService.getProblemById(id);
-
-        String pageStr = request.getParameter("page");
-        int page = pageStr == null ? 1 : Integer.parseInt(pageStr);
-        if (problem == null) return new ModelAndView("error/404");
-
-        String userId = request.getParameter("user");
-        if (userId == null) userId = "all"; // Default value "all"
-        User user = null;
-        if (!userId.equals("all")) {
-            user = userService.getUserById(Integer.parseInt(userId));
-            if (user == null) return new ModelAndView("error/404");
-        }
-        List<Submission> submissions = submissionService.getSubmissionsInPage(problem, page, user);
-        return new ModelAndView("submission/history")
-                .addObject("problem", problem)
-                .addObject("userId", userId)
-                .addObject("submissions", submissions)
-                .addObject("page", page)
-                .addObject("totalPages", submissionService.getSubmissionPages(problem, user));
-    }
-
-    @GetMapping("/submission/{id}")
+    @GetMapping("/{id}")
     public ModelAndView submission(@PathVariable int id) {
         Submission submission = submissionService.getSubmissionById(id);
         User user = userService.getUserByRequest(request);

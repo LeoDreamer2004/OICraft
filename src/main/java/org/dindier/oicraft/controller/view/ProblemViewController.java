@@ -4,14 +4,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.dindier.oicraft.model.*;
 import org.dindier.oicraft.service.IOPairService;
 import org.dindier.oicraft.service.ProblemService;
+import org.dindier.oicraft.service.SubmissionService;
 import org.dindier.oicraft.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
@@ -22,48 +20,16 @@ import java.util.List;
 import java.util.Map;
 
 
+@RequestMapping("/problem")
 @Controller
 public class ProblemViewController {
     private UserService userService;
     private ProblemService problemService;
     private IOPairService ioPairService;
     private HttpServletRequest request;
+    private SubmissionService submissionService;
 
-    @GetMapping("/problems")
-    public Object problems() {
-        User user = userService.getUserByRequest(request);
-        String pageStr = request.getParameter("page");
-        String from = request.getParameter("from");
-        if (pageStr == null) {
-            int page = from == null ? 1 : problemService.getProblemPageNumber(Integer.parseInt(from));
-            return new RedirectView("/problems?page=" + page);
-        }
-        int page = Integer.parseInt(pageStr);
-        // Do NOT use problemService.hasPassed() here for optimization
-        Map<Problem, Integer> problemMap = problemService.getProblemPageWithPassInfo(user, page);
-        return new ModelAndView("problem/list")
-                .addObject("problems", problemMap.keySet())
-                .addObject("hasPassed", problemMap.values())
-                .addObject("page", page)
-                .addObject("totalPages", problemService.getProblemPages());
-    }
-
-    @GetMapping("/problems/search")
-    public Object search(@RequestParam("keyword") String keyword) {
-        if (keyword.isEmpty())
-            // If the user input nothing, clear the filter and show all problems
-            return new RedirectView("/problems");
-        List<Problem> problems = problemService.searchProblems(keyword);
-        User user = userService.getUserByRequest(request);
-        List<Integer> hasPassed = problems.stream()
-                .map(problem -> problemService.hasPassed(user, problem))
-                .toList();
-        return new ModelAndView("problem/list")
-                .addObject("problems", problems)
-                .addObject("hasPassed", hasPassed);
-    }
-
-    @GetMapping("/problem/{id}")
+    @GetMapping("/{id}")
     public ModelAndView problem(@PathVariable int id) {
         Problem problem = problemService.getProblemById(id);
         if (problem == null)
@@ -79,12 +45,12 @@ public class ProblemViewController {
                 .addObject("canSubmit", !problemService.getTests(problem).isEmpty());
     }
 
-    @GetMapping("/problem/new")
+    @GetMapping("/new")
     public ModelAndView newProblem() {
         return new ModelAndView("problem/new");
     }
 
-    @PostMapping("/problem/new")
+    @PostMapping("/new")
     public RedirectView createProblem(@RequestParam("title") String title,
                                       @RequestParam("description") String description,
                                       @RequestParam("inputFormat") String inputFormat,
@@ -102,14 +68,14 @@ public class ProblemViewController {
         return new RedirectView("/problem/" + problem.getId());
     }
 
-    @GetMapping("/problem/submit")
+    @GetMapping("/submit")
     public ModelAndView submitCode(@RequestParam int id) {
         return new ModelAndView("problem/submit")
                 .addObject("problem", problemService.getProblemById(id));
     }
 
 
-    @PostMapping("/problem/result")
+    @PostMapping("/result")
     public RedirectView handIn(@RequestParam("problemId") int id,
                                @RequestParam("code") String code,
                                @RequestParam("language") String language,
@@ -121,7 +87,7 @@ public class ProblemViewController {
         return new RedirectView("/submission/" + submissionId);
     }
 
-    @GetMapping("/problem/edit")
+    @GetMapping("/edit")
     public ModelAndView edit(@RequestParam int id) {
         User user = userService.getUserByRequest(request);
         Problem problem = problemService.getProblemById(id);
@@ -133,7 +99,7 @@ public class ProblemViewController {
                 .addObject("problem", problem);
     }
 
-    @PostMapping("/problem/edit")
+    @PostMapping("/edit")
     public RedirectView editConfirm(@RequestParam int id,
                                     @RequestParam String title,
                                     @RequestParam String description,
@@ -159,7 +125,7 @@ public class ProblemViewController {
         return new RedirectView("/problem/" + id);
     }
 
-    @GetMapping("/problem/delete")
+    @GetMapping("/delete")
     public ModelAndView delete(@RequestParam int id) {
         User user = userService.getUserByRequest(request);
         Problem problem = problemService.getProblemById(id);
@@ -171,7 +137,7 @@ public class ProblemViewController {
                 addObject("problem", problem);
     }
 
-    @PostMapping("/problem/delete")
+    @PostMapping("/delete")
     public RedirectView deleteConfirm(@RequestParam int id) {
         User user = userService.getUserByRequest(request);
         Problem problem = problemService.getProblemById(id);
@@ -183,7 +149,7 @@ public class ProblemViewController {
         return new RedirectView("/problems");
     }
 
-    @GetMapping("/problem/edit/checkpoints")
+    @GetMapping("/edit/checkpoints")
     public ModelAndView editCheckpoints(@RequestParam int id) {
         User user = userService.getUserByRequest(request);
         Problem problem = problemService.getProblemById(id);
@@ -195,7 +161,7 @@ public class ProblemViewController {
                 .addObject("problem", problem);
     }
 
-    @PostMapping("/problem/edit/checkpoints/file")
+    @PostMapping("/edit/checkpoints/file")
     public Object editCheckpointsConfirm(@RequestParam int id,
                                          @RequestParam("file") MultipartFile file) {
         User user = userService.getUserByRequest(request);
@@ -220,7 +186,7 @@ public class ProblemViewController {
                 .addObject("errorMsg", errorMsg);
     }
 
-    @PostMapping("/problem/edit/checkpoints/text")
+    @PostMapping("/edit/checkpoints/text")
     public RedirectView editCheckpointsConfirm(@RequestParam int id,
                                                @RequestParam String input,
                                                @RequestParam String output,
@@ -241,6 +207,30 @@ public class ProblemViewController {
         return new RedirectView("/problem/" + id);
     }
 
+    @GetMapping("/history")
+    public ModelAndView history(@RequestParam int id) {
+        Problem problem = problemService.getProblemById(id);
+
+        String pageStr = request.getParameter("page");
+        int page = pageStr == null ? 1 : Integer.parseInt(pageStr);
+        if (problem == null) return new ModelAndView("error/404");
+
+        String userId = request.getParameter("user");
+        if (userId == null) userId = "all"; // Default value "all"
+        User user = null;
+        if (!userId.equals("all")) {
+            user = userService.getUserById(Integer.parseInt(userId));
+            if (user == null) return new ModelAndView("error/404");
+        }
+        List<Submission> submissions = submissionService.getSubmissionsInPage(problem, page, user);
+        return new ModelAndView("submission/history")
+                .addObject("problem", problem)
+                .addObject("userId", userId)
+                .addObject("submissions", submissions)
+                .addObject("page", page)
+                .addObject("totalPages", submissionService.getSubmissionPages(problem, user));
+    }
+
     @Autowired
     public void setUserService(UserService userService) {
         this.userService = userService;
@@ -259,6 +249,11 @@ public class ProblemViewController {
     @Autowired
     public void setRequest(HttpServletRequest request) {
         this.request = request;
+    }
+
+    @Autowired
+    public void setSubmissionService(SubmissionService submissionService) {
+        this.submissionService = submissionService;
     }
 }
 

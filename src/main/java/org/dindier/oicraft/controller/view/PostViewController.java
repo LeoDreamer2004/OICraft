@@ -10,15 +10,13 @@ import org.dindier.oicraft.service.ProblemService;
 import org.dindier.oicraft.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
 
+@RequestMapping("/post")
 @Controller
 public class PostViewController {
 
@@ -27,7 +25,7 @@ public class PostViewController {
     private PostService postService;
     private HttpServletRequest request;
 
-    @GetMapping("/post/{id}")
+    @GetMapping("/{id}")
     public ModelAndView getPost(@PathVariable int id) {
         User user = userService.getUserByRequest(request);
         Post post = postService.getPostById(id);
@@ -40,7 +38,7 @@ public class PostViewController {
                         map(comment -> postService.canDeleteComment(user, comment)).toList());
     }
 
-    @GetMapping("/problem/posts")
+    @GetMapping("/list")
     public ModelAndView posts(@RequestParam int problem) {
         Problem p = problemService.getProblemById(problem);
         if (p == null)
@@ -49,7 +47,7 @@ public class PostViewController {
                 .addObject("problem", p);
     }
 
-    @GetMapping("/problem/post/new")
+    @GetMapping("/new")
     public ModelAndView newPost(@RequestParam int problem) {
         Problem p = problemService.getProblemById(problem);
         if (p == null)
@@ -58,7 +56,7 @@ public class PostViewController {
                 .addObject("problem", p);
     }
 
-    @PostMapping("/post/new")
+    @PostMapping("/new")
     public RedirectView createPost(@RequestParam("problemId") int id,
                                    @RequestParam("title") String title,
                                    @RequestParam("content") String content) {
@@ -70,10 +68,10 @@ public class PostViewController {
             return new RedirectView("/login");
         Post post = new Post(title, content, problem, user);
         postService.savePost(post);
-        return new RedirectView("/problem/posts?problem=" + id);
+        return new RedirectView("/post/list?problem=" + id);
     }
 
-    @PostMapping("/post/delete")
+    @PostMapping("/delete")
     public RedirectView deletePost(@RequestParam("postId") int postId) {
         User uer = userService.getUserByRequest(request);
         Post post = postService.getPostById(postId);
@@ -82,10 +80,10 @@ public class PostViewController {
         if (!postService.canDeletePost(uer, post))
             return new RedirectView("error/403");
         postService.deletePost(post);
-        return new RedirectView("/problem/posts?problem=" + post.getProblem().getId());
+        return new RedirectView("/post/list?problem=" + post.getProblem().getId());
     }
 
-    @PostMapping("/post/comment/delete")
+    @PostMapping("/comment/delete")
     public RedirectView deleteComment(@RequestParam("commentId") int commentId) {
         User user = userService.getUserByRequest(request);
         Comment comment = postService.getCommentById(commentId);
@@ -97,7 +95,7 @@ public class PostViewController {
         return new RedirectView("/post/" + comment.getPost().getId());
     }
 
-    @PostMapping("/post/comment")
+    @PostMapping("/comment")
     public RedirectView postComment(@RequestParam("postId") int postId,
                                     @RequestParam("content") String content) {
         Post post = postService.getPostById(postId);

@@ -5,18 +5,16 @@ import org.dindier.oicraft.model.User;
 import org.dindier.oicraft.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+@RequestMapping("/api/user")
 @RestController
 public class UserAPIController {
 
     private UserService userService;
     private HttpServletRequest request;
 
-    @GetMapping("/api/user")
+    @GetMapping
     public ResponseEntity<Integer> getUserId(@RequestParam String username) {
         User user = userService.getUserByUsername(username);
         if (user == null)
@@ -24,13 +22,13 @@ public class UserAPIController {
         return ResponseEntity.ok(user.getId());
     }
 
-    @PostMapping("/api/user/checkin")
+    @PostMapping("/checkin")
     public ResponseEntity<String> checkin() {
         userService.checkIn(userService.getUserByRequest(request));
         return ResponseEntity.ok("Checkin");
     }
 
-    @GetMapping("/api/user/email/new")
+    @GetMapping("/email/new")
     public ResponseEntity<String> getVerificationForNew(@RequestParam String email) {
         User user = userService.getUserByRequest(request);
         if (user == null)
@@ -39,7 +37,7 @@ public class UserAPIController {
         return ResponseEntity.ok("Get verification");
     }
 
-    @GetMapping("/api/user/email/reset")
+    @GetMapping("/email/reset")
     public ResponseEntity<String> getVerificationForReset(@RequestParam String username) {
         User user = userService.getUserByUsername(username);
         if (user == null || user.getEmail() == null)
@@ -48,7 +46,7 @@ public class UserAPIController {
         return ResponseEntity.ok("Get verification");
     }
 
-    @PostMapping("/api/user/password/reset")
+    @PostMapping("/password/reset")
     public ResponseEntity<String> resetPassword(
             @RequestParam String username,
             @RequestParam String password,

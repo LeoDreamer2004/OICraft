@@ -8,22 +8,24 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+@RequestMapping("/admin")
 @Controller
 public class AdminViewController {
 
     private UserService userService;
     private HttpServletRequest request;
 
-    @GetMapping("/admin")
+    @GetMapping
     public ModelAndView admin() {
         return new ModelAndView("admin/admin")
                 .addObject("users", userService.getAllUsers());
     }
 
-    @GetMapping("/admin/delete/{id}")
+    @GetMapping("/delete/{id}")
     public ModelAndView deleteUser(@PathVariable int id) {
         User user = userService.getUserById(id);
         String error = canEditUser(user);
@@ -34,7 +36,7 @@ public class AdminViewController {
                 .addObject("deleteUser", user);
     }
 
-    @PostMapping("/admin/delete/{id}")
+    @PostMapping("/delete/{id}")
     public Object deleteUserConfirm(@PathVariable int id) {
         User user = userService.getUserById(id);
         String error = canEditUser(user);
@@ -45,7 +47,7 @@ public class AdminViewController {
         return new RedirectView("/admin");
     }
 
-    @GetMapping("admin/upgrade/{id}")
+    @GetMapping("/upgrade/{id}")
     public ModelAndView upgradeUser(@PathVariable int id) {
         User user = userService.getUserById(id);
         String error = canEditUser(user);
@@ -56,7 +58,7 @@ public class AdminViewController {
                 .addObject("upgradeUser", user);
     }
 
-    @PostMapping("admin/upgrade/{id}")
+    @PostMapping("/upgrade/{id}")
     public Object upgradeUserConfirm(@PathVariable int id) {
         User user = userService.getUserById(id);
         String error = canEditUser(user);
@@ -68,7 +70,7 @@ public class AdminViewController {
         return new RedirectView("/admin");
     }
 
-    @GetMapping("admin/downgrade/{id}")
+    @GetMapping("/downgrade/{id}")
     public ModelAndView downgradeUser(@PathVariable int id) {
         User user = userService.getUserById(id);
         String error = canEditUser(user);
@@ -79,7 +81,7 @@ public class AdminViewController {
                 .addObject("downgradeUser", user);
     }
 
-    @PostMapping("admin/downgrade/{id}")
+    @PostMapping("/downgrade/{id}")
     public Object downgradeUserConfirm(@PathVariable int id) {
         User user = userService.getUserById(id);
         String error = canEditUser(user);
