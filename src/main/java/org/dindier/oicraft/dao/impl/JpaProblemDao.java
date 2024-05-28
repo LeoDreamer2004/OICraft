@@ -71,6 +71,11 @@ public class JpaProblemDao implements ProblemDao {
         return problemRepository.findProblemInRange(start, count);
     }
 
+    @Override
+    public int getProblemIndex(int problemId) {
+        return problemRepository.getProblemIndex(problemId);
+    }
+
     @Autowired
     public void setSubmissionRepository(SubmissionRepository submissionRepository) {
         this.submissionRepository = submissionRepository;

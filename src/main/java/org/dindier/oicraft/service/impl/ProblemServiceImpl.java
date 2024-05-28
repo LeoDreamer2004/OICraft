@@ -198,8 +198,8 @@ public class ProblemServiceImpl implements ProblemService {
 
     @Override
     public int getProblemPageNumber(int id) {
-        // TODO: Implementation of the method
-        return 2;
+        int idx = problemDao.getProblemIndex(id);
+        return (idx - 1) / RECORDS_PER_PAGE + 1;
     }
 
     @Override
