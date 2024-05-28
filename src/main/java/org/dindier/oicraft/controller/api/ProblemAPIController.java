@@ -11,12 +11,14 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.io.InputStream;
 
+@RequestMapping("/api/problem")
 @RestController
 public class ProblemAPIController {
     private ProblemService problemService;
@@ -24,7 +26,7 @@ public class ProblemAPIController {
     private UserService userService;
     private HttpServletRequest request;
 
-    @GetMapping("/api/problem/download")
+    @GetMapping("/download")
     public ResponseEntity<Object> download(@RequestParam int id) {
         Problem problem = problemService.getProblemById(id);
         if (problem == null)
@@ -36,7 +38,7 @@ public class ProblemAPIController {
                 .body(inputStreamSource);
     }
 
-    @GetMapping("/api/problem/checkpoints/download")
+    @GetMapping("/checkpoints/download")
     public ResponseEntity<byte[]> downloadCheckpoints(@RequestParam int id) throws IOException {
         Problem problem = problemService.getProblemById(id);
         User user = userService.getUserByRequest(request);

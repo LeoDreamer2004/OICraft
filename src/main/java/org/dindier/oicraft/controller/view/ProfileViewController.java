@@ -6,16 +6,14 @@ import org.dindier.oicraft.service.ProblemService;
 import org.dindier.oicraft.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
 
+@RequestMapping("/profile")
 @Controller
 public class ProfileViewController {
 
@@ -24,7 +22,7 @@ public class ProfileViewController {
     private HttpServletRequest request;
 
 
-    @GetMapping("/profile")
+    @GetMapping
     public RedirectView profile() {
         User user = userService.getUserByRequest(request);
         if (user == null)
@@ -33,7 +31,7 @@ public class ProfileViewController {
         return new RedirectView("/profile/" + user.getId());
     }
 
-    @GetMapping("/profile/{id}")
+    @GetMapping("/{id}")
     public ModelAndView profile(@PathVariable int id) {
         User user = userService.getUserById(id);
         if (user == null)
@@ -45,21 +43,21 @@ public class ProfileViewController {
                 .addObject("hasCheckedIn", userService.hasCheckedInToday(user));
     }
 
-    @GetMapping("/profile/edit")
+    @GetMapping("/edit")
     public ModelAndView editProfile() {
         User user = userService.getUserByRequest(request);
         if (user == null) return new ModelAndView("error/404");
         return new ModelAndView("user/editProfile");
     }
 
-    @GetMapping("/profile/edit/avatar")
+    @GetMapping("/edit/avatar")
     public ModelAndView editAvatar() {
         User user = userService.getUserByRequest(request);
         if (user == null) return new ModelAndView("error/404");
         return new ModelAndView("user/editAvatar");
     }
 
-    @PostMapping("/profile/edit/avatar")
+    @PostMapping("/edit/avatar")
     public RedirectView editAvatar(@RequestParam("avatar") MultipartFile avatar) throws IOException {
         User user = userService.getUserByRequest(request);
         if (user == null) return new RedirectView("/login");
@@ -69,7 +67,7 @@ public class ProfileViewController {
         return new RedirectView("/profile/edit/avatar");
     }
 
-    @GetMapping("/profile/edit/avatar/delete")
+    @GetMapping("/edit/avatar/delete")
     public RedirectView deleteAvatar() {
         User user = userService.getUserByRequest(request);
         if (user == null) return new RedirectView("/login");
@@ -77,14 +75,14 @@ public class ProfileViewController {
         return new RedirectView("/profile/edit/avatar");
     }
 
-    @GetMapping("/profile/edit/info")
+    @GetMapping("/edit/info")
     public ModelAndView editInfo() {
         User user = userService.getUserByRequest(request);
         if (user == null) return new ModelAndView("error/404");
         return new ModelAndView("user/editInfo");
     }
 
-    @PostMapping("/profile/edit/info")
+    @PostMapping("/edit/info")
     public RedirectView editInfo(@RequestParam("signature") String signature) {
         User user = userService.getUserByRequest(request);
         if (user == null) return new RedirectView("/login");

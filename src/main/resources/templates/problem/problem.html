@@ -117,8 +117,8 @@
             <div class="card my-card mt-3">
                 <h5 class="mb-3 underlined-title">讨论区</h5>
                 <div>
-                    <a th:href="@{/problem/posts(problem=${problem.id})}" class="mr-2 no-dec">查看帖子</a>
-                    <a th:href="@{/problem/post/new(problem=${problem.id})}" class="no-dec">发布帖子</a>
+                    <a th:href="@{/post/list(problem=${problem.id})}" class="mr-2 no-dec">查看帖子</a>
+                    <a th:href="@{/post/new(problem=${problem.id})}" class="no-dec">发布帖子</a>
                 </div>
             </div>
             <div class="card my-card mt-3" th:if="${canEdit}">
