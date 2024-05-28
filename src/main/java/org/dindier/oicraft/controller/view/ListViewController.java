@@ -18,7 +18,7 @@ import java.util.Map;
 
 @RequestMapping("/problems")
 @Controller
-public class ProblemListViewController {
+public class ListViewController {
     private UserService userService;
     private HttpServletRequest request;
     private ProblemService problemService;
