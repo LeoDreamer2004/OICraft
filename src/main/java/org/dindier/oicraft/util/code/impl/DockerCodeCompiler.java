@@ -1,9 +1,9 @@
 package org.dindier.oicraft.util.code.impl;
 
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import org.dindier.oicraft.assets.exception.CodeCheckerError;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * A code compiler that runs the code in a docker container
@@ -11,8 +11,6 @@ import java.io.File;
  *
  * @author Crl
  */
-@Getter
-@Slf4j
 public enum DockerCodeCompiler {
     JAVA("code-checker-java"),
     CPP("code-checker-cpp"),
@@ -26,7 +24,8 @@ public enum DockerCodeCompiler {
         this.dockerImage = dockerImage;
     }
 
-    public String compile(File sourceFile, String dockerContainer, boolean createContainer) {
+    public String compile(File sourceFile, String dockerContainer, boolean createContainer)
+            throws CodeCheckerError {
         ProcessBuilder pb;
         String sourceFilePath;
         if (createContainer) {
@@ -35,9 +34,8 @@ public enum DockerCodeCompiler {
             try {
                 Process p = pb.start();
                 p.waitFor();
-            } catch (Exception e) {
-                log.error("Failed to create docker container {}", dockerContainer);
-                return "Failed to run docker container";
+            } catch (IOException | InterruptedException e) {
+                throw new CodeCheckerError("Failed to create docker container " + dockerContainer);
             }
         }
         if (sourceFile != null) {
@@ -46,9 +44,8 @@ public enum DockerCodeCompiler {
             try {
                 Process p = pb.start();
                 p.waitFor();
-            } catch (Exception e) {
-                log.error("Failed to copy source file to docker image {}", dockerImage);
-                return "Failed to copy source file to docker image";
+            } catch (IOException | InterruptedException e) {
+                throw new CodeCheckerError("Failed to copy source file to docker image " + dockerImage);
             }
         }
         pb = new ProcessBuilder("docker", "container", "exec", dockerContainer, "./compile.sh");
@@ -58,9 +55,8 @@ public enum DockerCodeCompiler {
             if (p.exitValue() != 0) {
                 return new String(p.getErrorStream().readAllBytes());
             }
-        } catch (Exception e) {
-            log.error("Failed to compile source file {}", sourceFile);
-            return "Failed to compile source file";
+        } catch (IOException | InterruptedException e) {
+            throw new CodeCheckerError("Failed to compile source file " + sourceFile);
         }
         return null;
     }

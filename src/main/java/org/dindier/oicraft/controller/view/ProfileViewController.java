@@ -25,8 +25,6 @@ public class ProfileViewController {
     @GetMapping
     public RedirectView profile() {
         User user = userService.getUserByRequest(request);
-        if (user == null)
-            return new RedirectView("/login");
         // Redirect to user profile with user id
         return new RedirectView("/profile/" + user.getId());
     }
@@ -34,8 +32,6 @@ public class ProfileViewController {
     @GetMapping("/{id}")
     public ModelAndView profile(@PathVariable int id) {
         User user = userService.getUserById(id);
-        if (user == null)
-            return new ModelAndView("error/404");
         // use 'seeUser' in case of conflict with 'user' in the interceptor
         return new ModelAndView("user/profile", "seeUser", user)
                 .addObject("passed", problemService.getPassedProblems(user))
@@ -45,22 +41,19 @@ public class ProfileViewController {
 
     @GetMapping("/edit")
     public ModelAndView editProfile() {
-        User user = userService.getUserByRequest(request);
-        if (user == null) return new ModelAndView("error/404");
+        userService.getUserByRequest(request);
         return new ModelAndView("user/editProfile");
     }
 
     @GetMapping("/edit/avatar")
     public ModelAndView editAvatar() {
-        User user = userService.getUserByRequest(request);
-        if (user == null) return new ModelAndView("error/404");
+        userService.getUserByRequest(request);
         return new ModelAndView("user/editAvatar");
     }
 
     @PostMapping("/edit/avatar")
     public RedirectView editAvatar(@RequestParam("avatar") MultipartFile avatar) throws IOException {
         User user = userService.getUserByRequest(request);
-        if (user == null) return new RedirectView("/login");
         byte[] avatarData = avatar.getInputStream().readAllBytes();
         if (userService.saveUserAvatar(user, avatarData) != 0)
             return new RedirectView("/profile/edit/avatar?error");
@@ -70,22 +63,19 @@ public class ProfileViewController {
     @GetMapping("/edit/avatar/delete")
     public RedirectView deleteAvatar() {
         User user = userService.getUserByRequest(request);
-        if (user == null) return new RedirectView("/login");
         userService.saveUserAvatar(user, null);
         return new RedirectView("/profile/edit/avatar");
     }
 
     @GetMapping("/edit/info")
     public ModelAndView editInfo() {
-        User user = userService.getUserByRequest(request);
-        if (user == null) return new ModelAndView("error/404");
+        userService.getUserByRequest(request);
         return new ModelAndView("user/editInfo");
     }
 
     @PostMapping("/edit/info")
     public RedirectView editInfo(@RequestParam("signature") String signature) {
         User user = userService.getUserByRequest(request);
-        if (user == null) return new RedirectView("/login");
         if (signature.length() <= 200) {
             user.setSignature(signature);
             userService.updateUser(user);

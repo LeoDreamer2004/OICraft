@@ -1,5 +1,6 @@
 package org.dindier.oicraft;
 
+import org.dindier.oicraft.assets.exception.CodeCheckerError;
 import org.dindier.oicraft.util.code.impl.DockerCodeCompiler;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -69,7 +70,7 @@ public class DockerCodeCompilerTest {
 
     @Test
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    void testCodeCompilerCompileErrorCpp() {
+    void testCodeCompilerCompileErrorCpp() throws CodeCheckerError {
         DockerCodeCompiler compiler = DockerCodeCompiler.CPP;
         URL cppFile = DockerCodeCompiler.class.getClassLoader().getResource("test_codes/compile_error.cpp");
         if (cppFile == null) {
@@ -87,7 +88,7 @@ public class DockerCodeCompilerTest {
 
     @Test
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    void testCodeCompilerCompileSuccessCpp() {
+    void testCodeCompilerCompileSuccessCpp() throws CodeCheckerError {
         DockerCodeCompiler compiler = DockerCodeCompiler.CPP;
         URL cppFile = DockerCodeCompiler.class.getClassLoader().getResource("test_codes/pass.cpp");
         if (cppFile == null) {
@@ -104,7 +105,7 @@ public class DockerCodeCompilerTest {
 
     @Test
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    void testCodeCompilerCompileSuccessJava() {
+    void testCodeCompilerCompileSuccessJava() throws CodeCheckerError {
         DockerCodeCompiler compiler = DockerCodeCompiler.JAVA;
         URL javaFile = DockerCodeCompiler.class.getClassLoader().getResource("test_codes/pass.java");
         if (javaFile == null) {

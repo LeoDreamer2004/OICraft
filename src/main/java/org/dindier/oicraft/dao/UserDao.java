@@ -22,10 +22,10 @@ public interface UserDao {
     /**
      * Delete a user from database
      *
-     * @param user the user to delete
+     * @param id the user to delete
      * @implNote All submissions of the user will be deleted as well.
      */
-    void deleteUser(User user);
+    void deleteUser(int id);
 
     /**
      * Check if a user exists in database

@@ -27,9 +27,8 @@ public class PostViewController {
 
     @GetMapping("/{id}")
     public ModelAndView getPost(@PathVariable int id) {
-        User user = userService.getUserByRequest(request);
+        User user = userService.getUserByRequestOptional(request);
         Post post = postService.getPostById(id);
-        if (post == null) return new ModelAndView("error/404");
         List<Comment> comments = post.getComments();
         return new ModelAndView("post/post").addObject("post", post)
                 .addObject("comments", comments)
@@ -41,17 +40,14 @@ public class PostViewController {
     @GetMapping("/list")
     public ModelAndView posts(@RequestParam int problem) {
         Problem p = problemService.getProblemById(problem);
-        if (p == null)
-            return new ModelAndView("error/404");
         return new ModelAndView("post/list")
-                .addObject("problem", p);
+                .addObject("problem", p)
+                .addObject("posts", p.getPosts());
     }
 
     @GetMapping("/new")
     public ModelAndView newPost(@RequestParam int problem) {
         Problem p = problemService.getProblemById(problem);
-        if (p == null)
-            return new ModelAndView("error/404");
         return new ModelAndView("post/new")
                 .addObject("problem", p);
     }
@@ -61,11 +57,7 @@ public class PostViewController {
                                    @RequestParam("title") String title,
                                    @RequestParam("content") String content) {
         Problem problem = problemService.getProblemById(id);
-        if (problem == null)
-            return new RedirectView("error/404");
         User user = userService.getUserByRequest(request);
-        if (user == null)
-            return new RedirectView("/login");
         Post post = new Post(title, content, problem, user);
         postService.savePost(post);
         return new RedirectView("/post/list?problem=" + id);
@@ -75,8 +67,6 @@ public class PostViewController {
     public RedirectView deletePost(@RequestParam("postId") int postId) {
         User uer = userService.getUserByRequest(request);
         Post post = postService.getPostById(postId);
-        if (post == null)
-            return new RedirectView("error/404");
         if (!postService.canDeletePost(uer, post))
             return new RedirectView("error/403");
         postService.deletePost(post);
@@ -100,8 +90,6 @@ public class PostViewController {
                                     @RequestParam("content") String content) {
         Post post = postService.getPostById(postId);
         User user = userService.getUserByRequest(request);
-        if (post == null) return new RedirectView("error/404");
-        if (user == null) return new RedirectView("/login");
         Comment comment = new Comment(user, post, content);
         postService.saveComment(comment);
         return new RedirectView("/post/" + postId);

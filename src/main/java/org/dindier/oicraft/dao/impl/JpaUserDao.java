@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository("userDao")
-
 public class JpaUserDao implements UserDao {
     private UserRepository userRepository;
     private final Logger logger = LoggerFactory.getLogger(JpaUserDao.class);
@@ -28,7 +27,7 @@ public class JpaUserDao implements UserDao {
 
     @Override
     public User saveUser(User user) {
-       return userRepository.save(user);
+        return userRepository.save(user);
     }
 
     @Override
@@ -37,8 +36,10 @@ public class JpaUserDao implements UserDao {
     }
 
     @Override
-    public void deleteUser(User user) {
+    public void deleteUser(int id) {
         // delete the user's submissions and related checkpoints
+        User user = getUserById(id);
+        if (user == null) return;
         List<Submission> submissions = user.getSubmissions();
         List<Checkpoint> checkpoints = submissions
                 .stream()

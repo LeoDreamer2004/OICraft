@@ -1,10 +1,11 @@
 package org.dindier.oicraft.service;
 
 import jakarta.annotation.Nullable;
+import org.dindier.oicraft.assets.exception.EntityNotFoundException;
 import org.dindier.oicraft.model.Comment;
 import org.dindier.oicraft.model.Post;
 import org.dindier.oicraft.model.User;
-import org.jetbrains.annotations.NotNull;
+import org.springframework.lang.NonNull;
 
 public interface PostService {
 
@@ -12,10 +13,11 @@ public interface PostService {
      * Get the post by id
      *
      * @param id The post id
-     * @return The post with the given id, or {@code null} if not found
+     * @return The post with the given id
+     * @throws EntityNotFoundException If the post not exists
      */
-    @Nullable
-    Post getPostById(int id);
+    @NonNull
+    Post getPostById(int id) throws EntityNotFoundException;
 
     /**
      * Save a post
@@ -65,7 +67,7 @@ public interface PostService {
      * @param post The post
      * @return {@code true} if the user can delete the post, {@code false} otherwise
      */
-    boolean canDeletePost(User user, @NotNull Post post);
+    boolean canDeletePost(User user, @NonNull Post post);
 
     /**
      * Check if a user can delete a comment
@@ -74,5 +76,5 @@ public interface PostService {
      * @param comment The comment
      * @return {@code true} if the user can delete the comment, {@code false} otherwise
      */
-    boolean canDeleteComment(User user, @NotNull Comment comment);
+    boolean canDeleteComment(User user, @NonNull Comment comment);
 }

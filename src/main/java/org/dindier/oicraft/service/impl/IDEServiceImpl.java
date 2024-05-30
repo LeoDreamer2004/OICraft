@@ -1,12 +1,12 @@
 package org.dindier.oicraft.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.dindier.oicraft.assets.exception.CodeCheckerError;
 import org.dindier.oicraft.service.IDEService;
 import org.dindier.oicraft.util.code.CodeChecker;
 import org.dindier.oicraft.util.code.CodeCheckerFactory;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.Map;
 
 @Service("IDEService")
@@ -21,7 +21,7 @@ public class IDEServiceImpl implements IDEService {
                     .setIO(code, language, input, null)
                     .setLimit(5000, 512 * 1024);
             codeChecker.test();
-        } catch (IOException | InterruptedException e) {
+        } catch (CodeCheckerError e) {
             log.error("Error occurred while running code", e);
             return "Error occurred while running code";
         }

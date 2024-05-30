@@ -1,6 +1,6 @@
 package org.dindier.oicraft.config;
 
-import org.dindier.oicraft.controller.UserInfoInterceptor;
+import org.dindier.oicraft.controller.interceptor.UserInfoInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;

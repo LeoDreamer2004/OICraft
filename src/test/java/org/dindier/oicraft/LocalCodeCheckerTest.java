@@ -1,7 +1,9 @@
 package org.dindier.oicraft;
 
+import org.dindier.oicraft.assets.exception.CodeCheckerError;
 import org.dindier.oicraft.util.code.CodeChecker;
 import org.dindier.oicraft.util.code.CodeCheckerFactory;
+import org.dindier.oicraft.util.code.lang.Status;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -28,88 +30,88 @@ public class LocalCodeCheckerTest {
     }
 
     @Test
-    void testPythonTLE() throws IOException, InterruptedException {
+    void testPythonTLE() throws CodeCheckerError {
         CodeChecker codeChecker = CodeCheckerFactory.getLocalCodeChecker();
         codeChecker.setIO("while True: pass", "Python", "1 2", "3")
                 .setLimit(1000, 128 * 1024).test();
         System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedTime() + "ms/" + codeChecker.getUsedMemory() + "KB");
-        assert codeChecker.getStatus().equals("TLE");
+        assert codeChecker.getStatus() == Status.TLE;
     }
 
     @Test
-    void testCppPass() throws IOException, InterruptedException {
+    void testCppPass() throws CodeCheckerError {
         CodeChecker codeChecker = CodeCheckerFactory.getLocalCodeChecker();
         String code = getCode(CodeChecker.class.getClassLoader().getResource("test_codes/pass.cpp"));
         codeChecker.setIO(code, "C++", "1 2", "3")
                 .setLimit(1000, 128 * 1024)
                 .test();
         System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedTime() + "ms/" + codeChecker.getUsedMemory() + "KB");
-        assert codeChecker.getStatus().equals("AC");
+        assert codeChecker.getStatus() == Status.AC;
     }
 
     @Test
-    void testCppWrongAnswer() throws IOException, InterruptedException {
+    void testCppWrongAnswer() throws CodeCheckerError {
         CodeChecker codeChecker = CodeCheckerFactory.getLocalCodeChecker();
         String code = getCode(CodeChecker.class.getClassLoader().getResource("test_codes/wrong_answer.cpp"));
         codeChecker.setIO(code, "C++", "1 2", "3")
                 .setLimit(1000, 128 * 1024)
                 .test();
         System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedTime() + "ms/" + codeChecker.getUsedMemory() + "KB");
-        assert codeChecker.getStatus().equals("WA");
+        assert codeChecker.getStatus() == Status.WA;
     }
 
     @Test
-    void testCppRuntimeError() throws IOException, InterruptedException {
+    void testCppRuntimeError() throws CodeCheckerError {
         CodeChecker codeChecker = CodeCheckerFactory.getLocalCodeChecker();
         String code = getCode(CodeChecker.class.getClassLoader().getResource("test_codes/runtime_error.cpp"));
         codeChecker.setIO(code, "C++", "1 2", "3")
                 .setLimit(5000, 128 * 1024)
                 .test();
         System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedTime() + "ms/" + codeChecker.getUsedMemory() + "KB");
-        assert codeChecker.getStatus().equals("RE");
+        assert codeChecker.getStatus() == Status.RE;
     }
 
     @Test
-    void testCppCompileError() throws IOException, InterruptedException {
+    void testCppCompileError() throws CodeCheckerError {
         CodeChecker codeChecker = CodeCheckerFactory.getLocalCodeChecker();
         String code = getCode(CodeChecker.class.getClassLoader().getResource("test_codes/compile_error.cpp"));
         codeChecker.setIO(code, "C++", "1 2", "3")
                 .setLimit(1000, 128 * 1024)
                 .test();
         System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedTime() + "ms/" + codeChecker.getUsedMemory() + "KB");
-        assert codeChecker.getStatus().equals("CE");
+        assert codeChecker.getStatus() == Status.CE;
     }
 
     @Test
-    void testJavaPass() throws IOException, InterruptedException {
+    void testJavaPass() throws CodeCheckerError {
         CodeChecker codeChecker = CodeCheckerFactory.getLocalCodeChecker();
         String code = getCode(CodeChecker.class.getClassLoader().getResource("test_codes/pass.java"));
         codeChecker.setIO(code, "Java", "1 2", "3")
                 .setLimit(1000, 128 * 1024)
                 .test();
         System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedTime() + "ms/" + codeChecker.getUsedMemory() + "KB");
-        assert codeChecker.getStatus().equals("AC");
+        assert codeChecker.getStatus() == Status.AC;
     }
 
     @Test
-    void testJavaWrongAnswer() throws IOException, InterruptedException {
+    void testJavaWrongAnswer() throws CodeCheckerError {
         CodeChecker codeChecker = CodeCheckerFactory.getLocalCodeChecker();
         String code = getCode(CodeChecker.class.getClassLoader().getResource("test_codes/wrong_answer.java"));
         codeChecker.setIO(code, "Java", "1 2", "3")
                 .setLimit(1000, 128 * 1024)
                 .test();
         System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedMemory() + "ms/" + codeChecker.getUsedMemory() + "KB");
-        assert codeChecker.getStatus().equals("WA");
+        assert codeChecker.getStatus() == Status.WA;
     }
 
     @Test
-    void testCPass() throws IOException, InterruptedException {
+    void testCPass() throws CodeCheckerError {
         CodeChecker codeChecker = CodeCheckerFactory.getLocalCodeChecker();
         String code = getCode(CodeChecker.class.getClassLoader().getResource("test_codes/pass.c"));
         codeChecker.setIO(code, "C", "1 2", "3")
                 .setLimit(1000, 128 * 1024)
                 .test();
         System.out.println(codeChecker.getInfo() + "/" + codeChecker.getUsedTime() + "ms/" + codeChecker.getUsedMemory() + "KB");
-        assert codeChecker.getStatus().equals("AC");
+        assert codeChecker.getStatus() == Status.AC;
     }
 }

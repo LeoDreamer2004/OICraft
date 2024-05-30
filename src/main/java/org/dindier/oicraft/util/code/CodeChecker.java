@@ -2,6 +2,8 @@ package org.dindier.oicraft.util.code;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.dindier.oicraft.assets.constant.ConfigConstants;
+import org.dindier.oicraft.assets.exception.CodeCheckerError;
 import org.dindier.oicraft.util.code.lang.Language;
 import org.dindier.oicraft.util.code.lang.Status;
 import org.springframework.lang.Nullable;
@@ -20,7 +22,6 @@ import java.util.Map;
  */
 @Slf4j
 public abstract class CodeChecker {
-    public static final String FOLDER = "temp/";
     protected long id;
     protected String codePath;
     protected Language language;
@@ -56,9 +57,9 @@ public abstract class CodeChecker {
 
     static {
         // create the folder if not exists
-        File folder = new File(FOLDER);
+        File folder = new File(ConfigConstants.TEST_FOLDER);
         if (!folder.exists() && !folder.mkdirs()) {
-            throw new RuntimeException("Failed to create folder: " + FOLDER);
+            throw new RuntimeException("Failed to create folder: " + ConfigConstants.TEST_FOLDER);
         }
     }
 
@@ -75,7 +76,7 @@ public abstract class CodeChecker {
      * @implNote This method will deal with the difference of line separator on different platforms
      */
     public CodeChecker setIO(String code, String language, String input,
-                             @Nullable String output) throws IOException {
+                             @Nullable String output) throws CodeCheckerError {
         this.language = Language.fromString(language);
         this.inputData = input;
         this.expectedOutput = output == null ? null : output.stripTrailing();
@@ -101,13 +102,13 @@ public abstract class CodeChecker {
      *
      * @param clearFile Whether to clear the files after the test
      */
-    public abstract void test(boolean clearFile) throws IOException, InterruptedException;
+    public abstract void test(boolean clearFile) throws CodeCheckerError;
 
     /**
      * Run the code and check the result
      * Use getter to get the status, info etc
      */
-    public void test() throws IOException, InterruptedException {
+    public void test() throws CodeCheckerError {
         test(true);
     }
 

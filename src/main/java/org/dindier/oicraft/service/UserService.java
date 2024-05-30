@@ -1,8 +1,11 @@
 package org.dindier.oicraft.service;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.dindier.oicraft.assets.exception.AdminOperationError;
+import org.dindier.oicraft.assets.exception.UserNotFoundException;
 import org.dindier.oicraft.model.User;
-import org.springframework.lang.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserService extends UserDetailsService {
@@ -11,8 +14,10 @@ public interface UserService extends UserDetailsService {
      * Get user by id
      * @param id The id of the user
      * @return The user with the id
+     * @throws UserNotFoundException If the user is not found
      */
-    User getUserById(int id);
+    @NotNull
+    User getUserById(int id) throws UserNotFoundException;
 
     User getUserByUsername(String name);
 
@@ -59,10 +64,20 @@ public interface UserService extends UserDetailsService {
      * Get user by request
      *
      * @param request The request to get user from
-     * @return The user from the request. If not authenticated, return null
+     * @return The user from the request.
+     * @throws UserNotFoundException If the user is not found
+     */
+    @NotNull
+    User getUserByRequest(HttpServletRequest request) throws UserNotFoundException;
+
+    /**
+     * Get user by request
+     *
+     * @param request The request to get user from
+     * @return  The user from the request. If the user is not found, return null
      */
     @Nullable
-    User getUserByRequest(HttpServletRequest request);
+    User getUserByRequestOptional(HttpServletRequest request);
 
     /**
      * Encode the password
@@ -115,4 +130,13 @@ public interface UserService extends UserDetailsService {
      * @return if the avatar is saved successfully
      */
     int saveUserAvatar(User user, byte[] avatar);
+
+    /**
+     * Check if the operator can edit the user's authentication
+     *
+     * @param operator The operator
+     * @param user The user to be edited
+     * @throws AdminOperationError If the operator cannot edit the user
+     */
+    void checkEditUserAuthentication(User operator, User user) throws AdminOperationError;
 }

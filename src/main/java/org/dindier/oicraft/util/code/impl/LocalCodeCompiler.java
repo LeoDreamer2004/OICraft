@@ -1,8 +1,9 @@
 package org.dindier.oicraft.util.code.impl;
 
-import lombok.extern.slf4j.Slf4j;
+import org.dindier.oicraft.assets.exception.CodeCheckerError;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Code compiler for compiled language such as C/C++, Java, Rust, etc. in the local environment
@@ -10,7 +11,6 @@ import java.io.File;
  *
  * @author Crl
  */
-@Slf4j
 public enum LocalCodeCompiler {
     JAVA("javac"),
     CPP("g++", "-o", "main", "-O2"),
@@ -38,10 +38,10 @@ public enum LocalCodeCompiler {
      * @param sourceFile The source file to compile
      * @return The error message if the compilation failed, otherwise null
      */
-    public String compile(File sourceFile, File workingDirectory) {
+    public String compile(File sourceFile, File workingDirectory) throws CodeCheckerError {
         try {
             if (!workingDirectory.exists() && !workingDirectory.mkdir()) {
-                log.error("Failed to create new file folder for {}", sourceFile);
+                throw new CodeCheckerError("Failed to create new file folder for " + sourceFile);
             }
             String[] args = new String[compileOption.length + 2];
             args[0] = compiler;
@@ -54,8 +54,8 @@ public enum LocalCodeCompiler {
             if (p.exitValue() != 0) {
                 return new String(p.getErrorStream().readAllBytes());
             }
-        } catch (Exception e) {
-            log.error("Failed to compile {}", sourceFile);
+        } catch (IOException | InterruptedException e) {
+            throw new CodeCheckerError("Failed to compile " + sourceFile);
         }
         return null;
     }

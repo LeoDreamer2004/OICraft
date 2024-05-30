@@ -21,22 +21,11 @@ public interface IOPairDao {
     void deleteIOPair(IOPair ioPair);
 
     /**
-     * Get a IOPair by ID
-     *
-     * @param id the ID of the IOPair
-     * @return A {@code IOPair} class if the IOPair exists, {@code null} otherwise.
-     */
-    @SuppressWarnings("unused")
-    IOPair getIOPairById(int id);
-
-    /**
      * Add a list of IOPairs to the database
      *
      * @param ioPairs the list of IOPairs to add
-     * @return A list of {@code IOPair} classes with the IOPair's ID set.
      */
-    @SuppressWarnings("UnusedReturnValue")
-    Iterable<IOPair> addIOPairs(List<IOPair> ioPairs);
+    void addIOPairs(List<IOPair> ioPairs);
 
     /**
      * delete all IOPair with the problem id

@@ -1,10 +1,11 @@
 package org.dindier.oicraft.service;
 
+import org.dindier.oicraft.assets.exception.EntityNotFoundException;
+import org.dindier.oicraft.assets.exception.NoAuthenticationError;
 import org.dindier.oicraft.model.IOPair;
 import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.User;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -17,8 +18,8 @@ public interface ProblemService {
      * @param id The id of the problem
      * @return The problem with the id
      */
-    @Nullable
-    Problem getProblemById(int id);
+    @NonNull
+    Problem getProblemById(int id) throws EntityNotFoundException;
 
     /**
      * Save a problem to the database
@@ -119,6 +120,15 @@ public interface ProblemService {
      * @return Whether the user can edit the problem
      */
     boolean canEdit(User user, @NonNull Problem problem);
+
+    /**
+     * Check the user if the user can edit the problem
+     *
+     * @param user    The user to check
+     * @param problem The problem to check
+     * @throws NoAuthenticationError If the user cannot edit the problem
+     */
+    void checkCanEdit(User user, @NonNull Problem problem) throws NoAuthenticationError;
 
     /**
      * Get a page of problems with a certain user's pass info

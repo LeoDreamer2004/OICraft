@@ -1,4 +1,4 @@
-package org.dindier.oicraft.controller;
+package org.dindier.oicraft.controller.interceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,7 +26,7 @@ public class UserInfoInterceptor implements HandlerInterceptor {
             @NonNull HttpServletResponse response,
             @NonNull Object handler
     ) {
-        User user = userService.getUserByRequest(request);
+        User user = userService.getUserByRequestOptional(request);
         request.setAttribute("currentUser", user);
         return true;
     }

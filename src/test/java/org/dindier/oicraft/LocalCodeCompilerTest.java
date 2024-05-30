@@ -1,5 +1,6 @@
 package org.dindier.oicraft;
 
+import org.dindier.oicraft.assets.exception.CodeCheckerError;
 import org.dindier.oicraft.util.code.impl.LocalCodeCompiler;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,7 +13,7 @@ public class LocalCodeCompilerTest {
 
     @Test
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    void testCodeCompilerCompileError() {
+    void testCodeCompilerCompileError() throws CodeCheckerError {
         LocalCodeCompiler compiler = LocalCodeCompiler.CPP;
         URL cppFile = LocalCodeCompilerTest.class.getClassLoader().getResource("test_codes/compile_error.cpp");
         if (cppFile == null) {
@@ -30,7 +31,7 @@ public class LocalCodeCompilerTest {
 
     @Test
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    void testCodeCompilerCompileSuccess() {
+    void testCodeCompilerCompileSuccess() throws CodeCheckerError {
         LocalCodeCompiler compiler = LocalCodeCompiler.CPP;
         URL cppFile = LocalCodeCompilerTest.class.getClassLoader().getResource("test_codes/helloworld.cpp");
         if (cppFile == null) {

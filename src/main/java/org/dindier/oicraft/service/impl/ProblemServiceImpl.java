@@ -1,8 +1,12 @@
 package org.dindier.oicraft.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.dindier.oicraft.assets.constant.ConfigConstants;
+import org.dindier.oicraft.assets.exception.NoAuthenticationError;
 import org.dindier.oicraft.dao.CheckpointDao;
 import org.dindier.oicraft.dao.ProblemDao;
+import org.dindier.oicraft.assets.exception.CodeCheckerError;
+import org.dindier.oicraft.assets.exception.EntityNotFoundException;
 import org.dindier.oicraft.model.*;
 import org.dindier.oicraft.service.ProblemService;
 import org.dindier.oicraft.service.SubmissionService;
@@ -11,11 +15,11 @@ import org.dindier.oicraft.util.code.CodeCheckerFactory;
 import org.dindier.oicraft.util.code.lang.Language;
 import org.dindier.oicraft.util.code.lang.Status;
 import org.dindier.oicraft.util.search.SearchHelper;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -26,16 +30,24 @@ public class ProblemServiceImpl implements ProblemService {
     private CheckpointDao checkpointDao;
     private SubmissionService submissionService;
 
-    private static final int POOL_SIZE = 16;
-    private static final int WAITING_QUEUE_SIZE = 10000;
-    private final ExecutorService executorService = new ThreadPoolExecutor(POOL_SIZE, POOL_SIZE,
-            0L, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(WAITING_QUEUE_SIZE));
 
-    private static final int RECORDS_PER_PAGE = 20;
+    private final ExecutorService executorService = new ThreadPoolExecutor(
+            ConfigConstants.TEST_POOL_SIZE,
+            ConfigConstants.TEST_POOL_SIZE,
+            0L,
+            TimeUnit.MILLISECONDS,
+            new ArrayBlockingQueue<>(ConfigConstants.WAITING_QUEUE_SIZE
+            ));
 
+
+    @NotNull
     @Override
-    public Problem getProblemById(int id) {
-        return problemDao.getProblemById(id);
+    public Problem getProblemById(int id) throws EntityNotFoundException {
+        Problem problem = problemDao.getProblemById(id);
+        if (problem == null) {
+            throw new EntityNotFoundException(Problem.class);
+        }
+        return problem;
     }
 
     @Override
@@ -124,7 +136,7 @@ public class ProblemServiceImpl implements ProblemService {
                         codeChecker.setIO(code, language, ioPair.getInput(), ioPair.getOutput())
                                 .setLimit(problem.getTimeLimit(), problem.getMemoryLimit())
                                 .test(!iterator.hasNext());
-                    } catch (IOException | InterruptedException e) {
+                    } catch (CodeCheckerError e) {
                         log.warn("CodeChecker encounter exception: {}", e.getMessage());
                         submission.setResult(Submission.Result.FAILED);
                         submissionService.saveSubmission(submission);
@@ -168,9 +180,9 @@ public class ProblemServiceImpl implements ProblemService {
 
     @Override
     public Map<Problem, Integer> getProblemPageWithPassInfo(User user, int page) {
-        List<Problem> problems = problemDao.getProblemInRange((page - 1) * RECORDS_PER_PAGE, RECORDS_PER_PAGE);
+        List<Problem> problems = problemDao.getProblemInRange((page - 1) * ConfigConstants.PROBLEMS_PER_PAGE, ConfigConstants.PROBLEMS_PER_PAGE);
+        Map<Problem, Integer> map = new TreeMap<>();
         if (user == null) {
-            TreeMap<Problem, Integer> map = new TreeMap<>();
             for (Problem problem : problems) {
                 map.put(problem, 0);
             }
@@ -178,7 +190,6 @@ public class ProblemServiceImpl implements ProblemService {
         }
         List<Problem> passedProblems = getPassedProblems(user);
         List<Problem> failedProblems = getNotPassedProblems(user);
-        Map<Problem, Integer> map = new TreeMap<>();
         for (Problem problem : problems) {
             if (passedProblems.contains(problem)) {
                 map.put(problem, 1);
@@ -193,13 +204,13 @@ public class ProblemServiceImpl implements ProblemService {
 
     @Override
     public int getProblemPages() {
-        return (int) Math.ceil(problemDao.getProblemCount() / (double) RECORDS_PER_PAGE);
+        return (int) Math.ceil(problemDao.getProblemCount() / (double) ConfigConstants.PROBLEMS_PER_PAGE);
     }
 
     @Override
     public int getProblemPageNumber(int id) {
         int idx = problemDao.getProblemIndex(id);
-        return (idx - 1) / RECORDS_PER_PAGE + 1;
+        return (idx - 1) / ConfigConstants.PROBLEMS_PER_PAGE + 1;
     }
 
     @Override
@@ -247,7 +258,12 @@ public class ProblemServiceImpl implements ProblemService {
 
     @Override
     public boolean canEdit(User user, @NonNull Problem problem) {
-        return (user != null) && ((user.isAdmin()) || user.equals(problem.getAuthor()));
+        return (user != null) && (user.isAdmin() || user.equals(problem.getAuthor()));
+    }
+
+    @Override
+    public void checkCanEdit(User user, @NonNull Problem problem) throws NoAuthenticationError {
+        if (!canEdit(user, problem)) throw new NoAuthenticationError("不允许编辑此问题");
     }
 
     @Autowired

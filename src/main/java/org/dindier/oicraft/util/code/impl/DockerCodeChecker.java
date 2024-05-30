@@ -1,6 +1,7 @@
 package org.dindier.oicraft.util.code.impl;
 
-import lombok.extern.slf4j.Slf4j;
+import org.dindier.oicraft.assets.constant.ConfigConstants;
+import org.dindier.oicraft.assets.exception.CodeCheckerError;
 import org.dindier.oicraft.util.code.CodeChecker;
 import org.dindier.oicraft.util.code.CodeCheckerInitializer;
 import org.dindier.oicraft.util.code.lang.Language;
@@ -16,21 +17,19 @@ import java.io.IOException;
  *
  * @author Crl
  */
-@Slf4j
 public class DockerCodeChecker extends CodeChecker {
     private static final int TLE_EXIT_CODE = 124;
     private boolean containerCreated = false;
 
     @Override
     public DockerCodeChecker setIO(String code, String language, String input,
-                                   @Nullable String output) throws IOException {
+                                   @Nullable String output) throws CodeCheckerError {
         input = (input + "\n").replace("\r", "");
         output = output == null ? "" : output.replace("\r", "");
         super.setIO(code, language, input, output);
-        workingDirectory = new File(FOLDER + id + "/");
+        workingDirectory = new File(ConfigConstants.TEST_FOLDER + id + "/");
         if (!workingDirectory.exists() && !workingDirectory.mkdirs()) {
-            log.error("Fail to create working dictionary");
-            return this;
+            throw new CodeCheckerError("Fail to create working dictionary");
         }
         codePath =
                 workingDirectory.getAbsolutePath() + "/Main." + extensionsMap.get(Language.fromString(language));
@@ -51,14 +50,13 @@ public class DockerCodeChecker extends CodeChecker {
                 process.waitFor();
                 containerCreated = process.exitValue() == 0;
             } catch (IOException | InterruptedException e) {
-                log.error("Error occurred while creating docker container", e);
+                throw new CodeCheckerError("Error occurred while creating docker container" + e);
             }
         }
 
         String container = String.valueOf(id);
         if (!(copyFromHostToDocker(container, file) && copyFromHostToDocker(container, inputFile))) {
-            log.error("Error occurred while copying file to docker");
-            return this;
+            throw new CodeCheckerError("Error occurred while copying file to docker");
         }
         return this;
     }
@@ -95,7 +93,7 @@ public class DockerCodeChecker extends CodeChecker {
         }
     }
 
-    private boolean compile() {
+    private boolean compile() throws CodeCheckerError {
         if (compiled) {
             return true;
         }
@@ -117,7 +115,7 @@ public class DockerCodeChecker extends CodeChecker {
         return true;
     }
 
-    public void test(boolean clearFile) throws IOException, InterruptedException {
+    public void test(boolean clearFile) throws CodeCheckerError {
         // if the code is already compiled, skip the compile step
         if (this.status == Status.CE) {
             clear(clearFile);
@@ -133,12 +131,18 @@ public class DockerCodeChecker extends CodeChecker {
         // run the code
         String command =
                 "docker exec " + id + " ./run.sh " + timeLimit / 1000.0 + " " + memoryLimit * 100;
-        Process runProcess = Runtime.getRuntime().exec(command);
-        runProcess.waitFor();
+        String stdout, stderr;
+        try {
+            Process runProcess = Runtime.getRuntime().exec(command);
+            runProcess.waitFor();
 
-        // get the output and error stream
-        String stdout = new String(runProcess.getInputStream().readAllBytes());
-        String stderr = new String(runProcess.getErrorStream().readAllBytes());
+            // get the output and error stream
+            stdout = new String(runProcess.getInputStream().readAllBytes());
+            stderr = new String(runProcess.getErrorStream().readAllBytes());
+        } catch (Exception e) {
+            throw new CodeCheckerError(e);
+        }
+
         setUsedTimeAndMemory(stdout, stderr);
         if (this.usedMemory > this.memoryLimit) {
             this.status = Status.MLE;
@@ -166,6 +170,8 @@ public class DockerCodeChecker extends CodeChecker {
                 output.append((char) c);
             }
             this.output = output.toString().stripTrailing().replace("\r", "");
+        } catch (Exception e) {
+            throw new CodeCheckerError(e);
         }
         checkAnswer();
         if (status == Status.P) status = Status.UKE;
@@ -206,10 +212,10 @@ public class DockerCodeChecker extends CodeChecker {
         }
     }
 
-    private void clear(boolean clear) {
+    private void clear(boolean clear) throws CodeCheckerError {
         if (clear) {
             if (!removeDockerContainer(String.valueOf(id))) {
-                log.error("Error occurred while removing docker container");
+                throw new CodeCheckerError("Error occurred while removing docker container");
             }
             deleteFolder(workingDirectory);
         }

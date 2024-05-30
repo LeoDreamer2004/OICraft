@@ -31,8 +31,6 @@ public class UserAPIController {
     @GetMapping("/email/new")
     public ResponseEntity<String> getVerificationForNew(@RequestParam String email) {
         User user = userService.getUserByRequest(request);
-        if (user == null)
-            return ResponseEntity.badRequest().body("Not logged in");
         userService.sendVerificationCode(user, email);
         return ResponseEntity.ok("Get verification");
     }
