@@ -29,8 +29,6 @@ public class ProblemAPIController {
     @GetMapping("/download")
     public ResponseEntity<Object> download(@RequestParam int id) {
         Problem problem = problemService.getProblemById(id);
-        if (problem == null)
-            return ResponseEntity.badRequest().body("No such problem");
         InputStreamSource inputStreamSource =
                 new ByteArrayResource(problemService.getProblemMarkdown(problem).getBytes());
         return ResponseEntity.ok().header("Content-Disposition",
@@ -42,8 +40,7 @@ public class ProblemAPIController {
     public ResponseEntity<byte[]> downloadCheckpoints(@RequestParam int id) throws IOException {
         Problem problem = problemService.getProblemById(id);
         User user = userService.getUserByRequest(request);
-        if (problem == null || !problemService.canEdit(user, problem))
-            return ResponseEntity.badRequest().body(null);
+        problemService.checkCanEdit(user, problem);
         InputStream inputStream = ioPairService.getIOPairsStream(problem);
         byte[] bytes = inputStream.readAllBytes();
         inputStream.close();

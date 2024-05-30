@@ -32,7 +32,7 @@ public class Problem implements Comparable<Problem> {
     private Difficulty difficulty;
 
     @OneToMany(mappedBy = "problem", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    List<Post> posts;
+    private List<Post> posts;
 
     public enum Difficulty {
         EASY, MEDIUM, HARD;

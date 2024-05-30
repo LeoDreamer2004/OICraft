@@ -25,7 +25,7 @@ public class ListViewController {
 
     @GetMapping
     public Object problems() {
-        User user = userService.getUserByRequest(request);
+        User user = userService.getUserByRequestOptional(request);
         String pageStr = request.getParameter("page");
         String from = request.getParameter("from");
         if (pageStr == null) {
@@ -48,7 +48,7 @@ public class ListViewController {
             // If the user input nothing, clear the filter and show all problems
             return new RedirectView("/problems");
         List<Problem> problems = problemService.searchProblems(keyword);
-        User user = userService.getUserByRequest(request);
+        User user = userService.getUserByRequestOptional(request);
         List<Integer> hasPassed = problems.stream()
                 .map(problem -> problemService.hasPassed(user, problem))
                 .toList();

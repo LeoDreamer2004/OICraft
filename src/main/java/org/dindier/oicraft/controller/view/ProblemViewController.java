@@ -32,9 +32,7 @@ public class ProblemViewController {
     @GetMapping("/{id}")
     public ModelAndView problem(@PathVariable int id) {
         Problem problem = problemService.getProblemById(id);
-        if (problem == null)
-            return new ModelAndView("error/404");
-        User user = userService.getUserByRequest(request);
+        User user = userService.getUserByRequestOptional(request);
         return new ModelAndView("problem/problem")
                 .addObject("problem", problem)
                 .addObject("samples", problemService.getSamples(problem))
@@ -60,8 +58,6 @@ public class ProblemViewController {
                                       @RequestParam("memoryLimit") int memoryLimit) {
 
         User user = userService.getUserByRequest(request);
-        if (user == null)
-            return new RedirectView("/login");
         Problem problem = new Problem(user, title, description, inputFormat, outputFormat,
                 Problem.Difficulty.fromString(difficulty), timeLimit, memoryLimit * 1024);
         problem = problemService.saveProblem(problem);
@@ -91,10 +87,7 @@ public class ProblemViewController {
     public ModelAndView edit(@RequestParam int id) {
         User user = userService.getUserByRequest(request);
         Problem problem = problemService.getProblemById(id);
-        if (problem == null)
-            return new ModelAndView("error/404");
-        if (!problemService.canEdit(user, problem))
-            return new ModelAndView("error/403");
+        problemService.checkCanEdit(user, problem);
         return new ModelAndView("problem/edit")
                 .addObject("problem", problem);
     }
@@ -110,10 +103,7 @@ public class ProblemViewController {
                                     @RequestParam int memoryLimit) {
         User user = userService.getUserByRequest(request);
         Problem problem = problemService.getProblemById(id);
-        if (problem == null)
-            return new RedirectView("error/404");
-        if (!problemService.canEdit(user, problem))
-            return new RedirectView("error/403");
+        problemService.checkCanEdit(user, problem);
         problem.setTitle(title);
         problem.setDescription(description);
         problem.setInputFormat(inputFormat);
@@ -129,10 +119,7 @@ public class ProblemViewController {
     public ModelAndView delete(@RequestParam int id) {
         User user = userService.getUserByRequest(request);
         Problem problem = problemService.getProblemById(id);
-        if (problem == null)
-            return new ModelAndView("error/404");
-        if (!problemService.canEdit(user, problem))
-            return new ModelAndView("error/403");
+        problemService.checkCanEdit(user, problem);
         return new ModelAndView("/problem/delete").
                 addObject("problem", problem);
     }
@@ -141,10 +128,7 @@ public class ProblemViewController {
     public RedirectView deleteConfirm(@RequestParam int id) {
         User user = userService.getUserByRequest(request);
         Problem problem = problemService.getProblemById(id);
-        if (problem == null)
-            return new RedirectView("error/404");
-        if (!problemService.canEdit(user, problem))
-            return new RedirectView("error/403");
+        problemService.checkCanEdit(user, problem);
         problemService.deleteProblem(problem);
         return new RedirectView("/problems");
     }
@@ -153,10 +137,9 @@ public class ProblemViewController {
     public ModelAndView editCheckpoints(@RequestParam int id) {
         User user = userService.getUserByRequest(request);
         Problem problem = problemService.getProblemById(id);
-        if (problem == null || !problem.getSubmissions().isEmpty())
+        problemService.checkCanEdit(user, problem);
+        if (!problem.getSubmissions().isEmpty())
             return new ModelAndView("error/404");
-        if (!problemService.canEdit(user, problem))
-            return new ModelAndView("error/403");
         return new ModelAndView("/problem/editCheckpoints")
                 .addObject("problem", problem);
     }
@@ -166,10 +149,9 @@ public class ProblemViewController {
                                          @RequestParam("file") MultipartFile file) {
         User user = userService.getUserByRequest(request);
         Problem problem = problemService.getProblemById(id);
-        if (problem == null || !problem.getSubmissions().isEmpty())
+        problemService.checkCanEdit(user, problem);
+        if (!problem.getSubmissions().isEmpty())
             return new ModelAndView("error/404");
-        if (!problemService.canEdit(user, problem))
-            return new ModelAndView("error/403");
         String errorMsg = null;
         try {
             InputStream inputStream = file.getInputStream();
@@ -194,10 +176,9 @@ public class ProblemViewController {
                                                @RequestParam int score) {
         User user = userService.getUserByRequest(request);
         Problem problem = problemService.getProblemById(id);
-        if (problem == null || !problem.getSubmissions().isEmpty())
+        if (!problem.getSubmissions().isEmpty())
             return new RedirectView("error/404");
-        if (!problemService.canEdit(user, problem))
-            return new RedirectView("error/403");
+        problemService.checkCanEdit(user, problem);
         Map<String, IOPair.Type> typeMap = Map.of(
                 "sample", IOPair.Type.SAMPLE,
                 "test", IOPair.Type.TEST
@@ -213,15 +194,11 @@ public class ProblemViewController {
 
         String pageStr = request.getParameter("page");
         int page = pageStr == null ? 1 : Integer.parseInt(pageStr);
-        if (problem == null) return new ModelAndView("error/404");
-
         String userId = request.getParameter("user");
         if (userId == null) userId = "all"; // Default value "all"
         User user = null;
-        if (!userId.equals("all")) {
+        if (!userId.equals("all"))
             user = userService.getUserById(Integer.parseInt(userId));
-            if (user == null) return new ModelAndView("error/404");
-        }
         List<Submission> submissions = submissionService.getSubmissionsInPage(problem, page, user);
         return new ModelAndView("submission/history")
                 .addObject("problem", problem)

@@ -9,7 +9,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class IDEViewController {
     @GetMapping
-    private ModelAndView getIDE() {
+    public ModelAndView getIDE() {
         return new ModelAndView("ide/ide");
     }
 }

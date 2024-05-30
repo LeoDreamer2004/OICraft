@@ -179,7 +179,7 @@ public int testCode(User user, Problem problem, String code, String language) {
 }
 ```
 
-测试结束后，调用相应的DAO层方法，将结果存入数据库。
+测试结束后，调用相应的DAO层方法，将结果存入数据库。我们采用 AOP 切片的方法，来监控程序运行的耗时性能。
 
 #### 邮箱绑定
 

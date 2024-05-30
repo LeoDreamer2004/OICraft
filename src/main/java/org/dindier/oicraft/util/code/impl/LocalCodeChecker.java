@@ -1,7 +1,8 @@
 package org.dindier.oicraft.util.code.impl;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.jni.LibraryNotFoundError;
+import org.dindier.oicraft.assets.constant.ConfigConstants;
+import org.dindier.oicraft.assets.exception.CodeCheckerError;
 import org.dindier.oicraft.util.code.CodeChecker;
 import org.dindier.oicraft.util.code.CodeCheckerInitializer;
 import org.dindier.oicraft.util.code.lang.Language;
@@ -18,7 +19,6 @@ import java.util.*;
  *
  * @author LeoDreamer
  */
-@Slf4j
 public class LocalCodeChecker extends CodeChecker {
     private long startTime;
     private Process process;
@@ -40,29 +40,29 @@ public class LocalCodeChecker extends CodeChecker {
 
     @Override
     public CodeChecker setIO(String code, String language,
-                             String input, @Nullable String output) throws IOException {
+                             String input, @Nullable String output) throws CodeCheckerError {
         input = (input + "\n").replace("\r", "").replace("\n", System.lineSeparator());
         output = output == null ? null : output.replace("\r", "").replace("\n",
                 System.lineSeparator());
         super.setIO(code, language, input, output);
 
         // working directory
-        this.workingDirectory = new File(FOLDER + id + "/");
+        this.workingDirectory = new File(ConfigConstants.TEST_FOLDER + id + "/");
         if (!workingDirectory.exists() && !workingDirectory.mkdirs()) {
-            throw new IOException("Fail to create working dictionary");
+            throw new CodeCheckerError("Fail to create working dictionary");
         }
 
         // code
         String extension = extensionsMap.get(Language.fromString(language));
         if (extension == null)
-            log.error("Unsupported language: {}", language);
+            throw new CodeCheckerError("Unsupported language: " + language);
         codePath = workingDirectory.getPath() + "/Main." + extension;
         createAndWriteToFile(codePath, code);
         return this;
     }
 
     @Override
-    public void test(boolean clearFile) throws IOException, InterruptedException {
+    public void test(boolean clearFile) throws CodeCheckerError {
         if (this.status == Status.CE) {
             clearFiles(clearFile);
             return;
@@ -82,34 +82,37 @@ public class LocalCodeChecker extends CodeChecker {
             clearFiles(clearFile);
             return;
         }
+        try {
+            process = pb.start();
+            // read the memory at first in case of the process terminated too quickly
+            usedMemory = (int) (getProcessMemoryUsage(process.pid()) / 1024);
+            startTime = System.currentTimeMillis();
+            timer.schedule(timerTask, 0, 20);
 
-        process = pb.start();
-        // read the memory at first in case of the process terminated too quickly
-        usedMemory = (int) (getProcessMemoryUsage(process.pid()) / 1024);
-        startTime = System.currentTimeMillis();
-        timer.schedule(timerTask, 0, 20);
+            if (!inputData.isEmpty()) {
+                // If the code needs input, write the input to the process
+                OutputStream outputStream = process.getOutputStream();
+                BufferedWriter outputStreamWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
 
-        if (!inputData.isEmpty()) {
-            // If the code needs input, write the input to the process
-            OutputStream outputStream = process.getOutputStream();
-            BufferedWriter outputStreamWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
-
-            try {
-                outputStreamWriter.write(inputData);
-                outputStreamWriter.flush();
-                outputStreamWriter.close();
-            } catch (IOException ignored) {
-                // Exception often occurs when the code does not accept any input
-                // It seems weird, but we still test the code as usual
+                try {
+                    outputStreamWriter.write(inputData);
+                    outputStreamWriter.flush();
+                    outputStreamWriter.close();
+                } catch (IOException ignored) {
+                    // Exception often occurs when the code does not accept any input
+                    // It seems weird, but we still test the code as usual
+                }
             }
-        }
 
-        process.waitFor();
-        usedTime = (int) (System.currentTimeMillis() - startTime);
-        timer.cancel();
+            process.waitFor();
+            usedTime = (int) (System.currentTimeMillis() - startTime);
+            timer.cancel();
 
-        if (!(status == Status.TLE) && !(status == Status.MLE)) {
-            checkAnswer();
+            if (!(status == Status.TLE) && !(status == Status.MLE)) {
+                checkAnswer();
+            }
+        } catch (Exception e) {
+            throw new CodeCheckerError(e);
         }
 
         if (status == Status.P) status = Status.UKE;
@@ -117,7 +120,7 @@ public class LocalCodeChecker extends CodeChecker {
     }
 
     /* Get the ProcessBuilder for the code to be checked */
-    private ProcessBuilder getProcessBuilder() {
+    private ProcessBuilder getProcessBuilder() throws CodeCheckerError {
         LocalCodeCompiler compiler = null;
         String[] runCmd;
         String path = workingDirectory.getPath();

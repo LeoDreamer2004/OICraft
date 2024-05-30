@@ -1,8 +1,10 @@
 package org.dindier.oicraft.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.dindier.oicraft.assets.constant.ConfigConstants;
 import org.dindier.oicraft.dao.ProblemDao;
 import org.dindier.oicraft.dao.SubmissionDao;
+import org.dindier.oicraft.assets.exception.EntityNotFoundException;
 import org.dindier.oicraft.model.Checkpoint;
 import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.Submission;
@@ -11,6 +13,7 @@ import org.dindier.oicraft.service.SubmissionService;
 import org.dindier.oicraft.service.UserService;
 import org.dindier.oicraft.util.ai.AIAdapter;
 import org.dindier.oicraft.util.code.lang.Status;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,46 +28,51 @@ public class SubmissionServiceImpl implements SubmissionService {
     private UserService userService;
     private AIAdapter aiAdapter;
 
-    private static final int RECORD_PER_PAGE = 20;
 
     private final List<Integer> waitingSubmissions = new CopyOnWriteArrayList<>();
 
+    @NotNull
     @Override
-    public Submission getSubmissionById(int id) {
-        return submissionDao.getSubmissionById(id);
+    public Submission getSubmissionById(int id) throws EntityNotFoundException {
+        Submission submission = submissionDao.getSubmissionById(id);
+        if (submission == null)
+            throw new EntityNotFoundException(Submission.class);
+        return submission;
     }
 
     @Override
     public List<Submission> getSubmissionsInPage(Problem problem, int page, User user) {
         if (user == null) {
             return submissionDao.getSubmissionsInRangeByProblemId(problem.getId(),
-                    (page - 1) * RECORD_PER_PAGE, RECORD_PER_PAGE);
+                    (page - 1) * ConfigConstants.SUBMISSIONS_PER_PAGE, ConfigConstants.SUBMISSIONS_PER_PAGE);
         }
         return submissionDao.getSubmissionsInRangeByProblemIdAndUserId(problem.getId(),
-                user.getId(), (page - 1) * RECORD_PER_PAGE, RECORD_PER_PAGE);
+                user.getId(), (page - 1) * ConfigConstants.SUBMISSIONS_PER_PAGE, ConfigConstants.SUBMISSIONS_PER_PAGE);
     }
 
     @Override
     public int getSubmissionPages(Problem problem, User user) {
         if (user == null) {
-            return (int) Math.ceil(submissionDao.countByProblemId(problem.getId()) * 1.0 / RECORD_PER_PAGE);
+            return (int) Math.ceil(submissionDao.countByProblemId(problem.getId()) * 1.0 /
+                    ConfigConstants.SUBMISSIONS_PER_PAGE);
         }
-        return (int) Math.ceil(submissionDao.countByProblemIdAndUserId(problem.getId(), user.getId()) * 1.0 / RECORD_PER_PAGE);
+        return (int) Math.ceil(submissionDao.countByProblemIdAndUserId(problem.getId(), user.getId())
+                * 1.0 / ConfigConstants.SUBMISSIONS_PER_PAGE);
     }
 
     @Override
     public Submission saveSubmission(Submission submission) {
         User user = submission.getUser();
         Problem problem = submission.getProblem();
-        Submission historySubmission = getSubmissionById(submission.getId());
-
-        boolean check = true;
-        if (!submission.getResult().equals(Submission.Result.PASSED)) {
-            check = false;
-        } else if (historySubmission != null && historySubmission.getResult().equals(Submission.Result.PASSED)) {
-            check = false;
+        Submission history = null;
+        try {
+            history = getSubmissionById(submission.getId());
+        } catch (EntityNotFoundException ignored) {
         }
-        if (historySubmission == null) {
+
+        boolean check = submission.getResult().equals(Submission.Result.PASSED)
+                && (history == null || (!history.getResult().equals(Submission.Result.PASSED)));
+        if (history == null) {
             problem.setSubmit(problem.getSubmit() + 1);
         }
         if (check) {

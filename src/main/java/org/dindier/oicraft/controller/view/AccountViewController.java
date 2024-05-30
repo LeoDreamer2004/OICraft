@@ -56,7 +56,7 @@ public class AccountViewController {
     public Object setEmail(@RequestParam("email") String email,
                            @RequestParam("code") String code) {
         User user = userService.getUserByRequest(request);
-        if (user == null || !userService.verifyEmail(user, email, code))
+        if (!userService.verifyEmail(user, email, code))
             return new RedirectView("/email?error");
         user.setEmail(email);
         userService.updateUser(user);
@@ -101,7 +101,6 @@ public class AccountViewController {
     @PostMapping("/logoff")
     public RedirectView logoffConfirm() {
         User user = userService.getUserByRequest(request);
-        if (user == null) return new RedirectView("/error/403");
         userService.deleteUser(user);
         return new RedirectView("/");
     }

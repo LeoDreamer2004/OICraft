@@ -39,14 +39,9 @@ public class JpaIOPairDao implements IOPairDao {
     }
 
     @Override
-    public IOPair getIOPairById(int id) {
-        return ioPairRepository.findById(id).orElse(null);
-    }
-
-    @Override
-    public Iterable<IOPair> addIOPairs(List<IOPair> ioPairs) {
+    public void addIOPairs(List<IOPair> ioPairs) {
         log.info("Add {} IOPairs", ioPairs.size());
-        return ioPairRepository.saveAll(ioPairs);
+        ioPairRepository.saveAll(ioPairs);
     }
 
     @Override

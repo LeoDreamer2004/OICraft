@@ -5,6 +5,7 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.misc.Pair;
+import org.dindier.oicraft.assets.constant.ConfigConstants;
 import org.dindier.oicraft.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -19,7 +20,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Email verification utility class
@@ -31,7 +31,6 @@ import java.util.concurrent.TimeUnit;
 public class EmailVerifier {
     private final Map<Pair<String, String>, VerificationCode> verificationCodes
             = new ConcurrentHashMap<>();
-    private static final long VALID_TIME = TimeUnit.MINUTES.toMillis(5);
     private JavaMailSender mailSender;
     private final Timer timer = new Timer();
 
@@ -90,7 +89,7 @@ public class EmailVerifier {
             public void run() {
                 verificationCodes.remove(key);
             }
-        }, VALID_TIME);
+        }, ConfigConstants.EMAIL_VALID_TIME);
     }
 
     public boolean verify(User user, String email, String code) {
@@ -101,7 +100,7 @@ public class EmailVerifier {
         String correctCode = verificationCodes.get(key).getCode();
         if (correctCode == null || !correctCode.equals(code))
             return false;
-        if (System.currentTimeMillis() - verificationCodes.get(key).getTimestamp() > VALID_TIME) {
+        if (System.currentTimeMillis() - verificationCodes.get(key).getTimestamp() > ConfigConstants.EMAIL_VALID_TIME) {
             verificationCodes.remove(key);
             return false;
         }

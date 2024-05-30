@@ -22,7 +22,7 @@ public class SubmissionAPIController {
     public ResponseEntity<String> getAIAdvice(@RequestParam("submission") int id) {
         Submission submission = submissionService.getSubmissionById(id);
         User user = userService.getUserByRequest(request);
-        if (submission == null || user == null || !user.equals(submission.getUser()))
+        if (!user.equals(submission.getUser()))
             return ResponseEntity.badRequest().body("Invalid request for AI token");
         String content = submission.getAdviceAI();
         return ResponseEntity.ok(content);
@@ -32,7 +32,7 @@ public class SubmissionAPIController {
     public ResponseEntity<String> postAIAdvice(@RequestParam("submission") int id) {
         Submission submission = submissionService.getSubmissionById(id);
         User user = userService.getUserByRequest(request);
-        if (submission == null || user == null || !user.equals(submission.getUser()))
+        if (!user.equals(submission.getUser()))
             return ResponseEntity.badRequest().body("Invalid request for AI token");
         String content = submissionService.getAIAdvice(submission).getAdviceAI();
         return ResponseEntity.ok(content);

@@ -28,10 +28,7 @@ public class AdminViewController {
     @GetMapping("/delete/{id}")
     public ModelAndView deleteUser(@PathVariable int id) {
         User user = userService.getUserById(id);
-        String error = canEditUser(user);
-        if (error != null)
-            return new ModelAndView("admin/error")
-                    .addObject("error", error);
+        userService.checkEditUserAuthentication(userService.getUserByRequest(request), user);
         return new ModelAndView("admin/delete")
                 .addObject("deleteUser", user);
     }
@@ -39,10 +36,7 @@ public class AdminViewController {
     @PostMapping("/delete/{id}")
     public Object deleteUserConfirm(@PathVariable int id) {
         User user = userService.getUserById(id);
-        String error = canEditUser(user);
-        if (error != null)
-            return new ModelAndView("admin/error")
-                    .addObject("error", error);
+        userService.checkEditUserAuthentication(userService.getUserByRequest(request), user);
         userService.deleteUser(user);
         return new RedirectView("/admin");
     }
@@ -50,10 +44,7 @@ public class AdminViewController {
     @GetMapping("/upgrade/{id}")
     public ModelAndView upgradeUser(@PathVariable int id) {
         User user = userService.getUserById(id);
-        String error = canEditUser(user);
-        if (error != null)
-            return new ModelAndView("admin/error")
-                    .addObject("error", error);
+        userService.checkEditUserAuthentication(userService.getUserByRequest(request), user);
         return new ModelAndView("admin/upgrade")
                 .addObject("upgradeUser", user);
     }
@@ -61,10 +52,7 @@ public class AdminViewController {
     @PostMapping("/upgrade/{id}")
     public Object upgradeUserConfirm(@PathVariable int id) {
         User user = userService.getUserById(id);
-        String error = canEditUser(user);
-        if (error != null || user == null)
-            return new ModelAndView("admin/error")
-                    .addObject("error", error);
+        userService.checkEditUserAuthentication(userService.getUserByRequest(request), user);
         user.setRole(User.Role.ADMIN);
         userService.updateUser(user);
         return new RedirectView("/admin");
@@ -73,10 +61,7 @@ public class AdminViewController {
     @GetMapping("/downgrade/{id}")
     public ModelAndView downgradeUser(@PathVariable int id) {
         User user = userService.getUserById(id);
-        String error = canEditUser(user);
-        if (error != null)
-            return new ModelAndView("admin/error")
-                    .addObject("error", error);
+        userService.checkEditUserAuthentication(userService.getUserByRequest(request), user);
         return new ModelAndView("admin/downgrade")
                 .addObject("downgradeUser", user);
     }
@@ -84,25 +69,10 @@ public class AdminViewController {
     @PostMapping("/downgrade/{id}")
     public Object downgradeUserConfirm(@PathVariable int id) {
         User user = userService.getUserById(id);
-        String error = canEditUser(user);
-        if (error != null || user == null)
-            return new ModelAndView("admin/error")
-                    .addObject("error", error);
+        userService.checkEditUserAuthentication(userService.getUserByRequest(request), user);
         user.setRole(User.Role.USER);
         userService.updateUser(user);
         return new RedirectView("/admin");
-    }
-
-    /* Check if the user can be edited */
-    private String canEditUser(User user) {
-        User currentUser = userService.getUserByRequest(request);
-        if (user == null)
-            return "用户不存在";
-        if (currentUser == null)
-            return "请先登录";
-        if (currentUser.equals(user))
-            return "不能修改自己的账户";
-        return null;
     }
 
     @Autowired

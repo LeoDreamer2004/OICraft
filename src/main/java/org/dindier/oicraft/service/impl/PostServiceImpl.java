@@ -3,6 +3,7 @@ package org.dindier.oicraft.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.dindier.oicraft.dao.CommentDao;
 import org.dindier.oicraft.dao.PostDao;
+import org.dindier.oicraft.assets.exception.EntityNotFoundException;
 import org.dindier.oicraft.model.Comment;
 import org.dindier.oicraft.model.Post;
 import org.dindier.oicraft.model.User;
@@ -10,6 +11,7 @@ import org.dindier.oicraft.service.PostService;
 import org.dindier.oicraft.service.UserService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 @Service("postService")
@@ -19,9 +21,13 @@ public class PostServiceImpl implements PostService {
     private CommentDao commentDao;
     private UserService userService;
 
+    @NotNull
     @Override
-    public Post getPostById(int id) {
-        return postDao.getPostById(id);
+    public Post getPostById(int id) throws EntityNotFoundException {
+        Post post =  postDao.getPostById(id);
+        if (post == null)
+            throw new EntityNotFoundException(Post.class);
+        return post;
     }
 
     @Override
@@ -72,12 +78,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public boolean canDeletePost(User user, @NotNull Post post) {
+    public boolean canDeletePost(User user, @NonNull Post post) {
         return user != null && (user.equals(post.getAuthor()) || user.isAdmin());
     }
 
     @Override
-    public boolean canDeleteComment(User user, @NotNull Comment comment) {
+    public boolean canDeleteComment(User user, @NonNull Comment comment) {
         return user != null && (user.equals(comment.getAuthor()) || user.isAdmin()
                 || user.equals(comment.getPost().getAuthor()));
     }

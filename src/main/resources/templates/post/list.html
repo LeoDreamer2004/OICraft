@@ -25,7 +25,7 @@
 </div>
 <main role="main" class="container">
     <h3 class="underlined-title mb-3">讨论区</h3>
-    <div th:each="post: ${problem.posts}" class="card mb-3">
+    <div th:each="post: ${posts}" class="card mb-3">
 
         <div class="card-header">
             <a th:unless="${post.author eq null}" th:href="@{/profile/{id}(id=${post.author.id})}" class="no-dec">

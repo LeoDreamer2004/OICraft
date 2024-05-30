@@ -26,9 +26,6 @@ public class SubmissionViewController {
     public ModelAndView submission(@PathVariable int id) {
         Submission submission = submissionService.getSubmissionById(id);
         User user = userService.getUserByRequest(request);
-        if (user == null) return null; // Actually, this page has been protected by interceptor
-        if (submission == null) return new ModelAndView("error/404");
-
         Problem problem = submission.getProblem();
         if (problemService.hasPassed(user, problem) <= 0
                 && !(user.isAdmin())

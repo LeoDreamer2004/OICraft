@@ -28,11 +28,11 @@ public class IOPairServiceImpl implements IOPairService {
     private ProblemDao problemDao;
 
     // Use me as the dir to save the zip file
-    private static final String putZipDir = "temp" + File.separator + ".temp_zip_put";
+    private static final String putZipDir = "temp" + File.separator + ".put";
     private static int setId = 0;
-    private static final String getZipDir = "temp" + File.separator + ".temp_zip_get";
+    private static final String getZipDir = "temp" + File.separator + ".get";
     private static int getId = 0;
-    private static final String tempZipDir = "temp" + File.separator + ".temp_zip";
+    private static final String tempZipDir = "temp" + File.separator + ".temp";
 
     @Autowired
     public void setIOPairDao(IOPairDao ioPairDao) {

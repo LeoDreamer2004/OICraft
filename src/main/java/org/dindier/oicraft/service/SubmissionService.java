@@ -1,9 +1,10 @@
 package org.dindier.oicraft.service;
 
+import org.dindier.oicraft.assets.exception.EntityNotFoundException;
 import org.dindier.oicraft.model.Problem;
 import org.dindier.oicraft.model.Submission;
 import org.dindier.oicraft.model.User;
-import org.springframework.lang.Nullable;
+import org.springframework.lang.NonNull;
 
 import java.util.List;
 
@@ -14,9 +15,10 @@ public interface SubmissionService {
      *
      * @param id The id of the submission
      * @return The submission
+     * @throws EntityNotFoundException If the submission not exists
      */
-    @Nullable
-    Submission getSubmissionById(int id);
+    @NonNull
+    Submission getSubmissionById(int id) throws EntityNotFoundException;
 
     /**
      * Get the submissions by a user of a problem with the given page number
