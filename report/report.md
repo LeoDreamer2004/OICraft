@@ -10,9 +10,9 @@ SpringBoot 是一个基于 Spring 的轻量级框架，它可以用来快速开�
 
 ## 项目分工
 
-- 原梓轩 2200010825：代码大框架设计，前端交互页面以及 MVC 框架搭建，运行于本机的代码检查实现
-- 陈润璘 2200010848：SQL 数据库的设计与 JPA 实现，外部服务器支持，运行于 Docker 容器的代码检查实现
-- 任子博 2200010626：部分核心业务逻辑与后端代码编写
+- 原梓轩 2200010825：代码大框架设计，前端交互页面以及 MVC 框架搭建，运行于本机的代码检查实现，大批代码重构与优化。
+- 陈润璘 2200010848：SQL 数据库的设计与 JPA 实现，运行于 Docker 容器的代码检查实现，Web 和 NAS 服务器提供与维护，AI 接口提供和实现。
+- 任子博 2200010626：部分核心业务逻辑与后端代码编写，必要的工具类支持。
 
 ---
 
@@ -20,17 +20,17 @@ SpringBoot 是一个基于 Spring 的轻量级框架，它可以用来快速开�
 
 OICraft 所用服务器是 SpringBoot 内置的 Tomcat 服务器（在本机运行），数据库 MySQL 来自于远程的阿里云服务器，采用了 JPA 框架来操作数据库。前端页面采用了 Thymeleaf 模板引擎。
 
-欢迎直接使用我们在网页端部署的服务器：http://123.56.220.173，服务器的内核是配置 Docker 环境的 Linux。
+欢迎直接使用我们在网页端部署的服务器：<http://123.56.220.173>，服务器的内核是配置 Docker 环境的 Linux。
 
-> <b><font color="red">请注意，务必将本项目放在英文目录文件夹下，否则可能不能正常评测代码！目前仅支持 Windows 和 Linux 平台。</font></b> 如果在测试当中遇到问题，可以用微信联系。
+> <b><font color="red">务必将本项目放在英文目录文件夹下，否则可能不能正常评测代码！目前仅支持 Windows 和 Linux 平台。</font></b> 如果在测试当中遇到问题，可以用微信联系。
 
 - 下载项目源代码后，使用 IntelliJ IDEA 作为项目打开。
 - 点击 `pom.xml` 文件，刷新导入 Maven 依赖。
 - 在 `resources/application.properties` 文件中配置数据库连接信息和邮箱信息。这里我们已经配好了远程阿里云数据库和公用邮箱。
 - 如果电脑上安装了 Docker，可以使用 Docker 容器运行代码检查以免受到提交的恶意代码的攻击，否则将在本机运行代码检查。如果使用 Docker，第一次运行时可能要用几分钟时间下载镜像和构建容器。如果要强制禁用 Docker，请在运行前将 `USE_DOCKER` 环境变量设置为 `false`。
 - 运行 `OICraftApplication.java` 启动项目。如果控制台出现了 OICraft 的 Logo，并随后出现了 SpringBoot 的运行日志 `Completed initialization in xxx ms`，说明项目启动成功。（注意：由于要链接数据库，需要保持较好的网络连接）
-- 在浏览器中输入 `http://localhost:8080` 即可访问网站。
-- 在网站的右上角登录账户，如果没有账户，可以点击注册按钮注册账户。（为了更好地展示所有功能，可以登录事先的管理员账户：<font color="red">用户名 （待定）；密码 （待定））</font>
+- 在浏览器中输入 `http://localhost` 即可访问网站。如果运行失败显示端口 80 被占用，请在 `resources/application.properties` 配置 `server.port` 空闲端口，并访问对应端口号 `http://localhost:xxx` 即可。
+- 在网站的右上角登录账户，如果没有账户，可以点击注册按钮注册账户。（为了更好地展示所有功能，可以登录事先的管理员账户：Java，密码：2024）
 
 本项目已在 [GitHub](https://github.com/LeoDreamer2004/OICraft) 上开源。
 
@@ -64,7 +64,7 @@ OICraft 所用服务器是 SpringBoot 内置的 Tomcat 服务器（在本机运�
 
 > 注：我们对网页端渲染提供了 markdown, html 和相应的 KaTeX 支持，用户可以在题目描述中使用 markdown 或 html 语法。允许用户下载题目的 markdown 版本。
 >
-> 我们从 Openjudge 上用爬虫爬取了一百道题左右，不过没有测试点。
+> 我们从 OpenJudge 上用爬虫爬取了一百道题左右，不过没有测试点。
 
 关于编辑测试点，我们提供了两种方式。用户可以在网站上上传测试点文件，也可以手动输入测试点。我们还提供了测试点的下载功能，以满足备份等等的需要。文件的具体格式在网页上有详细说明。
 
@@ -152,10 +152,11 @@ public class UserService {
 ```
 
 > 特别地，对于诸如用户头像这种大型二进制的数据存储，有两种办法：
+>
 > - 用 BLOB 类型直接存储在数据库中，但这时每次用户刷新网页请求时会造成大量的数据查询影响数据库性能
 > - 存储在一个固定的 URL 中，这种方式对性能开销小
-> 
-> 我们采用的是第二种方案。<font color=red>请注意：由于我们在网页端中显示头像是基于对服务器文件外链的，所以在本地运行服务器时编辑头像无效。</font>
+>
+> 我们采用的是第二种方案。<font color=red>请注意：由于我们在前端网页显示头像是基于对 NAS 服务器文件外链的，所以在本地运行服务器时编辑头像无效，如果想修改头像，请在我们提供的 [网页服务器](http://123.56.220.173) 上编辑。</font>
 
 ### 业务逻辑（Service层）
 
@@ -179,7 +180,7 @@ public int testCode(User user, Problem problem, String code, String language) {
 }
 ```
 
-测试结束后，调用相应的DAO层方法，将结果存入数据库。我们采用 AOP 切片的方法，来监控程序运行的耗时性能。
+测试结束后，调用相应的 DAO 层方法，将结果存入数据库。我们采用 AOP 切片的方法，来监控程序运行的耗时性能。
 
 #### 邮箱绑定
 
@@ -208,31 +209,21 @@ String verificationCode = UUID.randomUUID().toString();
 
 ```java
 public int addIOPairByZip(InputStream fileStream, int problemId) throws IOException;
-```
-
-此方法接收一个 zip 文件流，首先将其存放在本地。然后解压文件，按照扩展名将 IOPair 的数据读取出来，存入数据库，最后清除临时文件。
-
-```java
 public InputStream getIOPairsStream(int problemId) throws IOException;
 ```
 
-此方法接收一个问题的 id ，将该问题的所有测试点数据打包成 zip 文件流，返回给用户。
+前者用于添加测试点。接收一个 zip 文件流，首先将其存放在本地。然后解压文件，按照扩展名将 IOPair 的数据读取出来，存入数据库，最后清除临时文件。后者用于下载测试点，接收一个问题的 id ，将该问题的所有测试点数据打包成 zip 文件流，返回给用户。
 
 #### 签到
 
-通过以下两个方法，我们实现了用户的签到功能。
+我们实现了用户的签到功能。
 
 ```java
 public void checkIn(User user);
-```
-
-此方法接收一个用户对象，调用相关 DAO 在数据库中将该用户的签到状态设置为已签到，并增加积分，同时更新用户的签到时间。
-
-```java
 public boolean hasCheckedInToday(User user);
 ```
 
-此方法接收一个用户对象，判断该用户今天是否已签到，每个用户每天只能签到一次。
+前者调用相关 DAO 在数据库中将该用户的签到状态设置为已签到，并增加积分，同时更新用户的签到时间。后者判断该用户今天是否已签到，每个用户每天只能签到一次。
 
 #### 问题搜索
 
@@ -259,6 +250,29 @@ public List<T> search(String keyword) {
 
 ![提交记录](./img/submission.png)
 
+#### 异常处理
+
+我们按照 SpringBoot 推荐的方式，定义几个常见的全局异常，当 Service 层遇到问题时相应抛出，最后在前端进行控制管理（例如404页面或打印日志）。
+
+这里我们主要定义了以下几类异常：
+
+```java
+public class NoAuthenticationError {
+} // 无权限异常
+
+public class AdminOperationError {
+} // 管理员操作异常，是前者的子类
+
+public class CodeCheckerError {
+} // 代码评测异常
+
+public class EntityNotFoundException {
+} // 实体未找到异常
+
+public class UserNotFoundException {
+} // 用户未找到异常，是前者的子类
+```
+
 ### 控制层（Controller层）
 
 Controller 层是整个项目的入口，用于处理用户请求。我们通过注解 `@Controller` 来声明一个控制器。利用 `@GetMapping`
@@ -273,7 +287,7 @@ Controller 层是整个项目的入口，用于处理用户请求。我们通过
     public String getView(@PathVariable("id") int id);
     ```
 
-- `@RequestParam` 注解，获取 URL 的参数、
+- `@RequestParam` 注解，获取 URL 的参数。
 
     ```java
     @PostMapping("/your/url/path")
@@ -410,9 +424,11 @@ public PasswordEncoder passwordEncoder() {
 
 在这次实习作业当中，我们依托于 SpringBoot 框架自主设计了一个代码评测网站，并实现了诸多此类网站应有的实际功能。
 
-- 我们利用 Spring 的 Bean 容器的特点降低了代码耦合度，提高了代码的可维护性。同时，注解开发的方式和约定大于配置的原则，很大地提高了我们的开发效率。
+- 我们利用 Spring 的 AOP，IOC 和 DI 三大特点降低了代码耦合度，提高了代码的可维护性。同时，注解开发的方式和约定大于配置的原则，很大地提高了我们的开发效率。
 
 - 我们使用一般项目常用的设计模式，例如 MVC 模式，DAO 模式，Service 模式等。分层次的设计便于我们更好地分工合作，使得我们在维护代码 Git 时更加方便。
+
+- 我们了解了很多服务器的使用方式，并对 ssh 有了一定的认识，对 Web 服务器有了一次深入的体验。
 
 - 我们学习了使用 maven 来管理项目和第三方依赖，合理地调用第三方依赖可以避免重复造轮子，提高代码效率。
 
