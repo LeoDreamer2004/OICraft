@@ -8,6 +8,6 @@ import org.springframework.context.annotation.PropertySource;
 @Configuration
 @EnableAspectJAutoProxy
 @ComponentScan(basePackages = "org.dindier.oicraft")
-@PropertySource({"classpath:/ai.properties", "classpath:/temp.properties"})
+@PropertySource({"classpath:/ai.properties"})
 public class SpringConfig {
 }
