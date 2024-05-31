@@ -1,7 +1,7 @@
 package org.dindier.oicraft.service;
 
-import jakarta.annotation.Nullable;
 import org.dindier.oicraft.assets.exception.EntityNotFoundException;
+import org.dindier.oicraft.assets.exception.NoAuthenticationError;
 import org.dindier.oicraft.model.Comment;
 import org.dindier.oicraft.model.Post;
 import org.dindier.oicraft.model.User;
@@ -39,10 +39,11 @@ public interface PostService {
      * Get the comment by id
      *
      * @param id The comment id
-     * @return The comment with the given id, or {@code null} if not found
+     * @return The comment with the given id
+     * @throws EntityNotFoundException If the comment not exists
      */
-    @Nullable
-    Comment getCommentById(int id);
+    @NonNull
+    Comment getCommentById(int id) throws EntityNotFoundException;
 
     /**
      * Save a comment
@@ -65,16 +66,49 @@ public interface PostService {
      *
      * @param user The user
      * @param post The post
-     * @return {@code true} if the user can delete the post, {@code false} otherwise
+     * @return If the user is allowed to delete the post
      */
-    boolean canDeletePost(User user, @NonNull Post post);
+    default boolean canDeletePost(User user, @NonNull Post post) {
+        try {
+            checkCanDeletePost(user, post);
+            return true;
+        } catch (NoAuthenticationError e) {
+            return false;
+        }
+
+    }
+
+    /**
+     * Check if a user can delete a post
+     *
+     * @param user The user
+     * @param post The post
+     * @throws NoAuthenticationError If the user is not allowed to delete the post
+     */
+    void checkCanDeletePost(User user, @NonNull Post post) throws NoAuthenticationError;
 
     /**
      * Check if a user can delete a comment
      *
      * @param user    The user
      * @param comment The comment
-     * @return {@code true} if the user can delete the comment, {@code false} otherwise
+     * @return If the user is allowed to delete the comment
      */
-    boolean canDeleteComment(User user, @NonNull Comment comment);
+    default boolean canDeleteComment(User user, @NonNull Comment comment) {
+        try {
+            checkCanDeleteComment(user, comment);
+            return true;
+        } catch (NoAuthenticationError e) {
+            return false;
+        }
+    }
+
+    /**
+     * Check if a user can delete a comment
+     *
+     * @param user    The user
+     * @param comment The comment
+     * @throws NoAuthenticationError If the user is not allowed to delete the comment
+     */
+    void checkCanDeleteComment(User user, @NonNull Comment comment) throws NoAuthenticationError;
 }

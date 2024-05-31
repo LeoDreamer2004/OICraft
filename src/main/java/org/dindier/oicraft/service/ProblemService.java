@@ -119,7 +119,14 @@ public interface ProblemService {
      * @param problem The problem to check
      * @return Whether the user can edit the problem
      */
-    boolean canEdit(User user, @NonNull Problem problem);
+    default boolean canEdit(User user, @NonNull Problem problem) {
+        try {
+            checkCanEdit(user, problem);
+            return true;
+        } catch (NoAuthenticationError e) {
+            return false;
+        }
+    }
 
     /**
      * Check the user if the user can edit the problem
@@ -129,6 +136,31 @@ public interface ProblemService {
      * @throws NoAuthenticationError If the user cannot edit the problem
      */
     void checkCanEdit(User user, @NonNull Problem problem) throws NoAuthenticationError;
+
+    /**
+     * Return whether the user can edit the checkpoints
+     *
+     * @param user    The user to check
+     * @param problem The problem to check
+     * @return Whether the user can edit the checkpoints
+     */
+    default boolean canEditCheckpoints(User user, @NonNull Problem problem) {
+        try {
+            checkCanEditCheckpoints(user, problem);
+            return true;
+        } catch (NoAuthenticationError e) {
+            return false;
+        }
+    }
+
+    /**
+     * Return whether the user can edit the checkpoints
+     *
+     * @param user    The user to check
+     * @param problem The problem to check
+     * @throws NoAuthenticationError If the user cannot edit the checkpoints
+     */
+    void checkCanEditCheckpoints(User user, @NonNull Problem problem) throws NoAuthenticationError;
 
     /**
      * Get a page of problems with a certain user's pass info

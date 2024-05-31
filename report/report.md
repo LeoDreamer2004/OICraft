@@ -269,8 +269,8 @@ public class CodeCheckerError {
 public class EntityNotFoundException {
 } // 实体未找到异常
 
-public class UserNotFoundException {
-} // 用户未找到异常，是前者的子类
+public class UserNotLoggedInException {
+} // 用户未登录异常
 ```
 
 ### 控制层（Controller层）

@@ -14,11 +14,12 @@ import java.util.Arrays;
 public class ControllerExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ModelAndView EntityNotFoundHandler() {
-        return new ModelAndView("/error/404");
+    public ModelAndView EntityNotFoundHandler(EntityNotFoundException e) {
+        return new ModelAndView("/error/404")
+                .addObject("error", e.getMessage());
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
+    @ExceptionHandler(UserNotLoggedInException.class)
     public RedirectView UserNotFoundHandler() {
         return new RedirectView("/login");
     }

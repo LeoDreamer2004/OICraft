@@ -1,6 +1,7 @@
 package org.dindier.oicraft.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.dindier.oicraft.assets.exception.NoAuthenticationError;
 import org.dindier.oicraft.dao.CommentDao;
 import org.dindier.oicraft.dao.PostDao;
 import org.dindier.oicraft.assets.exception.EntityNotFoundException;
@@ -24,7 +25,7 @@ public class PostServiceImpl implements PostService {
     @NotNull
     @Override
     public Post getPostById(int id) throws EntityNotFoundException {
-        Post post =  postDao.getPostById(id);
+        Post post = postDao.getPostById(id);
         if (post == null)
             throw new EntityNotFoundException(Post.class);
         return post;
@@ -51,9 +52,13 @@ public class PostServiceImpl implements PostService {
         log.info("Delete post: {}", post.getTitle());
     }
 
+    @NotNull
     @Override
-    public Comment getCommentById(int id) {
-        return commentDao.getCommentById(id);
+    public Comment getCommentById(int id) throws EntityNotFoundException {
+        Comment comment = commentDao.getCommentById(id);
+        if (comment == null)
+            throw new EntityNotFoundException(Comment.class);
+        return comment;
     }
 
     @Override
@@ -78,14 +83,21 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public boolean canDeletePost(User user, @NonNull Post post) {
-        return user != null && (user.equals(post.getAuthor()) || user.isAdmin());
+    public void checkCanDeletePost(User user, @NonNull Post post) throws NoAuthenticationError {
+        if (user == null)
+            throw new NoAuthenticationError("未登录");
+        if (!user.equals(post.getAuthor()) && !user.isAdmin())
+            throw new NoAuthenticationError("仅作者或管理员可以删除帖子");
     }
 
     @Override
-    public boolean canDeleteComment(User user, @NonNull Comment comment) {
-        return user != null && (user.equals(comment.getAuthor()) || user.isAdmin()
-                || user.equals(comment.getPost().getAuthor()));
+    public void checkCanDeleteComment(User user, @NonNull Comment comment) {
+        if (user == null)
+            throw new NoAuthenticationError("未登录");
+        if (!user.equals(comment.getAuthor())
+                && !user.equals(comment.getPost().getAuthor())
+                && !user.isAdmin())
+            throw new NoAuthenticationError("仅作者或管理员可以删除评论");
     }
 
     @Autowired

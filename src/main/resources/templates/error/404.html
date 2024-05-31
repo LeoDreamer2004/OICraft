@@ -18,6 +18,7 @@
                 <div class="login-title">
                     <h1>页面找不到了</h1>
                     <p>* 你掉出了这个世界 *</p>
+                    <p th:unless="${error eq null}" class="m-0">错误原因：[[${error}]]</p>
                 </div>
                 <button type="submit">回到主页</button>
             </form>
