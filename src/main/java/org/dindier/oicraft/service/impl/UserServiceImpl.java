@@ -33,7 +33,6 @@ public class UserServiceImpl implements UserService {
     private EmailVerifier emailVerifier;
 
 
-
     @Getter
     public static class VerificationCode {
         private final String code;

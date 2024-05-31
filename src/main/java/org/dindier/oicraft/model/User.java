@@ -7,8 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.File;
 import java.sql.Date;
 import java.util.Collection;
 import java.util.List;
@@ -133,12 +132,7 @@ public class User implements UserDetails {
     }
 
     public boolean hasAvatar() {
-        try {
-            new URL(userAvatarURL());
-            return true;
-        } catch (MalformedURLException e) {
-            return false;
-        }
+        return new File(userAvatarFilePath()).exists();
     }
 
     public String getAvatarPath() {

@@ -31,6 +31,18 @@ public record ConfigConstants() {
     public static final int PROBLEMS_PER_PAGE = 20;
     public static final int SUBMISSIONS_PER_PAGE = 20;
 
-    public static final String SERVER_RESOURCE_URL = "http://123.56.220.173:8000";
-    public static final String SERVER_RESOURCE_FOLDER = "/mnt/nas";
+    public static String SERVER_RESOURCE_URL = "http://123.56.220.173:8000";
+    public static String SERVER_RESOURCE_FOLDER = "/mnt/nas";
+
+    static {
+        // Read the configuration from the environment
+        String serverResourceUrl = System.getenv("SERVER_RESOURCE_URL");
+        if (serverResourceUrl != null) {
+            SERVER_RESOURCE_URL = serverResourceUrl;
+        }
+        String serverResourceFolder = System.getenv("SERVER_RESOURCE_FOLDER");
+        if (serverResourceFolder != null) {
+            SERVER_RESOURCE_FOLDER = serverResourceFolder;
+        }
+    }
 }

@@ -12,6 +12,7 @@ public interface UserService extends UserDetailsService {
 
     /**
      * Get user by id
+     *
      * @param id The id of the user
      * @return The user with the id
      * @throws UserNotFoundException If the user is not found
@@ -32,6 +33,7 @@ public interface UserService extends UserDetailsService {
 
     /**
      * Update the user
+     *
      * @param user The user to update
      * @return The updated user
      */
@@ -74,7 +76,7 @@ public interface UserService extends UserDetailsService {
      * Get user by request
      *
      * @param request The request to get user from
-     * @return  The user from the request. If the user is not found, return null
+     * @return The user from the request. If the user is not found, return null
      */
     @Nullable
     User getUserByRequestOptional(HttpServletRequest request);
@@ -135,7 +137,7 @@ public interface UserService extends UserDetailsService {
      * Check if the operator can edit the user's authentication
      *
      * @param operator The operator
-     * @param user The user to be edited
+     * @param user     The user to be edited
      * @throws AdminOperationError If the operator cannot edit the user
      */
     void checkEditUserAuthentication(User operator, User user) throws AdminOperationError;
