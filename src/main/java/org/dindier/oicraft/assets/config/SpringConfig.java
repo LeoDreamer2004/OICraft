@@ -1,4 +1,4 @@
-package org.dindier.oicraft.config;
+package org.dindier.oicraft.assets.config;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +8,6 @@ import org.springframework.context.annotation.PropertySource;
 @Configuration
 @EnableAspectJAutoProxy
 @ComponentScan(basePackages = "org.dindier.oicraft")
-@PropertySource("classpath:/ai.properties")
+@PropertySource({"classpath:/ai.properties", "classpath:/temp.properties"})
 public class SpringConfig {
 }

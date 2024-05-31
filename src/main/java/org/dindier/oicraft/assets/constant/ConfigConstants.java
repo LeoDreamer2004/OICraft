@@ -1,12 +1,15 @@
 package org.dindier.oicraft.assets.constant;
 
+import org.springframework.stereotype.Component;
+
 import java.util.concurrent.TimeUnit;
 
+@Component
 public record ConfigConstants() {
 
     /****************
-    * User parameters
-    *****************/
+     * User parameters
+     *****************/
 
     // The experience for different level users
     public static final int INTERMEDIATE_MIN_EXP = 100;
@@ -27,4 +30,7 @@ public record ConfigConstants() {
     // View at the website
     public static final int PROBLEMS_PER_PAGE = 20;
     public static final int SUBMISSIONS_PER_PAGE = 20;
+
+    public static final String SERVER_RESOURCE_URL = "http://123.56.220.173:8000";
+    public static final String SERVER_RESOURCE_FOLDER = "/mnt/nas";
 }

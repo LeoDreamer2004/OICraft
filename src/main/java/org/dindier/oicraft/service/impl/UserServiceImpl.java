@@ -8,6 +8,7 @@ import org.dindier.oicraft.assets.exception.AdminOperationError;
 import org.dindier.oicraft.assets.exception.UserNotFoundException;
 import org.dindier.oicraft.model.User;
 import org.dindier.oicraft.service.UserService;
+import org.dindier.oicraft.util.code.lang.Platform;
 import org.dindier.oicraft.util.email.EmailVerifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,6 +31,8 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
     private PasswordEncoder passwordEncoder;
     private EmailVerifier emailVerifier;
+
+
 
     @Getter
     public static class VerificationCode {
@@ -192,45 +195,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int saveUserAvatar(User user, byte[] avatar) {
-        // save the avatar to the target folder, in order to make it accessible by the web
-        String folder = Objects.requireNonNull(getClass().getClassLoader()
-                .getResource("static/img/user")).getPath();
-        int a1 = saveUserAvatarToPath(user, avatar, folder);
 
-        // save the avatar to local folder, in order to make it accessible by the server
-        folder = "/src/main/resources/static/img/user";
-        int a2 = saveUserAvatarToPath(user, avatar, folder);
-
-        return a1 == 0 && a2 == 0 ? 0 : -1;
-    }
-
-    @Override
-    public void checkEditUserAuthentication(User operator, User user) throws AdminOperationError {
-        if (!operator.isAdmin())
-            throw new AdminOperationError("权限不足");
-        if (operator.equals(user))
-            throw new AdminOperationError("不可以修改自己的权限");
-    }
-
-    private int saveUserAvatarToPath(User user, byte[] avatar, String usersFolder) {
-
-        // make the directory first
-        String userFolder = usersFolder + "/" + user.getName();
-        if (userFolder.startsWith("/") && System.getProperty("os.name").toLowerCase().contains("windows")) {
-            userFolder = userFolder.substring(1);
+        String userAvatar = user.userAvatarFilePath();
+        if (userAvatar.startsWith("/") && Platform.detect() == Platform.WINDOWS) {
+            userAvatar = userAvatar.substring(1);
         }
-        try {
-            Files.createDirectories(Paths.get(userFolder));
-        } catch (IOException ex) {
-            log.info("Error when making the directory for user {}", user.getName());
-        }
-        Path avatarPath = Paths.get(userFolder + "/avatar");
+        Path avatarPath = Paths.get(userAvatar);
 
         if (avatar == null) {
             // delete the avatar
             try {
                 Files.deleteIfExists(avatarPath);
-                log.info("User {}cleared avatar.", user.getName());
+                log.info("User {} cleared avatar.", user.getName());
             } catch (IOException e) {
                 log.warn("Error while deleting avatar: {}", e.getMessage());
                 return -1;
@@ -250,5 +226,15 @@ public class UserServiceImpl implements UserService {
             return -1;
         }
         return 0;
+    }
+
+    @Override
+    public void checkEditUserAuthentication(User operator, User user) throws AdminOperationError {
+        if (!operator.isAdmin())
+            throw new AdminOperationError("权限不足");
+        if (operator.equals(user))
+            throw new AdminOperationError("不可以修改自己的权限");
+        if (user.getId() == 1)
+            throw new AdminOperationError("不允许编辑 1 号用户");
     }
 }
