@@ -7,10 +7,14 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Date;
 import java.util.Collection;
 import java.util.List;
+
+import static org.dindier.oicraft.assets.constant.ConfigConstants.SERVER_RESOURCE_FOLDER;
+import static org.dindier.oicraft.assets.constant.ConfigConstants.SERVER_RESOURCE_URL;
 
 /**
  * Basic user model
@@ -116,14 +120,28 @@ public class User implements UserDetails {
         return this.id == other.id;
     }
 
+    public String userAvatarFilePath() {
+        return SERVER_RESOURCE_FOLDER + "/img/user/avatar/" + name;
+    }
+
+    public String userAvatarURL() {
+        return SERVER_RESOURCE_URL + "/img/user/avatar/" + name;
+    }
+
+    public String defaultAvatarURL() {
+        return SERVER_RESOURCE_URL + "/img/user/avatar/default_avatar.jpeg";
+    }
+
     public boolean hasAvatar() {
-        URL url = getClass().getClassLoader().getResource("static/img/user/" + name + "/avatar");
-        return url != null;
+        try {
+            new URL(userAvatarURL());
+            return true;
+        } catch (MalformedURLException e) {
+            return false;
+        }
     }
 
     public String getAvatarPath() {
-        if (!hasAvatar())
-            return "/img/user/default_avatar.jpeg";
-        return "/img/user/" + name + "/avatar";
+        return hasAvatar() ? userAvatarURL() : defaultAvatarURL();
     }
 }
