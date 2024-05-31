@@ -257,13 +257,18 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
-    public boolean canEdit(User user, @NonNull Problem problem) {
-        return (user != null) && (user.isAdmin() || user.equals(problem.getAuthor()));
+    public void checkCanEdit(User user, @NonNull Problem problem) throws NoAuthenticationError {
+        if (user == null)
+            throw new NoAuthenticationError("未登录");
+        if (!user.isAdmin() && !user.equals(problem.getAuthor()))
+            throw new NoAuthenticationError("仅作者或管理员可以编辑题目");
     }
 
     @Override
-    public void checkCanEdit(User user, @NonNull Problem problem) throws NoAuthenticationError {
-        if (!canEdit(user, problem)) throw new NoAuthenticationError("不允许编辑此问题");
+    public void checkCanEditCheckpoints(User user, @NonNull Problem problem) throws NoAuthenticationError {
+        checkCanEdit(user, problem);
+        if (!problem.getSubmissions().isEmpty())
+            throw new NoAuthenticationError("已有提交记录，无法编辑测试点");
     }
 
     @Autowired

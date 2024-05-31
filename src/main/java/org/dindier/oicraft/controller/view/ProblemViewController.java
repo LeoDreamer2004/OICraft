@@ -38,7 +38,7 @@ public class ProblemViewController {
                 .addObject("samples", problemService.getSamples(problem))
                 .addObject("author", problem.getAuthor())
                 .addObject("canEdit", problemService.canEdit(user, problem))
-                .addObject("canEditCheckpoints", problem.getSubmissions().isEmpty())
+                .addObject("canEditCheckpoints", problemService.canEditCheckpoints(user, problem))
                 .addObject("historyScore", problemService.getHistoryScore(user, problem))
                 .addObject("canSubmit", !problemService.getTests(problem).isEmpty());
     }
@@ -137,9 +137,7 @@ public class ProblemViewController {
     public ModelAndView editCheckpoints(@RequestParam int id) {
         User user = userService.getUserByRequest(request);
         Problem problem = problemService.getProblemById(id);
-        problemService.checkCanEdit(user, problem);
-        if (!problem.getSubmissions().isEmpty())
-            return new ModelAndView("error/404");
+        problemService.checkCanEditCheckpoints(user, problem);
         return new ModelAndView("/problem/editCheckpoints")
                 .addObject("problem", problem);
     }

@@ -2,7 +2,8 @@ package org.dindier.oicraft.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.dindier.oicraft.assets.exception.AdminOperationError;
-import org.dindier.oicraft.assets.exception.UserNotFoundException;
+import org.dindier.oicraft.assets.exception.EntityNotFoundException;
+import org.dindier.oicraft.assets.exception.UserNotLoggedInException;
 import org.dindier.oicraft.model.User;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,10 +16,10 @@ public interface UserService extends UserDetailsService {
      *
      * @param id The id of the user
      * @return The user with the id
-     * @throws UserNotFoundException If the user is not found
+     * @throws EntityNotFoundException If the user is not found
      */
     @NotNull
-    User getUserById(int id) throws UserNotFoundException;
+    User getUserById(int id) throws EntityNotFoundException;
 
     User getUserByUsername(String name);
 
@@ -67,10 +68,10 @@ public interface UserService extends UserDetailsService {
      *
      * @param request The request to get user from
      * @return The user from the request.
-     * @throws UserNotFoundException If the user is not found
+     * @throws UserNotLoggedInException If the user is not found
      */
     @NotNull
-    User getUserByRequest(HttpServletRequest request) throws UserNotFoundException;
+    User getUserByRequest(HttpServletRequest request) throws UserNotLoggedInException;
 
     /**
      * Get user by request
@@ -79,7 +80,13 @@ public interface UserService extends UserDetailsService {
      * @return The user from the request. If the user is not found, return null
      */
     @Nullable
-    User getUserByRequestOptional(HttpServletRequest request);
+    default User getUserByRequestOptional(HttpServletRequest request) {
+        try {
+            return getUserByRequest(request);
+        } catch (UserNotLoggedInException e) {
+            return null;
+        }
+    }
 
     /**
      * Encode the password
@@ -140,5 +147,5 @@ public interface UserService extends UserDetailsService {
      * @param user     The user to be edited
      * @throws AdminOperationError If the operator cannot edit the user
      */
-    void checkEditUserAuthentication(User operator, User user) throws AdminOperationError;
+    void checkCanEditUserAuthentication(User operator, User user) throws AdminOperationError;
 }

@@ -28,7 +28,7 @@ public class AdminViewController {
     @GetMapping("/delete/{id}")
     public ModelAndView deleteUser(@PathVariable int id) {
         User user = userService.getUserById(id);
-        userService.checkEditUserAuthentication(userService.getUserByRequest(request), user);
+        userService.checkCanEditUserAuthentication(userService.getUserByRequest(request), user);
         return new ModelAndView("admin/delete")
                 .addObject("deleteUser", user);
     }
@@ -36,7 +36,7 @@ public class AdminViewController {
     @PostMapping("/delete/{id}")
     public Object deleteUserConfirm(@PathVariable int id) {
         User user = userService.getUserById(id);
-        userService.checkEditUserAuthentication(userService.getUserByRequest(request), user);
+        userService.checkCanEditUserAuthentication(userService.getUserByRequest(request), user);
         userService.deleteUser(user);
         return new RedirectView("/admin");
     }
@@ -44,7 +44,7 @@ public class AdminViewController {
     @GetMapping("/upgrade/{id}")
     public ModelAndView upgradeUser(@PathVariable int id) {
         User user = userService.getUserById(id);
-        userService.checkEditUserAuthentication(userService.getUserByRequest(request), user);
+        userService.checkCanEditUserAuthentication(userService.getUserByRequest(request), user);
         return new ModelAndView("admin/upgrade")
                 .addObject("upgradeUser", user);
     }
@@ -52,7 +52,7 @@ public class AdminViewController {
     @PostMapping("/upgrade/{id}")
     public Object upgradeUserConfirm(@PathVariable int id) {
         User user = userService.getUserById(id);
-        userService.checkEditUserAuthentication(userService.getUserByRequest(request), user);
+        userService.checkCanEditUserAuthentication(userService.getUserByRequest(request), user);
         user.setRole(User.Role.ADMIN);
         userService.updateUser(user);
         return new RedirectView("/admin");
@@ -61,7 +61,7 @@ public class AdminViewController {
     @GetMapping("/downgrade/{id}")
     public ModelAndView downgradeUser(@PathVariable int id) {
         User user = userService.getUserById(id);
-        userService.checkEditUserAuthentication(userService.getUserByRequest(request), user);
+        userService.checkCanEditUserAuthentication(userService.getUserByRequest(request), user);
         return new ModelAndView("admin/downgrade")
                 .addObject("downgradeUser", user);
     }
@@ -69,7 +69,7 @@ public class AdminViewController {
     @PostMapping("/downgrade/{id}")
     public Object downgradeUserConfirm(@PathVariable int id) {
         User user = userService.getUserById(id);
-        userService.checkEditUserAuthentication(userService.getUserByRequest(request), user);
+        userService.checkCanEditUserAuthentication(userService.getUserByRequest(request), user);
         user.setRole(User.Role.USER);
         userService.updateUser(user);
         return new RedirectView("/admin");

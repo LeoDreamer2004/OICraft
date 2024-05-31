@@ -5,13 +5,13 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.dindier.oicraft.assets.constant.ConfigConstants;
 import org.dindier.oicraft.assets.exception.AdminOperationError;
-import org.dindier.oicraft.assets.exception.UserNotFoundException;
+import org.dindier.oicraft.assets.exception.EntityNotFoundException;
+import org.dindier.oicraft.assets.exception.UserNotLoggedInException;
 import org.dindier.oicraft.model.User;
 import org.dindier.oicraft.service.UserService;
 import org.dindier.oicraft.util.code.lang.Platform;
 import org.dindier.oicraft.util.email.EmailVerifier;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -61,10 +61,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @NotNull
-    public User getUserById(int id) throws UserNotFoundException {
+    public User getUserById(int id) throws EntityNotFoundException {
         User user = userDao.getUserById(id);
         if (user == null)
-            throw new UserNotFoundException();
+            throw new EntityNotFoundException(User.class);
         return user;
     }
 
@@ -128,24 +128,14 @@ public class UserServiceImpl implements UserService {
 
     @NotNull
     @Override
-    public User getUserByRequest(HttpServletRequest request) throws UserNotFoundException {
+    public User getUserByRequest(HttpServletRequest request) throws UserNotLoggedInException {
         String username = request.getRemoteUser();
         if (username == null)
-            throw new UserNotFoundException("Not logged in");
+            throw new UserNotLoggedInException();
         User user = userDao.getUserByUsername(username);
         if (user == null)
-            throw new UserNotFoundException("User not found");
+            throw new UserNotLoggedInException();
         return user;
-    }
-
-    @Nullable
-    @Override
-    public User getUserByRequestOptional(HttpServletRequest request) {
-        try {
-            return getUserByRequest(request);
-        } catch (UserNotFoundException e) {
-            return null;
-        }
     }
 
     @Override
@@ -228,7 +218,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void checkEditUserAuthentication(User operator, User user) throws AdminOperationError {
+    public void checkCanEditUserAuthentication(User operator, User user) throws AdminOperationError {
         if (!operator.isAdmin())
             throw new AdminOperationError("权限不足");
         if (operator.equals(user))

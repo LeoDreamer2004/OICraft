@@ -65,10 +65,9 @@ public class PostViewController {
 
     @PostMapping("/delete")
     public RedirectView deletePost(@RequestParam("postId") int postId) {
-        User uer = userService.getUserByRequest(request);
+        User user = userService.getUserByRequest(request);
         Post post = postService.getPostById(postId);
-        if (!postService.canDeletePost(uer, post))
-            return new RedirectView("error/403");
+        postService.checkCanDeletePost(user, post);
         postService.deletePost(post);
         return new RedirectView("/post/list?problem=" + post.getProblem().getId());
     }
@@ -77,10 +76,7 @@ public class PostViewController {
     public RedirectView deleteComment(@RequestParam("commentId") int commentId) {
         User user = userService.getUserByRequest(request);
         Comment comment = postService.getCommentById(commentId);
-        if (comment == null)
-            return new RedirectView("error/404");
-        if (!postService.canDeleteComment(user, comment))
-            return new RedirectView("error/403");
+        postService.checkCanDeleteComment(user, comment);
         postService.deleteComment(comment);
         return new RedirectView("/post/" + comment.getPost().getId());
     }

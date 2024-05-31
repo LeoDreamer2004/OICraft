@@ -3,6 +3,7 @@ package org.dindier.oicraft.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.dindier.oicraft.assets.constant.ConfigConstants;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,9 +12,6 @@ import java.io.File;
 import java.sql.Date;
 import java.util.Collection;
 import java.util.List;
-
-import static org.dindier.oicraft.assets.constant.ConfigConstants.SERVER_RESOURCE_FOLDER;
-import static org.dindier.oicraft.assets.constant.ConfigConstants.SERVER_RESOURCE_URL;
 
 /**
  * Basic user model
@@ -120,15 +118,15 @@ public class User implements UserDetails {
     }
 
     public String userAvatarFilePath() {
-        return SERVER_RESOURCE_FOLDER + "/img/user/avatar/" + name;
+        return ConfigConstants.SERVER_RESOURCE_FOLDER + "/img/user/avatar/" + name;
     }
 
     public String userAvatarURL() {
-        return SERVER_RESOURCE_URL + "/img/user/avatar/" + name;
+        return ConfigConstants.SERVER_RESOURCE_URL + "/img/user/avatar/" + name;
     }
 
     public String defaultAvatarURL() {
-        return SERVER_RESOURCE_URL + "/img/user/avatar/default_avatar.jpeg";
+        return ConfigConstants.SERVER_RESOURCE_URL + "/img/user/avatar/default_avatar.jpeg";
     }
 
     public boolean hasAvatar() {

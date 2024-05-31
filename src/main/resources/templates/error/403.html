@@ -18,6 +18,7 @@
                 <div class="login-title">
                     <h1>您没有资格访问此界面</h1>
                     <p>* 也许你应该向管理员要op *</p>
+                    <p th:unless="${error eq null}" class="m-0">错误原因：[[${error}]]</p>
                 </div>
                 <button type="submit">回到主页</button>
             </form>
