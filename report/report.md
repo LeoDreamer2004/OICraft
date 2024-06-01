@@ -6,6 +6,8 @@ SpringBoot 是一个基于 Spring 的轻量级框架，它可以用来快速开�
 
 ~~由于长期苦于 OpenJudge 和编程网格的网页界面~~，本次课程设计作业依托于 SpringBoot 架构开发了一款在线代码测评网站——OICraft。
 
+请仔细阅读本文档的注意事项，尤其是 **<font color=red>红色字体</font>** 内容
+
 ---
 
 ## 项目分工
@@ -27,10 +29,11 @@ OICraft 所用服务器是 SpringBoot 内置的 Tomcat 服务器（在本机运�
 - 下载项目源代码后，使用 IntelliJ IDEA 作为项目打开。
 - 点击 `pom.xml` 文件，刷新导入 Maven 依赖。
 - 在 `resources/application.properties` 文件中配置数据库连接信息和邮箱信息。这里我们已经配好了远程阿里云数据库和公用邮箱。
-- 如果电脑上安装了 Docker，可以使用 Docker 容器运行代码检查以免受到提交的恶意代码的攻击，否则将在本机运行代码检查。如果使用 Docker，第一次运行时可能要用几分钟时间下载镜像和构建容器。如果要强制禁用 Docker，请在运行前将 `USE_DOCKER` 环境变量设置为 `false`。
+- 如果电脑上安装了 Docker，可以使用 Docker 容器运行代码检查以免受到提交的恶意代码的攻击，否则将在本机运行代码检查。如果要强制禁用 Docker，请在运行前将 `USE_DOCKER` 环境变量设置为 `false`。
+    > 如果使用 Docker，第一次运行时可能要用几分钟时间下载镜像和构建容器。<font color=red>建议手动在构建，不要自动构建。</font>构建目录在 `resources/scripts/docker` 下的四个目录，分别构建命名为 `code-checker-java/c/cpp/python` 的镜像。
 - 运行 `OICraftApplication.java` 启动项目。如果控制台出现了 OICraft 的 Logo，并随后出现了 SpringBoot 的运行日志 `Completed initialization in xxx ms`，说明项目启动成功。（注意：由于要链接数据库，需要保持较好的网络连接）
 - 在浏览器中输入 `http://localhost` 即可访问网站。如果运行失败显示端口 80 被占用，请在 `resources/application.properties` 配置 `server.port` 空闲端口，并访问对应端口号 `http://localhost:xxx` 即可。
-- 在网站的右上角登录账户，如果没有账户，可以点击注册按钮注册账户。（为了更好地展示所有功能，可以登录事先的管理员账户：Java，密码：2024）
+- 在网站的右上角登录账户，如果没有账户，可以点击注册按钮注册账户。（<font color=green>为了更好地展示所有功能，可以登录事先的管理员账户：Java，密码：2024</font>）
 
 本项目已在 [GitHub](https://github.com/LeoDreamer2004/OICraft) 上开源。
 
@@ -156,7 +159,7 @@ public class UserService {
 > - 用 BLOB 类型直接存储在数据库中，但这时每次用户刷新网页请求时会造成大量的数据查询影响数据库性能
 > - 存储在一个固定的 URL 中，这种方式对性能开销小
 >
-> 我们采用的是第二种方案。<font color=red>请注意：由于我们在前端网页显示头像是基于对 NAS 服务器文件外链的，所以在本地运行服务器时编辑头像无效，如果想修改头像，请在我们提供的 [网页服务器](http://123.56.220.173) 上编辑。</font>
+> 我们采用的是第二种方案。<font color=red>请注意：由于我们在前端网页显示头像是基于对 NAS 服务器文件外链的，所以在本地运行服务器时头像功能完全无效，如果想测试上传或修改头像，请在我们提供的 [网页服务器](http://123.56.220.173) 上编辑。</font>
 
 ### 业务逻辑（Service层）
 

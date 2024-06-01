@@ -35,7 +35,7 @@
                th:href="@{/profile/{id}(id=${post.author.id})}"></a>
             <span th:if="${post.author eq null}" class="DELETED">账户已注销</span>
             <a th:text="${post.title}" class="ml-3" th:href="@{/post/{id}(id=${post.id})}"></a>
-            <span th:text="${post.createTime}" style="float: right;"></span>
+            <span th:text="${post.timeStampString}" style="float: right;"></span>
         </div>
         <div class="card-body markdown user-comment" th:utext="${post.content}"></div>
     </div>
