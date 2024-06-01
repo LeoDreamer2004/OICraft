@@ -1,5 +1,6 @@
 package org.dindier.oicraft.service;
 
+import org.dindier.oicraft.assets.exception.BadFileException;
 import org.dindier.oicraft.model.IOPair;
 import org.dindier.oicraft.model.Problem;
 
@@ -21,9 +22,9 @@ public interface IOPairService {
      * Add IOPair from zip file uploaded by user
      *
      * @param fileStream The file stream uploaded
-     * @return 0 if success, -1 if the file is invalid
+     * @throws BadFileException If the file is not a valid zip file
      */
-    int addIOPairByZip(InputStream fileStream, int problemId) throws IOException;
+    void addIOPairByZip(InputStream fileStream, int problemId) throws BadFileException;
 
     /**
      * Get IOPairs in zip file as a stream

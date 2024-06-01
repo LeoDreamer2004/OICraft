@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.misc.Pair;
 import org.dindier.oicraft.assets.constant.ConfigConstants;
+import org.dindier.oicraft.assets.exception.EmailVerificationError;
 import org.dindier.oicraft.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -31,26 +32,15 @@ import java.util.concurrent.ConcurrentHashMap;
 public class EmailVerifier {
     private final Map<Pair<String, String>, VerificationCode> verificationCodes
             = new ConcurrentHashMap<>();
-    private JavaMailSender mailSender;
     private final Timer timer = new Timer();
+    private JavaMailSender mailSender;
 
     @Autowired
     public void setMailSender(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
 
-    @Getter
-    public static class VerificationCode {
-        private final String code;
-        private final long timestamp;
-
-        public VerificationCode(String code) {
-            this.code = code;
-            this.timestamp = System.currentTimeMillis();
-        }
-    }
-
-    public void send(User user, String email) {
+    public void send(User user, String email) throws EmailVerificationError {
         String username = user.getUsername();
         String verificationCode = UUID.randomUUID().toString();
         Pair<String, String> key = new Pair<>(username, email);
@@ -60,15 +50,13 @@ public class EmailVerifier {
         URL emailUrl = getClass().getClassLoader()
                 .getResource("static/html/email.html");
         if (emailUrl == null) {
-            log.warn("Error while trying to send email to {}", email);
-            return;
+            throw new EmailVerificationError("不存在邮件模板");
         }
         String htmlMsg;
         try (InputStream emailStream = emailUrl.openStream()) {
             htmlMsg = new String(emailStream.readAllBytes());
         } catch (IOException e) {
-            log.warn("Error while trying to send email to {}", email);
-            return;
+            throw new EmailVerificationError("无法读取邮件模板");
         }
         htmlMsg = htmlMsg.replace("{{username}}", username);
         htmlMsg = htmlMsg.replace("{{code}}", verificationCode);
@@ -79,7 +67,7 @@ public class EmailVerifier {
             helper.setSubject("Your OICraft verification code");
             helper.setFrom("oicraft2024@163.com");
         } catch (MessagingException e) {
-            log.info("Error while trying to send email to {}", email);
+            throw new EmailVerificationError("无法发送邮件");
         }
         mailSender.send(mailMessage);
         log.info("Verification code sent to {}", email);
@@ -107,5 +95,16 @@ public class EmailVerifier {
         verificationCodes.remove(key);
         log.info("Email from {} verified successfully", email);
         return true;
+    }
+
+    @Getter
+    public static class VerificationCode {
+        private final String code;
+        private final long timestamp;
+
+        public VerificationCode(String code) {
+            this.code = code;
+            this.timestamp = System.currentTimeMillis();
+        }
     }
 }

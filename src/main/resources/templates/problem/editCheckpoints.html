@@ -23,33 +23,33 @@
     <a class="btn btn-primary mb-3" th:href="@{/problem/{id}(id=${problem.id})}">返回原题</a>
     <a class="btn btn-secondary mb-3" href="/problems">返回题单</a>
 </div>
-<main role="main" class="container">
+<main class="container" role="main">
     <h4 class="underlined-title mt-5">上传测试点</h4>
     <div class="card my-card p-3">
-        <form th:action="@{/problem/edit/checkpoints/file(id=${problem.id})}" method="post"
-              enctype="multipart/form-data">
+        <form enctype="multipart/form-data" method="post"
+              th:action="@{/problem/edit/checkpoints/file(id=${problem.id})}">
             <div class="form-group" style="font-size: 18px">
                 <p>文件格式：请上传一个zip文件，其中包含两个文件夹sample和test，分别代表样例用/测试用。<br/>
                     输入输出和分数请分别存储于X.in，X.out和X.score，当X相同时认为是匹配的一组。</p>
                 <b>请注意：这种方式每次上传之后会覆盖掉原有的测试点，如果需要请下载之前的测试点！</b>
-                <input type="file" id="file" name="file" accept="application/zip" required>
+                <input accept="application/zip" id="file" name="file" required type="file">
             </div>
-            <div th:unless="${errorMsg eq null}">错误：[[${${errorMsg}}]]</div>
-            <a th:href="@{/api/problem/checkpoints/download(id=${problem.id})}" class="btn btn-primary">下载测试点</a>
-            <button type="submit" class="btn btn-danger">确认修改</button>
+            <div class="alert alert-danger mb-2" th:unless="${error eq null}">错误：[[${error}]]</div>
+            <a class="btn btn-primary" th:href="@{/api/problem/checkpoints/download(id=${problem.id})}">下载测试点</a>
+            <button class="btn btn-danger" type="submit">确认修改</button>
         </form>
     </div>
 
     <h4 class="underlined-title mt-5">手动添加测试点</h4>
     <div class="card my-card p-3 mb-5">
-        <form th:action="@{/problem/edit/checkpoints/text(id=${problem.id})}" method="post">
+        <form method="post" th:action="@{/problem/edit/checkpoints/text(id=${problem.id})}">
             <div class="form-group">
                 <label for="input">输入</label>
-                <textarea class="form-control" id="input" name="input" rows="2" required></textarea>
+                <textarea class="form-control" id="input" name="input" required rows="2"></textarea>
             </div>
             <div class="form-group">
                 <label for="output">输出</label>
-                <textarea class="form-control" id="output" name="output" rows="2" required></textarea>
+                <textarea class="form-control" id="output" name="output" required rows="2"></textarea>
             </div>
             <div class="form-group">
                 <label for="type">类型</label>
@@ -60,10 +60,9 @@
             </div>
             <div class="form-group">
                 <label for="score">分数</label>
-                <input type="number" class="form-control" id="score" name="score" required>
+                <input class="form-control" id="score" name="score" required type="number">
             </div>
-            <div th:unless="${errorMsg eq null}">错误：[[${${errorMsg}}]]</div>
-            <button type="submit" class="btn btn-primary">确认添加</button>
+            <button class="btn btn-primary" type="submit">确认添加</button>
         </form>
     </div>
 </main>

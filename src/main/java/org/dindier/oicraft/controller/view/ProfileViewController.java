@@ -1,6 +1,7 @@
 package org.dindier.oicraft.controller.view;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.dindier.oicraft.assets.exception.BadFileException;
 import org.dindier.oicraft.model.User;
 import org.dindier.oicraft.service.ProblemService;
 import org.dindier.oicraft.service.UserService;
@@ -52,18 +53,31 @@ public class ProfileViewController {
     }
 
     @PostMapping("/edit/avatar")
-    public RedirectView editAvatar(@RequestParam("avatar") MultipartFile avatar) throws IOException {
+    public RedirectView editAvatar(@RequestParam("avatar") MultipartFile avatar) {
         User user = userService.getUserByRequest(request);
-        byte[] avatarData = avatar.getInputStream().readAllBytes();
-        if (userService.saveUserAvatar(user, avatarData) != 0)
-            return new RedirectView("/profile/edit/avatar?error");
+
+        try {
+            byte[] avatarData;
+            try {
+                avatarData = avatar.getInputStream().readAllBytes();
+            } catch (IOException e) {
+                throw new BadFileException("读取文件流异常");
+            }
+            userService.saveUserAvatar(user, avatarData);
+        } catch (BadFileException e) {
+            return new RedirectView("/profile/edit/avatar?error=" + e.getMessage());
+        }
         return new RedirectView("/profile/edit/avatar");
     }
 
     @GetMapping("/edit/avatar/delete")
     public RedirectView deleteAvatar() {
         User user = userService.getUserByRequest(request);
-        userService.saveUserAvatar(user, null);
+        try {
+            userService.saveUserAvatar(user, null);
+        } catch (BadFileException e) {
+            return new RedirectView("/profile/edit/avatar?error=" + e.getMessage());
+        }
         return new RedirectView("/profile/edit/avatar");
     }
 

@@ -11,9 +11,9 @@
 <body class="colored-background">
 
 <div th:insert="~{index :: nav}"></div>
-<main role="main" class="card-container">
+<main class="card-container" role="main">
     <div class="login-card" id="loginForm">
-        <form class="login-form" th:action="@{/email}" method="post">
+        <form class="login-form" method="post" th:action="@{/email}">
             <div class="login-title">
                 <h1>邮箱认证</h1>
                 <p>绑定您的邮箱，不再担心忘记密码</p>
@@ -24,18 +24,18 @@
                 </div>
             </div>
             <div class="form-item">
-                <div id="errorMsg" class="alert alert-danger ml-3 mr-3 mb-0" style="display: none;">
+                <div class="alert alert-danger ml-3 mr-3 mb-0" id="errorMsg" style="display: none;">
                 </div>
             </div>
             <div class="form-item">
-                <input type="text" name="email" id="email" placeholder="邮箱" required autofocus>
+                <input autofocus id="email" name="email" placeholder="邮箱" required type="text">
             </div>
             <div class="form-item">
-                <input type="text" name="code" id="code" placeholder="验证码" required>
+                <input id="code" name="code" placeholder="验证码" required type="text">
             </div>
             <div class="form-item-other">
-                <button style="width: 37%; margin-left: 30px" type="button"
-                        id="verificationBtn" onclick="sendVerification()">
+                <button id="verificationBtn" onclick="sendVerification()"
+                        style="width: 37%; margin-left: 30px" type="button">
                     获取验证码
                 </button>
                 <button style="width: 37%; margin-right: 30px" type="submit">确定</button>
@@ -74,9 +74,12 @@
             .then(response => {
                 if (!response.ok) {
                     msg.style.display = 'block';
-                    msg.innerText = '发送失败，请稍后重试';
                 }
+                return response.text();
             })
+            .then(data => {
+                msg.innerText = data;
+            });
     }
 </script>
 </body>

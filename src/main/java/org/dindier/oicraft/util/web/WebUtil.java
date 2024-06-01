@@ -1,4 +1,4 @@
-package org.dindier.oicraft.util.crawl;
+package org.dindier.oicraft.util.web;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,7 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * A web utility class to crawl web pages and download files
+ * A web utility class to web pages and download files
  *
  * @author LeoDreamer
  */

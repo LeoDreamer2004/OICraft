@@ -1,6 +1,7 @@
 package org.dindier.oicraft.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.dindier.oicraft.assets.exception.BadFileException;
 import org.dindier.oicraft.dao.IOPairDao;
 import org.dindier.oicraft.dao.ProblemDao;
 import org.dindier.oicraft.model.IOPair;
@@ -14,25 +15,24 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import java.util.Comparator;
 import java.util.zip.ZipOutputStream;
 
 @Service("IOPairService")
 @Slf4j
 public class IOPairServiceImpl implements IOPairService {
-    private IOPairDao ioPairDao;
-    private ProblemDao problemDao;
-
     // Use me as the dir to save the zip file
     private static final String putZipDir = "temp" + File.separator + ".put";
-    private static int setId = 0;
     private static final String getZipDir = "temp" + File.separator + ".get";
-    private static int getId = 0;
     private static final String tempZipDir = "temp" + File.separator + ".temp";
+    private static int setId = 0;
+    private static int getId = 0;
+    private IOPairDao ioPairDao;
+    private ProblemDao problemDao;
 
     @Autowired
     public void setIOPairDao(IOPairDao ioPairDao) {
@@ -48,8 +48,7 @@ public class IOPairServiceImpl implements IOPairService {
     }
 
     @Override
-    public int addIOPairByZip(InputStream fileStream, int problemId) throws IOException {
-        int[] flag = {0};
+    public void addIOPairByZip(InputStream fileStream, int problemId) throws BadFileException {
         Problem problem = problemDao.getProblemById(problemId);
         List<IOPair> ioPairs = new ArrayList<>();
         Path tempDir = Paths.get(putZipDir + File.separator + setId++);
@@ -61,9 +60,15 @@ public class IOPairServiceImpl implements IOPairService {
                     continue;
                 }
                 Path filePath = tempDir.resolve(entry.getName());
-                Files.createDirectories(filePath.getParent());
-                Files.copy(zipInputStream, filePath);
+                try {
+                    Files.createDirectories(filePath.getParent());
+                    Files.copy(zipInputStream, filePath);
+                } catch (IOException e) {
+                    throw new BadFileException("无法创建或拷贝临时文件路径");
+                }
             }
+        } catch (Exception e) {
+            throw new BadFileException("无法读取文件，请检查是否为Zip或Zip内文件格式");
         }
         try (Stream<Path> paths = Files.walk(tempDir)) {
             // read the input and output files
@@ -85,28 +90,33 @@ public class IOPairServiceImpl implements IOPairService {
                         IOPair ioPair = new IOPair(problem, input, output, type, scoreInt);
                         ioPairs.add(ioPair);
                     } catch (IOException e) {
-                        flag[0] = -1;
                         throw new UncheckedIOException(e);
                     }
                 }
             });
+        } catch (IOException e) {
+            throw new BadFileException("Zip内文件路径读取异常");
         }
 
         // delete the old IOPairs and add the new ones
         ioPairDao.deleteIOPairByProblemId(problemId);
         ioPairDao.addIOPairs(ioPairs);
-        fileStream.close();
+        try {
+            fileStream.close();
+        } catch (IOException e) {
+            log.warn("Cannot close the file stream. Please take care of the memory leak.");
+        }
         try (Stream<Path> paths = Files.walk(tempDir)) {
             paths.sorted(Comparator.reverseOrder())
                     .map(Path::toFile)
                     .forEach(file -> {
                         if (!file.delete()) {
-                            throw new UncheckedIOException("Failed to delete file: " + file,
-                                    new IOException());
+                            log.warn("Failed to delete file: {}", file);
                         }
                     });
+        } catch (IOException e) {
+            throw new BadFileException("Zip内文件路径读取异常");
         }
-        return flag[0];
     }
 
     @Override

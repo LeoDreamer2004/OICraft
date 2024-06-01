@@ -22,7 +22,7 @@ SpringBoot 是一个基于 Spring 的轻量级框架，它可以用来快速开�
 
 OICraft 所用服务器是 SpringBoot 内置的 Tomcat 服务器（在本机运行），数据库 MySQL 来自于远程的阿里云服务器，采用了 JPA 框架来操作数据库。前端页面采用了 Thymeleaf 模板引擎。
 
-欢迎直接使用我们在网页端部署的服务器：<http://123.56.220.173>，服务器的内核是配置 Docker 环境的 Linux。
+欢迎直接使用我们在网页端部署的服务器：<http://123.56.220.173>，服务器的内核是配置 Docker 环境的 Linux。然而，服务器和数据库在一个月左右就会过期关闭。
 
 > <b><font color="red">务必将本项目放在英文目录文件夹下，否则可能不能正常评测代码！目前仅支持 Windows 和 Linux 平台。</font></b> 如果在测试当中遇到问题，可以用微信联系。
 
@@ -266,6 +266,9 @@ public class NoAuthenticationError {
 public class AdminOperationError {
 } // 管理员操作异常，是前者的子类
 
+public class BadFileException {
+} // 用户文件异常
+
 public class CodeCheckerError {
 } // 代码评测异常
 
@@ -274,6 +277,9 @@ public class EntityNotFoundException {
 
 public class UserNotLoggedInException {
 } // 用户未登录异常
+
+public class EmailVerificationError {
+} // 邮箱验证异常
 ```
 
 ### 控制层（Controller层）
