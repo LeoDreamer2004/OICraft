@@ -13,12 +13,6 @@ import java.util.Arrays;
 @ControllerAdvice
 public class ControllerExceptionHandler {
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ModelAndView EntityNotFoundHandler(EntityNotFoundException e) {
-        return new ModelAndView("/error/404")
-                .addObject("error", e.getMessage());
-    }
-
     @ExceptionHandler(UserNotLoggedInException.class)
     public RedirectView UserNotFoundHandler() {
         return new RedirectView("/login");
@@ -27,6 +21,12 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(NoAuthenticationError.class)
     public ModelAndView NoAuthenticationHandler(NoAuthenticationError e) {
         return new ModelAndView("/error/403")
+                .addObject("error", e.getMessage());
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ModelAndView EntityNotFoundHandler(EntityNotFoundException e) {
+        return new ModelAndView("/error/404")
                 .addObject("error", e.getMessage());
     }
 

@@ -1,7 +1,11 @@
 package org.dindier.oicraft.controller.view;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.dindier.oicraft.model.*;
+import org.dindier.oicraft.assets.exception.BadFileException;
+import org.dindier.oicraft.model.IOPair;
+import org.dindier.oicraft.model.Problem;
+import org.dindier.oicraft.model.Submission;
+import org.dindier.oicraft.model.User;
 import org.dindier.oicraft.service.IOPairService;
 import org.dindier.oicraft.service.ProblemService;
 import org.dindier.oicraft.service.SubmissionService;
@@ -147,23 +151,22 @@ public class ProblemViewController {
                                          @RequestParam("file") MultipartFile file) {
         User user = userService.getUserByRequest(request);
         Problem problem = problemService.getProblemById(id);
-        problemService.checkCanEdit(user, problem);
-        if (!problem.getSubmissions().isEmpty())
-            return new ModelAndView("error/404");
-        String errorMsg = null;
+        problemService.checkCanEditCheckpoints(user, problem);
         try {
-            InputStream inputStream = file.getInputStream();
-            if (ioPairService.addIOPairByZip(inputStream, problem.getId()) == -1)
-                errorMsg = "创建失败！请检查文件格式！";
-        } catch (IOException e) {
-            errorMsg = "服务器内部文件流异常！\n" + e.getMessage();
+            InputStream inputStream;
+            try {
+                inputStream = file.getInputStream();
+            } catch (IOException e) {
+                throw new BadFileException("读取文件流异常");
+            }
+            ioPairService.addIOPairByZip(inputStream, id);
+        } catch (BadFileException e) {
+            return new ModelAndView("problem/editCheckpoints")
+                    .addObject("problem", problem)
+                    .addObject("error", e.getMessage());
         }
+        return new RedirectView("/problems");
 
-        if (errorMsg == null)
-            return new RedirectView("/problems");
-        return new ModelAndView("problem/editCheckpoints")
-                .addObject("problem", problem)
-                .addObject("errorMsg", errorMsg);
     }
 
     @PostMapping("/edit/checkpoints/text")

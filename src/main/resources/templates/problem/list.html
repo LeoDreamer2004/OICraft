@@ -25,19 +25,21 @@
         </div>
         <div th:unless="${user} eq null">
             <a class="user-item" th:href="@{/profile/{id}(id=${user.id})}">
-                <img class="avatar" th:src="${user.avatarPath}" width="30" height="30" alt="avatar">
+                <img alt="avatar" class="avatar" height="30" th:src="${user.avatarPath}" width="30">
             </a>
-            <a class="user-item" th:text="${user.name}" th:href="@{/profile}"></a>
+            <a class="user-item" th:href="@{/profile}" th:text="${user.name}"></a>
             <a class="user-item" href="/logout">登出</a>
         </div>
     </div>
 </div>
-<main role="main" class="container">
+<main class="container" role="main">
     <h5>搜索试题</h5>
-    <form class="search-container mb-4" action="/problems/search" method="get">
-        <input type="text" class="form-control search-field" name="keyword"
-               placeholder="输入题目名称">
-        <button type="submit" class="iconfont icon-sousuo search-icon"></button>
+    <form action="/problems/search" class="search-container mb-4" method="get">
+        <input class="form-control search-field" name="keyword"
+               placeholder="输入题目名称" th:if="${param.keyword eq null}" type="text">
+        <input class="form-control search-field" name="keyword"
+               th:unless="${param.keyword eq null}" th:value="${param.keyword}" type="text">
+        <button class="iconfont icon-sousuo search-icon" type="submit"></button>
     </form>
     <div class="card my-card p-3">
         <ul class="pagination justify-content-center" th:unless="${page eq null}">
@@ -47,8 +49,8 @@
             <li class="page-item" th:classappend="${page == 1} ? 'disabled'">
                 <a class="page-link" th:href="@{/problems(page=${page - 1})}">上一页</a>
             </li>
-            <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"
-                th:classappend="${i == page} ? 'active'">
+            <li class="page-item" th:classappend="${i == page} ? 'active'"
+                th:each="i : ${#numbers.sequence(1, totalPages)}">
                 <a class="page-link" th:href="@{/problems(page=${i})}" th:text="${i}"></a>
             <li class="page-item" th:classappend="${page == totalPages} ? 'disabled'">
                 <a class="page-link" th:href="@{/problems(page=${page + 1})}">下一页</a>
@@ -72,10 +74,10 @@
                     <!-- If the user has not logged in, the status is not displayed -->
                     <span class="iconfont icon-jianhao" style="color: gray"></span>
                 </td>
-                <td th:unless="${user eq null}" th:switch="${hasPassed[stat.index]}">
-                    <span th:case="1" class="iconfont icon-duihao" style="color: forestgreen"></span>
-                    <span th:case="0" class="iconfont icon-jianhao" style="color: gray"></span>
-                    <span th:case="-1" class="iconfont icon-cuowu" style="color: firebrick"></span>
+                <td th:switch="${hasPassed[stat.index]}" th:unless="${user eq null}">
+                    <span class="iconfont icon-duihao" style="color: forestgreen" th:case="1"></span>
+                    <span class="iconfont icon-jianhao" style="color: gray" th:case="0"></span>
+                    <span class="iconfont icon-cuowu" style="color: firebrick" th:case="-1"></span>
                 </td>
                 <td th:text="${problem.getIdString()}"></td>
                 <td>

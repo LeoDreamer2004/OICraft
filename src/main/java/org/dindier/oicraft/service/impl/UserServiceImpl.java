@@ -4,9 +4,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.dindier.oicraft.assets.constant.ConfigConstants;
-import org.dindier.oicraft.assets.exception.AdminOperationError;
-import org.dindier.oicraft.assets.exception.EntityNotFoundException;
-import org.dindier.oicraft.assets.exception.UserNotLoggedInException;
+import org.dindier.oicraft.assets.exception.*;
+import org.dindier.oicraft.dao.UserDao;
 import org.dindier.oicraft.model.User;
 import org.dindier.oicraft.service.UserService;
 import org.dindier.oicraft.util.code.lang.Platform;
@@ -16,14 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.dindier.oicraft.dao.UserDao;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Date;
-import java.util.*;
+import java.util.Calendar;
 
 @Service("userService")
 @Slf4j
@@ -31,18 +29,6 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
     private PasswordEncoder passwordEncoder;
     private EmailVerifier emailVerifier;
-
-
-    @Getter
-    public static class VerificationCode {
-        private final String code;
-        private final long timestamp;
-
-        public VerificationCode(String code) {
-            this.code = code;
-            this.timestamp = System.currentTimeMillis();
-        }
-    }
 
     @Autowired
     private void setUserDao(UserDao userDao) {
@@ -173,7 +159,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void sendVerificationCode(User user, String email) {
+    public void sendVerificationCode(User user, String email) throws EmailVerificationError {
         emailVerifier.send(user, email);
     }
 
@@ -183,7 +169,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int saveUserAvatar(User user, byte[] avatar) {
+    public void saveUserAvatar(User user, byte[] avatar) throws BadFileException {
 
         String userAvatar = user.userAvatarFilePath();
         if (userAvatar.startsWith("/") && Platform.detect() == Platform.WINDOWS) {
@@ -197,24 +183,21 @@ public class UserServiceImpl implements UserService {
                 Files.deleteIfExists(avatarPath);
                 log.info("User {} cleared avatar.", user.getName());
             } catch (IOException e) {
-                log.warn("Error while deleting avatar: {}", e.getMessage());
-                return -1;
+                throw new BadFileException("由于服务器内部IO异常，无法删除头像");
             }
-            return 0;
+            return;
         }
 
-        if (avatar.length > 16 * 1024 * 1024) // 16MB
-            return -1;
+        if (avatar.length > 4 * 1024 * 1024) // 4MB
+            throw new BadFileException("头像文件过大");
 
         try {
             // save the avatar
             Files.write(avatarPath, avatar);
             log.info("Saving avatar for user {}", user.getName());
         } catch (IOException e) {
-            log.warn("Error while saving avatar: {}", e.getMessage());
-            return -1;
+            throw new BadFileException("由于服务器内部IO异常，无法保存头像");
         }
-        return 0;
     }
 
     @Override
@@ -225,5 +208,16 @@ public class UserServiceImpl implements UserService {
             throw new AdminOperationError("不可以修改自己的权限");
         if (user.getId() == 1)
             throw new AdminOperationError("不允许编辑 1 号用户");
+    }
+
+    @Getter
+    public static class VerificationCode {
+        private final String code;
+        private final long timestamp;
+
+        public VerificationCode(String code) {
+            this.code = code;
+            this.timestamp = System.currentTimeMillis();
+        }
     }
 }

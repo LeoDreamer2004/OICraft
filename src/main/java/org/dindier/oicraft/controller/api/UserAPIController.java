@@ -1,6 +1,7 @@
 package org.dindier.oicraft.controller.api;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.dindier.oicraft.assets.exception.EmailVerificationError;
 import org.dindier.oicraft.model.User;
 import org.dindier.oicraft.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,17 +32,25 @@ public class UserAPIController {
     @GetMapping("/email/new")
     public ResponseEntity<String> getVerificationForNew(@RequestParam String email) {
         User user = userService.getUserByRequest(request);
-        userService.sendVerificationCode(user, email);
-        return ResponseEntity.ok("Get verification");
+        try {
+            userService.sendVerificationCode(user, email);
+            return ResponseEntity.ok("成功发送验证码");
+        } catch (EmailVerificationError e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/email/reset")
     public ResponseEntity<String> getVerificationForReset(@RequestParam String username) {
         User user = userService.getUserByUsername(username);
         if (user == null || user.getEmail() == null)
-            return ResponseEntity.badRequest().body("User or email not found");
-        userService.sendVerificationCode(user, user.getEmail());
-        return ResponseEntity.ok("Get verification");
+            return ResponseEntity.badRequest().body("用户不存在或未绑定邮箱");
+        try {
+            userService.sendVerificationCode(user, user.getEmail());
+        } catch (EmailVerificationError e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+        return ResponseEntity.ok("成功发送验证码");
     }
 
     @PostMapping("/password/reset")

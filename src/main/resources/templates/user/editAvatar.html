@@ -13,21 +13,20 @@
     <h2>编辑档案</h2>
 </div>
 
-<main role="main" class="container">
+<main class="container" role="main">
     <div th:replace="~{user/editProfile :: profileEditBar}"></div>
     <h3 class="underlined-title">选择头像</h3>
-    <p>支持JPEG/PNG格式，大小不得超过16MB</p>
-    <img class="avatar" th:src="${user.avatarPath}" alt="avatar" height="300" width="300">
-    <form th:action="@{/profile/edit/avatar}" method="post" enctype="multipart/form-data">
+    <p>支持JPEG/PNG格式，大小不得超过4MB</p>
+    <p>上传后如果没有成功更新，可以尝试使用Ctrl+F5强制刷新浏览器缓存</p>
+    <img alt="avatar" class="avatar" height="300" th:src="${user.avatarPath}" width="300">
+    <form enctype="multipart/form-data" method="post" th:action="@{/profile/edit/avatar}">
         <div class="form-group">
-            <input type="file" class="form-control-file" id="avatar" name="avatar"
-                   accept="image/png, image/jpeg, image/jpg" required>
+            <input accept="image/png, image/jpeg, image/jpg" class="form-control-file" id="avatar" name="avatar"
+                   required type="file">
         </div>
-        <div class="alert alert-danger mb-0" th:if="${param.error}">
-            文件不符合要求
-        </div>
-        <button type="submit" class="btn btn-primary mt-2 mb-2">确定修改</button>
-        <a href="/profile/edit/avatar/delete" class="btn btn-danger">清除头像</a>
+        <div class="alert alert-danger mb-0" th:if="${param.error}" th:text="${param.error}"></div>
+        <button class="btn btn-primary mt-2 mb-2" type="submit">确定修改</button>
+        <a class="btn btn-danger" href="/profile/edit/avatar/delete">清除头像</a>
     </form>
 </main>
 </body>

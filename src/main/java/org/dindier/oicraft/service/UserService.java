@@ -1,9 +1,7 @@
 package org.dindier.oicraft.service;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.dindier.oicraft.assets.exception.AdminOperationError;
-import org.dindier.oicraft.assets.exception.EntityNotFoundException;
-import org.dindier.oicraft.assets.exception.UserNotLoggedInException;
+import org.dindier.oicraft.assets.exception.*;
 import org.dindier.oicraft.model.User;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -117,8 +115,9 @@ public interface UserService extends UserDetailsService {
      *
      * @param user  The user to send the code to
      * @param email The email to send the code to
+     * @throws EmailVerificationError If the email cannot be sent
      */
-    void sendVerificationCode(User user, String email);
+    void sendVerificationCode(User user, String email) throws EmailVerificationError;
 
     /**
      * Verify the email with the code. If true, record the email into the database
@@ -136,9 +135,8 @@ public interface UserService extends UserDetailsService {
      * If avatar is null, the avatar will be deleted
      *
      * @param user The user to save the avatar to
-     * @return if the avatar is saved successfully
      */
-    int saveUserAvatar(User user, byte[] avatar);
+    void saveUserAvatar(User user, byte[] avatar) throws BadFileException;
 
     /**
      * Check if the operator can edit the user's authentication
