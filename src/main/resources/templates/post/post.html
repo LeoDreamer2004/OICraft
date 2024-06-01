@@ -32,7 +32,7 @@
        th:href="@{/profile/{id}(id=${post.author.id})}"></a>
     <span th:if="${post.author eq null}" class="DELETED">账户已注销</span>
     <span>发布于</span>
-    <span th:text="${post.createTime}"></span>
+    <span th:text="${post.timeStampString}"></span>
     <div class="card mb-3 mt-3">
         <div class="card-header">
             <span class="m-0"><b th:text="${post.title}" style="font-size: larger"></b></span>
@@ -62,7 +62,7 @@
             </a>
             <a th:unless="${comment.author eq null}" th:class="${comment.author.gradeString}" th:text="${comment.author.name}"
                th:href="@{/profile/{id}(id=${comment.author.id})}"></a>
-            <span th:text="${comment.createTime}"></span>
+            <span th:text="${comment.timeStampString}"></span>
             <span th:if="${comment.author eq null}" class="DELETED">账户已注销</span>
             <form style="float: right" th:action="@{/post/comment/delete}" method="post" th:if="${canDeleteComment[stat.index]}">
                 <input type="hidden" name="commentId" th:value="${comment.id}">

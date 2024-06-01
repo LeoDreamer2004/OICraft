@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +35,9 @@ public class Post {
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<Comment> comments;
 
+    @Transient
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
     public Post(String title, String content, Problem problem, User author) {
         this.title = title;
         this.content = content;
@@ -44,5 +48,9 @@ public class Post {
     }
 
     protected Post() {
+    }
+
+    public String getTimeStampString() {
+        return sdf.format(createTime);
     }
 }
