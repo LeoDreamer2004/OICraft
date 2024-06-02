@@ -10,6 +10,7 @@ import org.dindier.oicraft.model.User;
 import org.dindier.oicraft.service.UserService;
 import org.dindier.oicraft.util.code.lang.Platform;
 import org.dindier.oicraft.util.email.EmailVerifier;
+import org.dindier.oicraft.util.web.ImageUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -57,6 +58,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserByUsername(String name) {
         return userDao.getUserByUsername(name);
+    }
+
+    @Override
+    public boolean isLegalUsername(String username) {
+        return ConfigConstants.USER_NAME_PATTERN.matcher(username).matches();
     }
 
     @Override
@@ -170,18 +176,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void saveUserAvatar(User user, byte[] avatar) throws BadFileException {
-
         String userAvatar = user.userAvatarFilePath();
+        String userOriginalAvatar = user.userOriginalAvatarFilePath();
         if (userAvatar.startsWith("/") && Platform.detect() == Platform.WINDOWS) {
             userAvatar = userAvatar.substring(1);
         }
         Path avatarPath = Paths.get(userAvatar);
+        Path originalAvatarPath = Paths.get(userOriginalAvatar);
 
         if (avatar == null) {
-            // delete the avatar
+            // delete the avatarStream
             try {
                 Files.deleteIfExists(avatarPath);
-                log.info("User {} cleared avatar.", user.getName());
+                Files.deleteIfExists(originalAvatarPath);
+                log.info("User {} cleared avatarStream.", user.getName());
             } catch (IOException e) {
                 throw new BadFileException("由于服务器内部IO异常，无法删除头像");
             }
@@ -192,9 +200,10 @@ public class UserServiceImpl implements UserService {
             throw new BadFileException("头像文件过大");
 
         try {
-            // save the avatar
-            Files.write(avatarPath, avatar);
-            log.info("Saving avatar for user {}", user.getName());
+            // save the avatarStream
+            Files.write(avatarPath, ImageUtil.compressImage(avatar, 4));
+            Files.write(originalAvatarPath, avatar);
+            log.info("Saving avatarStream for user {}", user.getName());
         } catch (IOException e) {
             throw new BadFileException("由于服务器内部IO异常，无法保存头像");
         }

@@ -10,23 +10,28 @@
 
 <body class="colored-background">
 <div th:insert="~{index :: nav}"></div>
-<main role="main" class="card-container">
+<main class="card-container" role="main">
     <div class="login-card" id="registerForm">
-        <form class="login-form" th:action="@{/register}" method="post">
+        <form class="login-form" method="post" th:action="@{/register}">
             <div class="login-title">
                 <h1>注册</h1>
                 <p>欢迎来到OICraft</p>
             </div>
-            <div class="form-item" th:if="${param.error}">
+            <div class="form-item" th:unless="${param.illegal eq null}">
+                <div class="alert alert-danger ml-3 mr-3">
+                    用户名非法，只允许英文、数字和下划线，且至少两字符
+                </div>
+            </div>
+            <div class="form-item" th:unless="${param.exist eq null}">
                 <div class="alert alert-danger ml-3 mr-3">
                     用户名已存在
                 </div>
             </div>
             <div class="form-item">
-                <input name="username" id="username" type="text" placeholder="用户名" maxlength="10" required autofocus>
+                <input autofocus id="username" maxlength="10" name="username" placeholder="用户名" required type="text">
             </div>
             <div class="form-item">
-                <input name="password" id="password" type="password" placeholder="密码" maxlength="15" required>
+                <input id="password" maxlength="15" name="password" placeholder="密码" required type="password">
             </div>
             <button type="submit">注册</button>
             <div class="login-footer">

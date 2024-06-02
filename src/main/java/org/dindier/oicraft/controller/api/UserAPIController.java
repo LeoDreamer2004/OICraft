@@ -33,7 +33,7 @@ public class UserAPIController {
         } catch (BadFileException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return ResponseEntity.ok().body("Avatar updated");
+        return ResponseEntity.ok().body("ok");
     }
 
     @PostMapping("/delete/avatar")

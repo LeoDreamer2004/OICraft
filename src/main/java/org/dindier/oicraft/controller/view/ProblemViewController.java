@@ -60,7 +60,8 @@ public class ProblemViewController {
                                       @RequestParam("difficulty") String difficulty,
                                       @RequestParam("timeLimit") int timeLimit,
                                       @RequestParam("memoryLimit") int memoryLimit) {
-
+        if (title.trim().isEmpty())
+            return new RedirectView("/problem/new?error");
         User user = userService.getUserByRequest(request);
         Problem problem = new Problem(user, title, description, inputFormat, outputFormat,
                 Problem.Difficulty.fromString(difficulty), timeLimit, memoryLimit * 1024);

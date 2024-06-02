@@ -22,6 +22,14 @@ public interface UserService extends UserDetailsService {
     User getUserByUsername(String name);
 
     /**
+     * Check if the username is legal
+     *
+     * @param username The username to check
+     * @return Whether the username is legal
+     */
+    boolean isLegalUsername(String username);
+
+    /**
      * Create a new user
      *
      * @param username The name of the user
@@ -132,9 +140,10 @@ public interface UserService extends UserDetailsService {
 
     /**
      * Save the avatar of the user
-     * If avatar is null, the avatar will be deleted
+     * If avatarStream is null, the avatar will be deleted
      *
-     * @param user The user to save the avatar to
+     * @param user   The user to save the avatarStream to
+     * @param avatar The avatar to save
      */
     void saveUserAvatar(User user, byte[] avatar) throws BadFileException;
 

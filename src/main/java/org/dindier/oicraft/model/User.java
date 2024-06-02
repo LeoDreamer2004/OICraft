@@ -95,14 +95,6 @@ public class User implements UserDetails {
         return true;
     }
 
-    public enum Role {
-        ADMIN, USER
-    }
-
-    public enum Grade {
-        BEGINNER, INTERMEDIATE, ADVANCED, EXPERT
-    }
-
     public boolean isAdmin() {
         return role.equals(Role.ADMIN);
     }
@@ -115,6 +107,14 @@ public class User implements UserDetails {
         if (other == null)
             return false;
         return this.id == other.id;
+    }
+
+    public String userOriginalAvatarFilePath() {
+        return ConfigConstants.SERVER_RESOURCE_FOLDER + "/img/user/avatar_original/" + name;
+    }
+
+    public String userOriginalAvatarURL() {
+        return ConfigConstants.SERVER_RESOURCE_URL + "/img/user/avatar_original/" + name;
     }
 
     public String userAvatarFilePath() {
@@ -135,5 +135,17 @@ public class User implements UserDetails {
 
     public String getAvatarPath() {
         return hasAvatar() ? userAvatarURL() : defaultAvatarURL();
+    }
+
+    public String getOriginalAvatarPath() {
+        return hasAvatar() ? userOriginalAvatarURL() : defaultAvatarURL();
+    }
+
+    public enum Role {
+        ADMIN, USER
+    }
+
+    public enum Grade {
+        BEGINNER, INTERMEDIATE, ADVANCED, EXPERT
     }
 }
