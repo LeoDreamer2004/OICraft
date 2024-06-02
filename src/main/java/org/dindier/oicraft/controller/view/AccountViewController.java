@@ -76,11 +76,12 @@ public class AccountViewController {
     public Object forgetPassword(
             @RequestParam("username") String username,
             @RequestParam("code") String code) {
-        System.out.println(username + " " + code);
         User user = userService.getUserByUsername(username);
-        if (user == null || !userService.verifyEmail(user, user.getEmail(), code)) {
-            return new RedirectView("/password/forget?error");
+        if (user == null || user.getEmail() == null || user.getEmail().isEmpty()) {
+            return new RedirectView("/password/forget?notExists");
         }
+        if (!userService.verifyEmail(user, user.getEmail(), code))
+            return new RedirectView("/password/forget?wrong");
         // password for security
         return new ModelAndView("user/resetPassword").
                 addObject("username", username).

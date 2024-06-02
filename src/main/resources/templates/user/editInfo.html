@@ -13,15 +13,16 @@
     <h2>编辑档案</h2>
 </div>
 
-<main role="main" class="container">
+<main class="container" role="main">
     <div th:replace="~{user/editProfile :: profileEditBar}"></div>
     <h3 class="underlined-title">编辑个人信息</h3>
-    <form th:action="@{/profile/edit/info}" method="post">
+    <form method="post" th:action="@{/profile/edit/info}">
         <div class="form-group">
         </div>
         <label for="signature">个性签名</label>
-        <input type="text" class="form-control" id="signature" name="signature" th:value="${user.signature}" maxlength="200">
-        <button type="submit" class="btn btn-primary mt-2 mb-2">确定修改</button>
+        <input class="form-control" id="signature" maxlength="80" name="signature"
+               th:value="${user.signature}" type="text">
+        <button class="btn btn-primary mt-2 mb-2" type="submit">确定修改</button>
     </form>
 </main>
 </body>
