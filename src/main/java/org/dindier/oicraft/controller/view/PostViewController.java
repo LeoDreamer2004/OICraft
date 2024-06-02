@@ -58,10 +58,10 @@ public class PostViewController {
                                    @RequestParam("content") String content) {
         Problem problem = problemService.getProblemById(id);
         User user = userService.getUserByRequest(request);
-        Post post = new Post(title, content, problem, user);
-        postService.savePost(post);
         if (title.trim().isEmpty())
             return new RedirectView("/post/new?problem=" + id + "&error");
+        Post post = new Post(title, content, problem, user);
+        postService.savePost(post);
         return new RedirectView("/post/list?problem=" + id);
     }
 
