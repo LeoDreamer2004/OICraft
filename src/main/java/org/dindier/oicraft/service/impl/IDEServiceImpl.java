@@ -30,7 +30,6 @@ public class IDEServiceImpl implements IDEService {
             case RE -> "运行时错误";
             case TLE -> "超出时间限制";
             case MLE -> "超出内存限制";
-            case UKE -> "未知错误";
             default -> codeChecker.getUsedTime() + "ms, " + codeChecker.getUsedMemory() + "KB";
         };
         return Map.of("output", output, "usage", usage);

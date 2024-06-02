@@ -71,13 +71,12 @@
         fetch('/api/user/email/new?email=' + email, {
             method: 'GET',
         })
-            .then(response => {
-                if (!response.ok) {
-                    msg.style.display = 'block';
-                }
-                return response.text();
-            })
+            .then(response => response.text())
             .then(data => {
+                if (data === 'ok') {
+                    return;
+                }
+                msg.style.display = 'block';
                 msg.innerText = data;
             });
     }

@@ -19,15 +19,50 @@
     <p>支持JPEG/PNG格式，大小不得超过4MB</p>
     <p>上传后如果没有成功更新，可以尝试使用Ctrl+F5强制刷新浏览器缓存</p>
     <img alt="avatar" class="avatar" height="300" th:src="${user.avatarPath}" width="300">
-    <form enctype="multipart/form-data" method="post" th:action="@{/profile/edit/avatar}">
-        <div class="form-group">
-            <input accept="image/png, image/jpeg, image/jpg" class="form-control-file" id="avatar" name="avatar"
-                   required type="file">
-        </div>
-        <div class="alert alert-danger mb-0" th:if="${param.error}" th:text="${param.error}"></div>
-        <button class="btn btn-primary mt-2 mb-2" type="submit">确定修改</button>
-        <a class="btn btn-danger" href="/profile/edit/avatar/delete">清除头像</a>
-    </form>
+    <div class="form-group">
+        <input accept="image/png, image/jpeg, image/jpg" class="form-control-file" id="avatar" name="avatar"
+               required type="file">
+    </div>
+    <div class="alert alert-danger mb-0" id="error" style="display: none;"></div>
+    <button class="btn btn-primary mt-2 mb-2" onclick="editAvatar()" type="button">确定修改</button>
+    <button class="btn btn-danger" onclick="deleteAvatar()" type="button">清除头像</button>
 </main>
+<script>
+    <!--  点击按钮发送表单数据，回应若为ok刷新页面，否则在error内显示相应的内容，注意CSRF -->
+    function editAvatar() {
+        const formData = new FormData();
+        formData.append('avatar', document.getElementById('avatar').files[0]);
+        fetch('/api/user/edit/avatar', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').content
+            }
+        }).then(response => response.text()).then(response => {
+            if (response === 'ok') {
+                window.location.reload();
+            } else {
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('error').innerText = response;
+            }
+        });
+    }
+
+    function deleteAvatar() {
+        fetch('/api/user/delete/avatar', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').content
+            }
+        }).then(response => response.text()).then(response => {
+            if (response === 'ok') {
+                window.location.reload();
+            } else {
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('error').innerText = response;
+            }
+        });
+    }
+</script>
 </body>
 </html>
