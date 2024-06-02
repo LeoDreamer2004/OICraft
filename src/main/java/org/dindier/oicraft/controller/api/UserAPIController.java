@@ -1,12 +1,16 @@
 package org.dindier.oicraft.controller.api;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.dindier.oicraft.assets.exception.BadFileException;
 import org.dindier.oicraft.assets.exception.EmailVerificationError;
 import org.dindier.oicraft.model.User;
 import org.dindier.oicraft.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RequestMapping("/api/user")
 @RestController
@@ -14,6 +18,34 @@ public class UserAPIController {
 
     private UserService userService;
     private HttpServletRequest request;
+
+    @PostMapping("/edit/avatar")
+    public ResponseEntity<String> editAvatar(@RequestParam("avatar") MultipartFile avatar) {
+        User user = userService.getUserByRequest(request);
+        try {
+            byte[] avatarData;
+            try {
+                avatarData = avatar.getInputStream().readAllBytes();
+            } catch (IOException e) {
+                throw new BadFileException("读取文件流异常");
+            }
+            userService.saveUserAvatar(user, avatarData);
+        } catch (BadFileException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+        return ResponseEntity.ok().body("Avatar updated");
+    }
+
+    @PostMapping("/delete/avatar")
+    public ResponseEntity<String> deleteAvatar() {
+        User user = userService.getUserByRequest(request);
+        try {
+            userService.saveUserAvatar(user, null);
+        } catch (BadFileException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+        return ResponseEntity.ok().body("ok");
+    }
 
     @GetMapping
     public ResponseEntity<Integer> getUserId(@RequestParam String username) {
@@ -50,7 +82,7 @@ public class UserAPIController {
         } catch (EmailVerificationError e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return ResponseEntity.ok("成功发送验证码");
+        return ResponseEntity.ok().body("ok");
     }
 
     @PostMapping("/password/reset")
@@ -65,7 +97,7 @@ public class UserAPIController {
             return ResponseEntity.badRequest().body("Illegal access");
         user.setPassword(userService.encodePassword(password));
         userService.updateUser(user);
-        return ResponseEntity.ok().body("Password reset");
+        return ResponseEntity.ok().body("ok");
     }
 
     @Autowired

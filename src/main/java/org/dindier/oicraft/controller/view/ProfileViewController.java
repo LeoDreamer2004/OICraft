@@ -1,18 +1,14 @@
 package org.dindier.oicraft.controller.view;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.dindier.oicraft.assets.exception.BadFileException;
 import org.dindier.oicraft.model.User;
 import org.dindier.oicraft.service.ProblemService;
 import org.dindier.oicraft.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-
-import java.io.IOException;
 
 @RequestMapping("/profile")
 @Controller
@@ -21,7 +17,6 @@ public class ProfileViewController {
     private UserService userService;
     private ProblemService problemService;
     private HttpServletRequest request;
-
 
     @GetMapping
     public RedirectView profile() {
@@ -50,35 +45,6 @@ public class ProfileViewController {
     public ModelAndView editAvatar() {
         userService.getUserByRequest(request);
         return new ModelAndView("user/editAvatar");
-    }
-
-    @PostMapping("/edit/avatar")
-    public RedirectView editAvatar(@RequestParam("avatar") MultipartFile avatar) {
-        User user = userService.getUserByRequest(request);
-
-        try {
-            byte[] avatarData;
-            try {
-                avatarData = avatar.getInputStream().readAllBytes();
-            } catch (IOException e) {
-                throw new BadFileException("读取文件流异常");
-            }
-            userService.saveUserAvatar(user, avatarData);
-        } catch (BadFileException e) {
-            return new RedirectView("/profile/edit/avatar?error=" + e.getMessage());
-        }
-        return new RedirectView("/profile/edit/avatar");
-    }
-
-    @GetMapping("/edit/avatar/delete")
-    public RedirectView deleteAvatar() {
-        User user = userService.getUserByRequest(request);
-        try {
-            userService.saveUserAvatar(user, null);
-        } catch (BadFileException e) {
-            return new RedirectView("/profile/edit/avatar?error=" + e.getMessage());
-        }
-        return new RedirectView("/profile/edit/avatar");
     }
 
     @GetMapping("/edit/info")
