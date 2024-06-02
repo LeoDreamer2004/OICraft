@@ -38,7 +38,9 @@ public class AccountViewController {
     public RedirectView register(@RequestParam("username") String username,
                                  @RequestParam("password") String password) {
         if (userService.existsUser(username))
-            return new RedirectView("/register?error");
+            return new RedirectView("/register?exist");
+        if (!userService.isLegalUsername(username))
+            return new RedirectView("/register?illegal");
         User user = userService.createUser(username, password);
         return new RedirectView("/register/success?id=" + user.getId());
     }

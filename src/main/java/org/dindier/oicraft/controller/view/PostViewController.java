@@ -60,6 +60,8 @@ public class PostViewController {
         User user = userService.getUserByRequest(request);
         Post post = new Post(title, content, problem, user);
         postService.savePost(post);
+        if (title.trim().isEmpty())
+            return new RedirectView("/post/new?problem=" + id + "&error");
         return new RedirectView("/post/list?problem=" + id);
     }
 
@@ -86,6 +88,8 @@ public class PostViewController {
                                     @RequestParam("content") String content) {
         Post post = postService.getPostById(postId);
         User user = userService.getUserByRequest(request);
+        if (content.trim().isEmpty())
+            return new RedirectView("/post/" + postId + "?error");
         Comment comment = new Comment(user, post, content);
         postService.saveComment(comment);
         return new RedirectView("/post/" + postId);

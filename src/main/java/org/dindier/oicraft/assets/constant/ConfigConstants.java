@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 @Component
 public record ConfigConstants() {
@@ -11,7 +12,7 @@ public record ConfigConstants() {
     /****************
      * User parameters
      *****************/
-
+    public final static Pattern USER_NAME_PATTERN = Pattern.compile("^[a-zA-Z0-9_]{2,10}$");
     // The experience for different level users
     public static final int INTERMEDIATE_MIN_EXP = 100;
     public static final int ADVANCED_MIN_EXP = 200;

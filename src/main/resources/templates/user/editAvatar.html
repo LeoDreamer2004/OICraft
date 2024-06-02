@@ -18,7 +18,7 @@
     <h3 class="underlined-title">选择头像</h3>
     <p>支持JPEG/PNG格式，大小不得超过4MB</p>
     <p>上传后如果没有成功更新，可以尝试使用Ctrl+F5强制刷新浏览器缓存</p>
-    <img alt="avatar" class="avatar" height="300" th:src="${user.avatarPath}" width="300">
+    <img alt="avatar" class="avatar" height="300" th:src="${user.originalAvatarPath}" width="300">
     <div class="form-group">
         <input accept="image/png, image/jpeg, image/jpg" class="form-control-file" id="avatar" name="avatar"
                required type="file">
