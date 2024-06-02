@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>哦！出错了！</title>
     <th:block th:replace="~{problem/problem :: problemStyle}"></th:block>
-    <link rel="stylesheet" href="/css/submission.css">
+    <link href="/static/css/submission.css" rel="stylesheet">
     <th:block th:replace="~{base :: baseStyle}"></th:block>
 </head>
 <body>
@@ -22,7 +22,7 @@
     <h2>提交结果</h2>
     <a class="btn btn-secondary mb-3" th:href="@{/problem/{id}(id=${problem.id})}">返回题目</a>
 </div>
-<main role="main" class="container">
+<main class="container" role="main">
     <h4>提示信息</h4>
     <p>您无权查看此提交！再努力努力尝试通过这道题吧！</p>
 </main>

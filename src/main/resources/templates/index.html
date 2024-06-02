@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>OICraft</title>
     <th:block th:fragment="indexStyle">
-        <link rel="shortcut icon" href="/img/favicon/1.ico">
-        <link rel="stylesheet" href="/css/index.css">
+        <link href="/static/img/favicon/1.ico" rel="shortcut icon">
+        <link href="/static/css/index.css" rel="stylesheet">
     </th:block>
     <th:block th:replace="~{base :: baseStyle}"></th:block>
 
@@ -16,22 +16,23 @@
 <div th:fragment="nav">
     <nav class="navbar navbar-expand-md navbar-light" style="background-color: rgba(255,255,255,0.5); border:none;">
         <a class="navbar-brand" href="/">𒀭OICraft</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
-                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span
+        <button aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"
+                class="navbar-toggler"
+                data-target="#navbarCollapse" data-toggle="collapse" type="button"><span
                 class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a href="/" class="nav-link">首页</a>
+                    <a class="nav-link" href="/">首页</a>
                 </li>
                 <li class="nav-item">
-                    <a href="/problems" class="nav-link">题目清单</a>
+                    <a class="nav-link" href="/problems">题目清单</a>
                 </li>
                 <li class="nav-item" th:unless="${user eq null}">
-                    <a href="/profile" class="nav-link">个人主页</a>
+                    <a class="nav-link" href="/profile">个人主页</a>
                 </li>
                 <li class="nav-item">
-                    <a href="/ide" class="nav-link">在线IDE</a>
+                    <a class="nav-link" href="/ide">在线IDE</a>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto" th:if="${user} eq null">
@@ -49,10 +50,10 @@
                 </li>
                 <li class="nav-item">
                     <div class="dropdown">
-                        <a class="drop-btn nav-link pr-3 pl-0" th:text="${user.name}" href="/profile"></a>
+                        <a class="drop-btn nav-link pr-3 pl-0" href="/profile" th:text="${user.name}"></a>
                         <div class="dropdown-content" style="right: 0">
                             <a href="/profile">个人主页</a>
-                            <a th:if="${user.isAdmin()}" href="/admin">站点管理</a>
+                            <a href="/admin" th:if="${user.isAdmin()}">站点管理</a>
                             <a href="/logout">登出</a>
                         </div>
                     </div>
@@ -61,7 +62,7 @@
         </div>
     </nav>
 </div>
-<main role="main" class="container pt-4">
+<main class="container pt-4" role="main">
     <div class="jumbotron welcome mb-1">
         <h1 class="display-4">OICraft</h1>
         <p class="lead">
@@ -82,9 +83,9 @@
     <footer class="footer" th:fragment="footer">
         <span class="mb-0">&copy; 2024 OICraft. All rights reserved.</span>
         <span class="iconfont icon-github pl-5"></span>
-        <a href="https://github.com/LeoDreamer2004/OICraft" class="pl-2">项目主页</a>
+        <a class="pl-2" href="https://github.com/LeoDreamer2004/OICraft">项目主页</a>
         <span class="pl-2">|</span>
-        <a href="https://github.com/LeoDreamer2004" class="pl-2">联系作者</a>
+        <a class="pl-2" href="https://github.com/LeoDreamer2004">联系作者</a>
     </footer>
 </main>
 <script type="text/javascript">

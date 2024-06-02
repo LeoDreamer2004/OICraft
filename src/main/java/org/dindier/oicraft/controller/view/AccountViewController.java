@@ -23,7 +23,9 @@ public class AccountViewController {
     }
 
     @GetMapping("/login")
-    public ModelAndView login() {
+    public Object login() {
+        if (userService.getUserByRequestOptional(request) != null)
+            return new RedirectView("/");
         return new ModelAndView("user/login");
     }
 
