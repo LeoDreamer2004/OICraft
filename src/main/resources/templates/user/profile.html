@@ -4,34 +4,34 @@
     <meta charset="UTF-8">
     <title>个人主页</title>
     <th:block th:fragment="profileStyle">
-        <link rel="shortcut icon" href="/img/favicon/2.ico">
-        <link rel="stylesheet" href="/css/profile.css">
+        <link href="/static/img/favicon/2.ico" rel="shortcut icon">
+        <link href="/static/css/profile.css" rel="stylesheet">
     </th:block>
     <th:block th:replace="~{base :: baseStyle}"></th:block>
 </head>
 <body>
 <div class="profile-header">
     <div th:insert="~{index :: nav}"></div>
-    <img class="avatar" th:src="${seeUser.avatarPath}" alt="avatar">
-    <a class="modify-avatar" th:if="${user != null && user.equals(seeUser)}"
-       href="/profile/edit/avatar">修改头像</a>
-    <h2 th:text="${seeUser.name}" th:class="${seeUser.getGradeString()}" style="margin-left: 220px !important;"></h2>
-    <p th:if="${seeUser.signature eq null}" style="margin-left: 220px !important;">这个人很懒，什么都没有留下</p>
-    <p th:unless="${seeUser.signature eq null}" th:text="${seeUser.signature}"
-       style="margin-left: 220px !important;"></p>
+    <img alt="avatar" class="avatar" th:src="${seeUser.avatarPath}">
+    <a class="modify-avatar" href="/profile/edit/avatar"
+       th:if="${user != null && user.equals(seeUser)}">修改头像</a>
+    <h2 style="margin-left: 220px !important;" th:class="${seeUser.getGradeString()}" th:text="${seeUser.name}"></h2>
+    <p style="margin-left: 220px !important;" th:if="${seeUser.signature eq null}">这个人很懒，什么都没有留下</p>
+    <p style="margin-left: 220px !important;" th:text="${seeUser.signature}"
+       th:unless="${seeUser.signature eq null}"></p>
 
     <!--/*@thymesVar id="user" type="org.dindier.oicraft.model.User"*/-->
     <div class="buttons" th:if="${user != null}">
         <a class="btn btn-primary button-item" href="/profile/edit" th:if="${user.equals(seeUser)}">编辑档案</a>
-        <button class="btn btn-primary button-item" th:if="${user.equals(seeUser) && !hasCheckedIn}" id="checkInBtn">
+        <button class="btn btn-primary button-item" id="checkInBtn" th:if="${user.equals(seeUser) && !hasCheckedIn}">
             签到
         </button>
-        <button class="btn btn-secondary button-item" th:if="${user.equals(seeUser) && hasCheckedIn}" disabled>√
+        <button class="btn btn-secondary button-item" disabled th:if="${user.equals(seeUser) && hasCheckedIn}">√
             已签到
         </button>
     </div>
 </div>
-<main role="main" class="container">
+<main class="container" role="main">
     <div class="lr-container">
         <div class="profile-main">
             <!-- DO NOT show this card when the user has no problems waiting to solve -->
@@ -50,21 +50,21 @@
                     <span class="badge badge-success mt-2 my-large-badge">简单</span>
                     <br/>
                     <span th:each="problem : ${passed}">
-                <a th:if="${problem.isEasy()}" th:href="@{/problem/{id}(id=${problem.id})}"
+                <a th:href="@{/problem/{id}(id=${problem.id})}" th:if="${problem.isEasy()}"
                    th:text="${problem.getIdString()}"></a>
             </span>
                     <br/>
                     <span class="badge badge-warning mt-2 my-large-badge">中等</span>
                     <br/>
                     <span th:each="problem : ${passed}">
-                <a th:if="${problem.isMedium()}" th:href="@{/problem/{id}(id=${problem.id})}"
+                <a th:href="@{/problem/{id}(id=${problem.id})}" th:if="${problem.isMedium()}"
                    th:text="${problem.getIdString()}"></a>
             </span>
                     <br/>
                     <span class="badge badge-danger mt-2 my-large-badge">困难</span>
                     <br/>
                     <span th:each="problem : ${passed}">
-                <a th:if="${problem.isHard()}" th:href="@{/problem/{id}(id=${problem.id})}"
+                <a th:href="@{/problem/{id}(id=${problem.id})}" th:if="${problem.isHard()}"
                    th:text="${problem.getIdString()}"></a>
             </span>
                 </div>
@@ -77,22 +77,22 @@
                 <div class="card-body">
                     <div class="info-line">
                         <p>用户名</p>
-                        <p th:text="${seeUser.name}" id="username"></p>
+                        <p id="username" th:text="${seeUser.name}"></p>
                     </div>
                     <div class="info-line">
                         <p>经验</p>
-                        <p th:text="${seeUser.experience}" id="experience"></p>
+                        <p id="experience" th:text="${seeUser.experience}"></p>
                     </div>
                     <!--/*@thymesVar id="user" type="org.dindier.oicraft.model.User"*/-->
                     <div class="info-line" th:if="${seeUser.equals(user)}">
                         <p>邮箱</p>
                         <p th:unless="${seeUser.email eq null}">已绑定</p>
-                        <a th:if="${seeUser.email eq null}" href="/email">
+                        <a href="/email" th:if="${seeUser.email eq null}">
                             去绑定</a>
                     </div>
                     <div class="info-line">
                         <p>等级</p>
-                        <p th:text="${seeUser.gradeString}" id="grade"></p>
+                        <p id="grade" th:text="${seeUser.gradeString}"></p>
                     </div>
                     <div class="info-line">
                         <p>用户组</p>
@@ -100,8 +100,8 @@
                         <p th:unless="${seeUser.isAdmin()}">用户</p>
                     </div>
                     <div th:if="${user != null && user.equals(seeUser)}">
-                        <a href="/profile/edit" class="no-dec">编辑档案</a>
-                        <a href="/logoff" class="link-danger no-dec ml-3">注销</a>
+                        <a class="no-dec" href="/profile/edit">编辑档案</a>
+                        <a class="link-danger no-dec ml-3" href="/logoff">注销</a>
                     </div>
                 </div>
             </div>

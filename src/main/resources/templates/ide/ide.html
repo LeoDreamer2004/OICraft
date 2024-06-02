@@ -6,7 +6,7 @@
     <link th:replace="~{base :: baseStyle}">
     <link th:replace="~{base :: codeMirror}">
     <th:block th:replace="~{problem/problem :: problemStyle}"></th:block>
-    <link rel="stylesheet" href="/css/ide.css">
+    <link href="/static/css/ide.css" rel="stylesheet">
 </head>
 <body>
 
@@ -25,7 +25,7 @@
 
         <label class="form-inline">
             <span>代码语言</span>
-            <select name="language" id="language" class="form-control form-control-placeholder mb-3 ml-3 mt-3">
+            <select class="form-control form-control-placeholder mb-3 ml-3 mt-3" id="language" name="language">
                 <option value="Python">Python</option>
                 <option value="Java">Java</option>
                 <option value="C++">C++</option>
@@ -33,26 +33,26 @@
             </select>
         </label>
         <label>
-            <button class="btn btn-primary mt-3" type="button" id="submit">
+            <button class="btn btn-primary mt-3" id="submit" type="button">
                 <span class="iconfont icon-bofang pr-2"></span>运行
             </button>
         </label>
     </div>
     <div class="ide-wrapper">
         <div class="input-code">
-            <label for="code"></label><textarea name="code" id="code"></textarea>
+            <label for="code"></label><textarea id="code" name="code"></textarea>
         </div>
         <div class="io-container">
             <div class="input-container">
-                <label for="input" class="io-title">输入</label>
-                <textarea id="input" name="input" class="io form-control"></textarea>
+                <label class="io-title" for="input">输入</label>
+                <textarea class="io form-control" id="input" name="input"></textarea>
             </div>
             <div class="output-container">
                 <div class="lr-container">
                     <div class="io-title">输出</div>
                     <div class="io-title" id="usage"></div>
                 </div>
-                <div id="output" class="io form-control"></div>
+                <div class="io form-control" id="output"></div>
             </div>
         </div>
     </div>
@@ -73,7 +73,7 @@
     editor.setSize('100%', '450px')
 
     // Change the mode of the editor based on the selected language
-    document.getElementById("language").addEventListener("change", function() {
+    document.getElementById("language").addEventListener("change", function () {
         const language = document.getElementById("language").value;
         if (language === "Python") {
             editor.setOption("mode", "text/x-python");

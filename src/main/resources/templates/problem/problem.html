@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title th:text="${problem.title}"></title>
     <th:block th:fragment="problemStyle">
-        <link rel="shortcut icon" href="/img/favicon/3.ico">
-        <link rel="stylesheet" href="/css/problem.css">
+        <link href="/static/img/favicon/3.ico" rel="shortcut icon">
+        <link href="/static/css/problem.css" rel="stylesheet">
     </th:block>
     <th:block th:replace="~{base :: baseStyle}"></th:block>
     <th:block th:replace="~{base :: markdown}"></th:block>
@@ -22,11 +22,11 @@
     <div th:replace="~{problem/list :: nav}"></div>
     <h2>[[${problem.getIdString}]] &nbsp;&nbsp; [[${problem.title}]]</h2>
     <!--/*@thymesVar id="user" type="org.dindier.oicraft.model.User"*/-->
-    <a th:if="${canSubmit}" class="btn btn-primary mb-3"
-       th:href="@{/problem/submit(id=${problem.id})}"
+    <a class="btn btn-primary mb-3" th:href="@{/problem/submit(id=${problem.id})}"
+       th:if="${canSubmit}"
        th:text="${(user eq null) ? '登录后提交' : '提交代码'}"></a>
     <a class="btn btn-secondary mb-3" th:href="@{/problems(from=${problem.id})}">返回题单</a>
-    <span th:unless="${canSubmit}" class="ml-3">此题暂无测试点，不可提交</span>
+    <span class="ml-3" th:unless="${canSubmit}">此题暂无测试点，不可提交</span>
 
     <div class="problem-status-box">
         <div class="problem-status-item">
@@ -49,26 +49,26 @@
 </div>
 
 
-<main role="main" class="container">
+<main class="container" role="main">
     <div class="lr-container">
         <div class="problem-main mb-5">
             <div class="card my-card">
-                <a th:href="@{/api/problem/download(id=${problem.id})}"
-                   style="position: absolute; right: 20px;" class="no-dec">
+                <a class="no-dec"
+                   style="position: absolute; right: 20px;" th:href="@{/api/problem/download(id=${problem.id})}">
                     <span class="iconfont icon-markdown"></span>
                     下载Markdown
                 </a>
                 <div class="problem-part">
                     <h3 class="mt-0">题目描述</h3>
-                    <div id="description" class="markdown" th:utext="${problem.description}"></div>
+                    <div class="markdown" id="description" th:utext="${problem.description}"></div>
                 </div>
                 <div class="problem-part">
                     <h3>输入格式</h3>
-                    <div id="inputFormat" class="markdown" th:utext="${problem.inputFormat}"></div>
+                    <div class="markdown" id="inputFormat" th:utext="${problem.inputFormat}"></div>
                 </div>
                 <div class="problem-part">
                     <h3>输出格式</h3>
-                    <div id="outputFormat" class="markdown" th:utext="${problem.outputFormat}"></div>
+                    <div class="markdown" id="outputFormat" th:utext="${problem.outputFormat}"></div>
                 </div>
                 <div class="problem-part">
                     <h3>输入输出样例</h3>
@@ -90,11 +90,11 @@
             <div class="card my-card">
                 <div class="info-line">
                     <p>出题人</p>
-                    <a th:unless="${author eq null}" th:text="${author.name}"
-                       th:href="@{/profile/{id}(id=${author.id})}"
-                       th:class="${author.gradeString}">
+                    <a th:class="${author.gradeString}" th:href="@{/profile/{id}(id=${author.id})}"
+                       th:text="${author.name}"
+                       th:unless="${author eq null}">
                     </a>
-                    <span th:if="${author eq null}" class="DELETED">账户已注销</span>
+                    <span class="DELETED" th:if="${author eq null}">账户已注销</span>
                 </div>
                 <div class="info-line">
                     <p>题目难度</p>
@@ -109,16 +109,16 @@
                 <div>
                     <a class="iconfont icon-toupiao no-dec" th:href="@{/problem/history(id=${problem.id})}">
                         提交记录</a>
-                    <a class="no-dec ml-2" th:unless="${user eq null}"
-                       th:href="@{/problem/history(id=${problem.id}, user=${user.id})}">
+                    <a class="no-dec ml-2" th:href="@{/problem/history(id=${problem.id}, user=${user.id})}"
+                       th:unless="${user eq null}">
                         我的提交</a>
                 </div>
             </div>
             <div class="card my-card mt-3">
                 <h5 class="mb-3 underlined-title">讨论区</h5>
                 <div>
-                    <a th:href="@{/post/list(problem=${problem.id})}" class="mr-2 no-dec">查看帖子</a>
-                    <a th:href="@{/post/new(problem=${problem.id})}" class="no-dec">发布帖子</a>
+                    <a class="mr-2 no-dec" th:href="@{/post/list(problem=${problem.id})}">查看帖子</a>
+                    <a class="no-dec" th:href="@{/post/new(problem=${problem.id})}">发布帖子</a>
                 </div>
             </div>
             <div class="card my-card mt-3" th:if="${canEdit}">
@@ -126,10 +126,10 @@
                 <div>
                     <a class="btn btn-primary" style="width:auto"
                        th:href="@{/problem/edit(id=${problem.id})}">编辑题目</a>
-                    <a class="btn btn-primary" style="width:auto" th:if="${canEditCheckpoints}"
-                       th:href="@{/problem/edit/checkpoints(id=${problem.id})}">编辑测试点</a>
-                    <a class="btn btn-primary" style="width:auto" th:unless="${canEditCheckpoints}"
-                       th:href="@{/api/problem/checkpoints/download(id=${problem.id})}">下载测试点</a>
+                    <a class="btn btn-primary" style="width:auto" th:href="@{/problem/edit/checkpoints(id=${problem.id})}"
+                       th:if="${canEditCheckpoints}">编辑测试点</a>
+                    <a class="btn btn-primary" style="width:auto" th:href="@{/api/problem/checkpoints/download(id=${problem.id})}"
+                       th:unless="${canEditCheckpoints}">下载测试点</a>
                     <a class="btn btn-danger" style="width:auto"
                        th:href="@{/problem/delete(id=${problem.id})}">删除题目</a>
                 </div>

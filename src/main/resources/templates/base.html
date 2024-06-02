@@ -5,10 +5,10 @@
 
     <!-- Base Styles -->
     <th:block th:fragment="baseStyle">
-        <meta type="hidden" name="_csrf" th:content="${_csrf.token}"/>
-        <link rel="stylesheet" href="/plugins/bootstrap-4.6.2-dist/css/bootstrap.min.css"/>
-        <link rel="stylesheet" href="/css/base.css"/>
-        <link rel="stylesheet" href="//at.alicdn.com/t/c/font_4514574_70s0bnl4o1v.css">
+        <meta name="_csrf" th:content="${_csrf.token}" type="hidden"/>
+        <link href="/static/plugins/bootstrap-4.6.2-dist/css/bootstrap.min.css" rel="stylesheet"/>
+        <link href="/static/css/base.css" rel="stylesheet"/>
+        <link href="//at.alicdn.com/t/c/font_4514574_70s0bnl4o1v.css" rel="stylesheet">
     </th:block>
 
     <!-- MathJax and Markdown Support -->
@@ -53,31 +53,31 @@
             })
         </script>
         <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/docco.min.css">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/docco.min.css" rel="stylesheet">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
         <script>hljs.highlightAll();</script>
     </th:block>
 
-    <script src="/js/run-markdown.js" th:fragment="runMarkdown"></script>
-    <script src="/js/person-link.js" th:fragment="personLink"></script>
+    <script src="/static/js/run-markdown.js" th:fragment="runMarkdown"></script>
+    <script src="/static/js/person-link.js" th:fragment="personLink"></script>
 
     <th:block th:fragment="codeMirror">
-        <link rel="stylesheet" href="/plugins/codemirror/lib/codemirror.css">
-        <script src="/plugins/codemirror/lib/codemirror.js"></script>
-        <link rel="stylesheet" href="/plugins/codemirror/theme/eclipse.css">
+        <link href="/static/plugins/codemirror/lib/codemirror.css" rel="stylesheet">
+        <script src="/static/plugins/codemirror/lib/codemirror.js"></script>
+        <link href="/static/plugins/codemirror/theme/eclipse.css" rel="stylesheet">
 
-        <script src="/plugins/codemirror/mode/clike/clike.js"></script>
-        <script src="/plugins/codemirror/mode/python/python.js"></script>
-        <link rel="stylesheet" href="/plugins/codemirror/addon/hint/show-hint.css">
-        <script src="/plugins/codemirror/addon/hint/show-hint.js"></script>
-        <script src="/plugins/codemirror/addon/hint/anyword-hint.js"></script>
-        <script src="/plugins/codemirror/addon/edit/matchbrackets.js"></script>
+        <script src="/static/plugins/codemirror/mode/clike/clike.js"></script>
+        <script src="/static/plugins/codemirror/mode/python/python.js"></script>
+        <link href="/static/plugins/codemirror/addon/hint/show-hint.css" rel="stylesheet">
+        <script src="/static/plugins/codemirror/addon/hint/show-hint.js"></script>
+        <script src="/static/plugins/codemirror/addon/hint/anyword-hint.js"></script>
+        <script src="/static/plugins/codemirror/addon/edit/matchbrackets.js"></script>
 
-        <link rel="stylesheet" href="/plugins/codemirror/addon/fold/foldgutter.css"/>
-        <script src="/plugins/codemirror/addon/fold/foldcode.js"></script>
-        <script src="/plugins/codemirror/addon/fold/foldgutter.js"></script>
-        <script src="/plugins/codemirror/addon/fold/brace-fold.js"></script>
-        <script src="/plugins/codemirror/addon/fold/comment-fold.js"></script>
+        <link href="/static/plugins/codemirror/addon/fold/foldgutter.css" rel="stylesheet"/>
+        <script src="/static/plugins/codemirror/addon/fold/foldcode.js"></script>
+        <script src="/static/plugins/codemirror/addon/fold/foldgutter.js"></script>
+        <script src="/static/plugins/codemirror/addon/fold/brace-fold.js"></script>
+        <script src="/static/plugins/codemirror/addon/fold/comment-fold.js"></script>
     </th:block>
 </head>
 <body>
