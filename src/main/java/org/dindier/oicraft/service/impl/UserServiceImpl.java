@@ -196,12 +196,13 @@ public class UserServiceImpl implements UserService {
             return;
         }
 
-        if (avatar.length > 4 * 1024 * 1024) // 4MB
+        if (avatar.length > ConfigConstants.MAX_AVATAR_SIZE * 1024 * 1024)
             throw new BadFileException("头像文件过大");
 
         try {
             // save the avatarStream
-            Files.write(avatarPath, ImageUtil.compressImage(avatar, 4));
+            Files.write(avatarPath, ImageUtil.compressImage(avatar,
+                    ConfigConstants.COMPRESSED_AVATAR_SIZE));
             Files.write(originalAvatarPath, avatar);
             log.info("Saving avatarStream for user {}", user.getName());
         } catch (IOException e) {

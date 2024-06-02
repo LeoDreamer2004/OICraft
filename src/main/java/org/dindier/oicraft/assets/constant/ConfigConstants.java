@@ -12,7 +12,11 @@ public record ConfigConstants() {
     /****************
      * User parameters
      *****************/
+    // The pattern for username
     public final static Pattern USER_NAME_PATTERN = Pattern.compile("^[a-zA-Z0-9_]{2,10}$");
+    // The avatar size
+    public final static int MAX_AVATAR_SIZE = 4; // MB
+    public final static int COMPRESSED_AVATAR_SIZE = 16; // KB
     // The experience for different level users
     public static final int INTERMEDIATE_MIN_EXP = 100;
     public static final int ADVANCED_MIN_EXP = 200;

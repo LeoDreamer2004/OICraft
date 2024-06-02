@@ -35,9 +35,9 @@
 <main class="container" role="main">
     <h5>搜索试题</h5>
     <form action="/problems/search" class="search-container mb-4" method="get">
-        <input class="form-control search-field" name="keyword"
+        <input class="form-control search-field" maxlength="50" name="keyword"
                placeholder="输入题目名称" th:if="${param.keyword eq null}" type="text">
-        <input class="form-control search-field" name="keyword"
+        <input class="form-control search-field" maxlength="50" name="keyword"
                th:unless="${param.keyword eq null}" th:value="${param.keyword}" type="text">
         <button class="iconfont icon-sousuo search-icon" type="submit"></button>
     </form>
