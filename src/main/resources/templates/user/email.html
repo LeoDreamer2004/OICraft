@@ -18,6 +18,11 @@
                 <h1>邮箱认证</h1>
                 <p>绑定您的邮箱，不再担心忘记密码</p>
             </div>
+            <div class="from-item" id="ok" style="display: none">
+                <div class="alert alert-success ml-3 mr-3 mb-0">
+                    验证码已发送
+                </div>
+            </div>
             <div class="form-item" th:if="${param.error}">
                 <div class="alert alert-danger ml-3 mr-3 mb-0">
                     验证码不正确
@@ -74,6 +79,7 @@
             .then(response => response.text())
             .then(data => {
                 if (data === 'ok') {
+                    document.getElementById("ok").style.display = 'block';
                     return;
                 }
                 msg.style.display = 'block';
