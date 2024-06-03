@@ -9,6 +9,7 @@ import org.dindier.oicraft.assets.constant.ConfigConstants;
 import org.dindier.oicraft.assets.exception.EmailVerificationError;
 import org.dindier.oicraft.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -50,13 +51,13 @@ public class EmailVerifier {
         URL emailUrl = getClass().getClassLoader()
                 .getResource("static/html/email.html");
         if (emailUrl == null) {
-            throw new EmailVerificationError("不存在邮件模板");
+            throw new EmailVerificationError("服务器内不存在邮件模板");
         }
         String htmlMsg;
         try (InputStream emailStream = emailUrl.openStream()) {
             htmlMsg = new String(emailStream.readAllBytes());
         } catch (IOException e) {
-            throw new EmailVerificationError("无法读取邮件模板");
+            throw new EmailVerificationError("服务器无法读取邮件模板");
         }
         htmlMsg = htmlMsg.replace("{{username}}", username);
         htmlMsg = htmlMsg.replace("{{code}}", verificationCode);
@@ -67,9 +68,13 @@ public class EmailVerifier {
             helper.setSubject("Your OICraft verification code");
             helper.setFrom("oicraft2024@163.com");
         } catch (MessagingException e) {
-            throw new EmailVerificationError("无法发送邮件");
+            throw new EmailVerificationError("服务器异常，无法发送邮件");
         }
-        mailSender.send(mailMessage);
+        try {
+            mailSender.send(mailMessage);
+        } catch (MailException e) {
+            throw new EmailVerificationError("发送失败，请检查邮箱是否存在");
+        }
         log.info("Verification code sent to {}", email);
         // Auto-delete the verification code in 5 minutes
         timer.schedule(new TimerTask() {

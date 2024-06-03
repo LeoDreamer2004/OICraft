@@ -66,7 +66,7 @@ public class UserAPIController {
         User user = userService.getUserByRequest(request);
         try {
             userService.sendVerificationCode(user, email);
-            return ResponseEntity.ok("成功发送验证码");
+            return ResponseEntity.ok("ok");
         } catch (EmailVerificationError e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
