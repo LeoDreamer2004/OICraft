@@ -54,6 +54,9 @@
         const email = document.getElementById('email').value;
         const msg = document.getElementById('errorMsg');
         const btn = document.getElementById('verificationBtn');
+        const ok = document.getElementById('ok');
+        msg.style.display = 'none';
+        ok.style.display = 'none';
         if (email === '') {
             msg.style.display = 'block';
             msg.innerText = '邮箱不能为空';
@@ -80,7 +83,7 @@
             .then(data => {
                 if (data === 'ok') {
                     msg.style.display = 'none';
-                    document.getElementById("ok").style.display = 'block';
+                    ok.style.display = 'block';
                     return;
                 }
                 msg.style.display = 'block';

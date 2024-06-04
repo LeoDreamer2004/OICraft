@@ -67,12 +67,8 @@ public class EmailVerifier {
             helper.setTo(email);
             helper.setSubject("Your OICraft verification code");
             helper.setFrom("oicraft2024@163.com");
-        } catch (MessagingException e) {
-            throw new EmailVerificationError("服务器异常，无法发送邮件");
-        }
-        try {
             mailSender.send(mailMessage);
-        } catch (MailException e) {
+        } catch (MailException | MessagingException e) {
             throw new EmailVerificationError("发送失败，请检查邮箱是否存在");
         }
         log.info("Verification code sent to {}", email);
