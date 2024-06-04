@@ -79,6 +79,7 @@
             .then(response => response.text())
             .then(data => {
                 if (data === 'ok') {
+                    msg.style.display = 'none';
                     document.getElementById("ok").style.display = 'block';
                     return;
                 }
