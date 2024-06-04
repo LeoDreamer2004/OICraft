@@ -34,3 +34,8 @@ bin/
 /.temp_zip_put/
 /.temp_zip_get/
 /temp/
+
+
+# properties
+/src/main/resources/application.properties
+/src/main/resources/ai.properties
