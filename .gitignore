@@ -34,3 +34,7 @@ bin/
 /.temp_zip_put/
 /.temp_zip_get/
 /temp/
+
+
+# properties
+*.properties
