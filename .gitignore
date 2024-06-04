@@ -35,7 +35,5 @@ bin/
 /.temp_zip_get/
 /temp/
 
-
-# properties
-/src/main/resources/application.properties
-/src/main/resources/ai.properties
+/run.sh
+/run.bat
