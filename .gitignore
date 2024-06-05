@@ -35,5 +35,5 @@ bin/
 /.temp_zip_get/
 /temp/
 
-/init.sh
-/init.bat
+/run.sh
+/run.bat

@@ -28,10 +28,12 @@ OICraft 所用服务器是 SpringBoot 内置的 Tomcat 服务器（在本机运�
 
 - 下载项目源代码后，使用 IntelliJ IDEA 作为项目打开。
 - 点击 `pom.xml` 文件，刷新导入 Maven 依赖。
-- 在 `resources/application.properties` 文件中配置数据库连接信息和邮箱信息。这里我们已经配好了远程阿里云数据库和公用邮箱。
+- 打开 `resources` 文件夹，在 `application.properties` 文件中配置数据库连接信息和邮箱信息。在 `ai.properties` 文件中配置科大讯飞 AI 的 api-key，如果没有，暂时跳过这一步。
 - 如果电脑上安装了 Docker，可以使用 Docker 容器运行代码检查以免受到提交的恶意代码的攻击，否则将在本机运行代码检查。如果要强制禁用 Docker，请在运行前将 `USE_DOCKER` 环境变量设置为 `false`。
     > 如果使用 Docker，第一次运行时可能要用几分钟时间下载镜像和构建容器。<font color=red>建议手动在构建，不要自动构建。</font>构建目录在 `resources/scripts/docker` 下的四个目录，分别构建命名为 `code-checker-java/c/cpp/python` 的镜像。
-- 运行 `OICraftApplication.java` 启动项目。如果控制台出现了 OICraft 的 Logo，并随后出现了 SpringBoot 的运行日志 `Completed initialization in xxx ms`，说明项目启动成功。（注意：由于要链接数据库，需要保持较好的网络连接）
+- 如果在 `properties` 配置好了，运行 `OICraftApplication.java` 启动项目；如果没有，可以用我们提供的 `run.sh`（Linux) 或 `run.bat`（Windows）来启动项目；或者在 IDEA 的项目配置中录入其内的环境变量信息，这样在之后运行时只需启动 `OICraftApplication.java`即可。
+  > **<font color=red>重要警告：这两个脚本内部的环境变量配置是敏感信息，请勿对外公布！</font>** 它们没有被上传到 Github。
+- 启动后，如果控制台出现了 OICraft 的 Logo，并随后出现了 SpringBoot 的运行日志 `Completed initialization in xxx ms`，说明项目启动成功。（注意：由于要链接数据库，需要保持较好的网络连接）
 - 在浏览器中输入 `http://localhost` 即可访问网站。如果运行失败显示端口 80 被占用，请在 `resources/application.properties` 配置 `server.port` 空闲端口，并访问对应端口号 `http://localhost:xxx` 即可。
 - 在网站的右上角登录账户，如果没有账户，可以点击注册按钮注册账户。（<font color=green>为了更好地展示所有功能，可以登录事先的管理员账户：Java，密码：2024</font>）
 
